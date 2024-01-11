@@ -1,0 +1,5 @@
+menu-name: "Noctua Standard Annotations (Beta)"
+page-name: "Noctua Standard Annotations (Beta)"
+type: "model"
+is-beta: true
+help-link: "https://github.com/geneontology/noctua-standard-annotations/issues"
