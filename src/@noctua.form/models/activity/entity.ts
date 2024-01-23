@@ -33,6 +33,8 @@ export class Entity implements EntityBase {
 
   private _uuid: string = null;
 
+  inverseEntity: Entity
+
   constructor(public id: string,
     public label: string,
     public url?: string,

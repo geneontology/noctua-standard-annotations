@@ -139,6 +139,7 @@ const routes = [
     PreviewActivityComponent,
     GraphPreviewComponent,
     EvidenceFormTableComponent,
+    EvidenceTableComponent,
     ConfirmCopyModelDialogComponent,
     CommentsDialogComponent,
     CamToolbarComponent,

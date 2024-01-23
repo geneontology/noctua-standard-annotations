@@ -1,11 +1,5 @@
 <div class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start">
   <div class="noc-sidemenu" fxLayout="column" fxLayoutAlign="start center">
-    <button mat-icon-button color="" class="noc-rounded-button"
-      [ngClass]="{'noc-active': noctuaCommonMenuService.selectedLeftPanel === LeftPanel.activityForm}" color="primary"
-      matTooltip="Add New Activity/Annotation" [matTooltipPosition]="'above'" [matTooltipShowDelay]="1500"
-      (click)="openAnnotationForm(ActivityType.simpleAnnoton)">
-      <fa-icon [icon]="['fas', 'plus']"></fa-icon>
-    </button>
 
     <button mat-icon-button color="" class="noc-rounded-button"
       [ngClass]="{'noc-active': noctuaCommonMenuService.selectedLeftPanel === LeftPanel.camForm}"
@@ -72,9 +66,13 @@
         </div>
       </mat-drawer>
       <mat-drawer-content class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start stretch">
+
+
         <div *ngIf="cam" [ngSwitch]="noctuaCommonMenuService.selectedMiddlePanel" class="w-100-p h-100-p"
           noctuaPerfectScrollbar>
-          <noc-cam-table *ngSwitchCase="MiddlePanel.camTable" [cam]="cam" [options]="tableOptions"></noc-cam-table>
+          <noc-annotation-form> </noc-annotation-form>
+          <noc-annotation-table *ngSwitchCase="MiddlePanel.camTable" [cam]="cam"
+            [options]="tableOptions"></noc-annotation-table>
         </div>
       </mat-drawer-content>
       <mat-drawer #rightDrawer class="noc-right-drawer" mode="side" position="end">

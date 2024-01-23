@@ -187,6 +187,16 @@ export class CamService {
     return treeNodes
   }
 
+
+  addCamAnnotationActivities(cam: Cam) {
+    cam.annotationActivities = cam.activities.map((activity: Activity) => {
+      const annotationActivity = this.noctuaFormConfigService.activityToAnnotation(activity);
+
+      annotationActivity.activity = activity;
+      return annotationActivity
+    });
+  }
+
   getStoredModel(cam: Cam): Observable<any> {
     const url = `${this.searchApi}/stored?id=${cam.id}`;
 

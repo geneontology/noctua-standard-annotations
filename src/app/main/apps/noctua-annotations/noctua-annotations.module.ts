@@ -31,6 +31,8 @@ import { NoctuaFormModule } from '../noctua-form/noctua-form.module';
 import { AnnotationFormComponent } from './forms/annotation-form/annotation-form.component';
 import { AnnotationEntityFormComponent } from './forms/annotation-form/entity-form/entity-form.component';
 import { AnnotationEvidenceFormComponent } from './forms/annotation-form/evidence-form/evidence-form.component';
+import { AnnotationTableComponent } from './table/annotation-table.component';
+import { AnnotationNodeComponent } from './table/annotation-node/annotation-node.component';
 
 const routes = [
   {
@@ -82,7 +84,9 @@ const routes = [
     NoctuaAnnotationsComponent,
     AnnotationEntityFormComponent,
     AnnotationEvidenceFormComponent,
-    AnnotationFormComponent
+    AnnotationFormComponent,
+    AnnotationTableComponent,
+    AnnotationNodeComponent
   ],
 })
 

@@ -22,7 +22,8 @@ import {
   ActivityDisplayType,
   CamLoadingIndicator,
   ReloadType,
-  RightPanel
+  RightPanel,
+  AnnotationActivity
 } from '@geneontology/noctua-form-base';
 
 import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
@@ -57,6 +58,8 @@ export class NoctuaAnnotationsComponent implements OnInit, OnDestroy {
   camToolbarOptions: CamToolbarOptions = {
     showCreateButton: false
   }
+
+  annotationActivities: AnnotationActivity[] = [];
 
   summary;
   public cam: Cam;
@@ -131,7 +134,10 @@ export class NoctuaAnnotationsComponent implements OnInit, OnDestroy {
 
         if (cam.activities.length > 0) {
           this.camService.addCamEdit(this.cam)
+          this.camService.addCamAnnotationActivities(this.cam)
           this.camService.cams = [cam]
+
+
         }
         //this.noctuaReviewSearchService.addCamsToReview([this.cam], this.camService.cams);
 

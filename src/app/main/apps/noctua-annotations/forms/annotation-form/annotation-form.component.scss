@@ -1,4 +1,4 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 @import "src/@noctua/scss/noctua";
 @import "src/@noctua.common/scss/noctua.common";
 
@@ -7,7 +7,6 @@ $accent: map-get($theme, accent);
 
 :host {
   //width: 100%; // display: block;
-  @include deep-width(40px);
   background-color: white;
   @include mat.elevation(4);
 
@@ -18,34 +17,6 @@ $accent: map-get($theme, accent);
 
   .noc-drawer {
     padding-right: 8px;
-  }
-
-  .noc-group-side-heading {
-    @include deep-width(50px);
-    background-color: #ddd;
-    font-size: 10px;
-    text-align: center;
-  }
-
-  .noc-header {
-    @include deep-height(40px);
-    background-color: #eee;
-    border-bottom: #ccc solid 1px;
-
-    mat-icon-button {
-      @include deep-height(40px);
-      @include deep-width(40px);
-      line-height: 40px;
-    }
-
-    .noc-title {
-      font-size: 10px;
-      padding: 0 14px;
-    }
-  }
-
-  .noc-body {
-    padding: 0 14px 14px 14px;
   }
 
   .noc-activity-box {
@@ -77,9 +48,13 @@ $accent: map-get($theme, accent);
     }
   }
 
+  .noc-activity-form-container {
+    padding: 20px 10px;
+    background-color: #b4e1f3;
+  }
+
   .noc-activity-form {
-    //width: 900px;
-    padding-bottom: 200px;
+    @include deep-width(800px);
 
     .noc-term-group {
       // padding-bottom: 20px;
@@ -149,7 +124,7 @@ $accent: map-get($theme, accent);
       }
     }
 
-    md-input-container {
+    mat-input-container {
       margin: 0; //border-bottom: #555 solid 1px;
       padding-top: 20px;
       padding-bottom: 8px;

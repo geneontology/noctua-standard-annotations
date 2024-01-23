@@ -26,6 +26,7 @@ import { Contributor, equalContributor } from '../models/contributor';
 import * as moment from 'moment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { graph as bbopGraph } from 'bbop-graph-noctua';
+import { AnnotationActivity } from './../models/activity/annotation-activity';
 
 declare const require: any;
 
@@ -836,6 +837,46 @@ export class BbopGraphService {
     return activities;
 
   }
+
+  /* 
+     graphToAnnotations(camGraph): AnnotationActivity[] {
+      const self = this;
+      const activities: AnnotationActivity[] = [];
+  
+      each(camGraph.all_edges(), (bbopEdge) => {
+        const bbopSubjectId = bbopEdge.subject_id();
+        const bbopObjectId = bbopEdge.object_id();
+        const subjectNode = self.nodeToActivityNode(camGraph, bbopSubjectId);
+        const objectNode = self.nodeToActivityNode(camGraph, bbopObjectId);
+  
+  
+        if(bbopEdge.predicate_id() === noctuaFormConfig.edge.enabledBy.id) {
+  
+          const subjectEdges = camGraph.get_edges_by_subject(bbopSubjectId);
+          const activity: Activity = self.noctuaFormConfigService.createActivityBaseModel(ActivityType.simpleAnnoton, subjectNode as ActivityNode);
+          const subjectActivityNode = activity.rootNode;
+  
+          subjectActivityNode.term = subjectNode.term;
+          subjectActivityNode.date = subjectNode.date;
+          subjectActivityNode.category = subjectNode.category;
+          subjectActivityNode.rootTypes = subjectNode.rootTypes;
+          subjectActivityNode.classExpression = subjectNode.classExpression;
+          subjectActivityNode.setIsComplement(subjectNode.isComplement);
+          subjectActivityNode.uuid = bbopSubjectId;
+          self._graphToActivityDFS(camGraph, activity, subjectEdges, subjectActivityNode);
+          activity.id = bbopSubjectId;
+  
+          activity.postRunUpdateCompliment();
+  
+          activity.postRunUpdate();
+  
+          activities.push(activity);
+        }
+      });
+  
+      return activities;
+  
+    }  */
 
   graphToMolecules(camGraph): Activity[] {
     const self = this;

@@ -49,7 +49,7 @@ export class NoctuaAnnotationFormService {
 
       this.cam = cam;
     });
-    this.activity = this.noctuaFormConfigService.createActivityModel(ActivityType.default);
+    this.activity = this.noctuaFormConfigService.createActivityModel(ActivityType.simpleAnnoton);
     this.onActivityCreated = new BehaviorSubject(null);
     this.onActivityChanged = new BehaviorSubject(null);
     this.annotationFormGroup = new BehaviorSubject(null);

@@ -482,6 +482,15 @@ export const noctuaFormConfig = {
     Entity.createEntity(edge.occursIn),
   ],
 
+  mfToTermEdges: [
+    edge.partOf.id,
+    edge.occursIn.id,
+    edge.causallyUpstreamOfOrWithinPositiveEffect.id,
+    edge.causallyUpstreamOfOrWithinNegativeEffect.id,
+    edge.causallyUpstreamOfPositiveEffect.id,
+    edge.causallyUpstreamOfNegativeEffect.id,
+  ],
+
   edgePriority: [
     edge.enabledBy.id,
     edge.partOf.id,

@@ -7,6 +7,15 @@ import { Predicate } from './predicate';
 import * as ShapeUtils from './../../data/config/shape-utils';
 import { Evidence } from './evidence';
 
+export interface AnnotationEdgeConfig {
+  gpToTermPredicate?: string;
+  gpToTermReverse?: boolean;
+  mfNodeRequired: boolean;
+  mfToTermPredicate?: string;
+  root?: string;
+  mfToTermReverse?: boolean;
+}
+
 
 export class AnnotationActivity {
   gp: ActivityNode;
@@ -19,10 +28,14 @@ export class AnnotationActivity {
 
   gpToTermEdges: Entity[] = [];
   extensionEdges: Entity[] = [];
+  activity: Activity;
 
 
-  constructor(activity: Activity) {
-    this.activityToAnnotation(activity)
+  constructor(activity?: Activity) {
+
+    if (activity) {
+      this.activityToAnnotation(activity);
+    }
   }
 
 
@@ -31,6 +44,30 @@ export class AnnotationActivity {
     this.goterm = activity.getNode('goterm');
     this.extension = activity.getNode('extension');
 
+  }
+
+  findEdgeByCriteria(matchCriteria: AnnotationEdgeConfig): string {
+
+    const config = noctuaFormConfig.simpleAnnotationEdgeConfig;
+
+    for (const key in config) {
+      if (config.hasOwnProperty(key)) {
+        let allCriteriaMatch = true;
+        const entry = config[key];
+
+        for (const criterion in matchCriteria) {
+          if (entry[criterion] !== matchCriteria[criterion]) {
+            allCriteriaMatch = false;
+            break;
+          }
+        }
+
+        if (allCriteriaMatch) {
+          return key;
+        }
+      }
+    }
+    return null; // Return null if no match is found
   }
 
   createSave() {
