@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { NoctuaAnnotationsDialogService } from './../../../services/dialog.service';
 import {
   CamService,
@@ -60,7 +60,7 @@ export class AnnotationEntityFormComponent implements OnInit, OnDestroy {
 
   termData
 
-  private unsubscribeAll: Subject<any>;
+  private _unsubscribeAll: Subject<any>;
 
   constructor(
     private noctuaAnnotationsDialogService: NoctuaAnnotationsDialogService,
@@ -71,17 +71,25 @@ export class AnnotationEntityFormComponent implements OnInit, OnDestroy {
     private inlineWithService: InlineWithService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaAnnotationFormService: NoctuaAnnotationFormService) {
-    this.unsubscribeAll = new Subject();
+    this._unsubscribeAll = new Subject();
   }
 
   ngOnInit(): void {
-    // const xx = this.entityFormGroup.value['id']
-    this.entity = this.noctuaAnnotationFormService.activity.getNode(this.entityFormGroup.value['id']);
+    this.noctuaAnnotationFormService.onActivityChanged
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((activity: Activity) => {
+
+        if (!activity) {
+          return;
+        }
+        this.entity = activity.getNode(this.entityFormGroup.value['id']);
+      });
+
   }
 
   ngOnDestroy(): void {
-    this.unsubscribeAll.next(null);
-    this.unsubscribeAll.complete();
+    this._unsubscribeAll.next(null);
+    this._unsubscribeAll.complete();
   }
 
   addEvidence() {

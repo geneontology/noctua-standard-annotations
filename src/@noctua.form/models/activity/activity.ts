@@ -188,6 +188,7 @@ export class Activity extends SaeGraph<ActivityNode> {
       }
 
     }
+
   }
 
   getActivityTypeDetail() {

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { NoctuaAnnotationsDialogService } from './../../../services/dialog.service';
 import {
   CamService,
@@ -9,18 +9,10 @@ import {
   NoctuaAnnotationFormService,
   ActivityNode,
   Evidence,
-  noctuaFormConfig,
-  Entity,
-  ShapeDefinition,
-  ActivityError,
   ActivityNodeType,
-  Activity,
-  ErrorLevel,
-  ErrorType,
-  ActivityType
+  Activity
 } from '@geneontology/noctua-form-base';
 import { InlineReferenceService } from '@noctua.editor/inline-reference/inline-reference.service';
-import { each, find } from 'lodash';
 import { InlineWithService } from '@noctua.editor/inline-with/inline-with.service';
 import { InlineDetailService } from '@noctua.editor/inline-detail/inline-detail.service';
 import { NoctuaFormDialogService } from 'app/main/apps/noctua-form/services/dialog.service';
@@ -51,7 +43,7 @@ export class AnnotationEvidenceFormComponent implements OnInit, OnDestroy {
 
   termData
 
-  private unsubscribeAll: Subject<any>;
+  private _unsubscribeAll: Subject<any>;
 
   constructor(
     private noctuaAnnotationsDialogService: NoctuaAnnotationsDialogService,
@@ -62,16 +54,24 @@ export class AnnotationEvidenceFormComponent implements OnInit, OnDestroy {
     private inlineWithService: InlineWithService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaAnnotationFormService: NoctuaAnnotationFormService) {
-    this.unsubscribeAll = new Subject();
+    this._unsubscribeAll = new Subject();
   }
 
   ngOnInit(): void {
-    this.entity = this.noctuaAnnotationFormService.activity.getNode(this.entityFormGroup.value['id']);
+    this.noctuaAnnotationFormService.onActivityChanged
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((activity: Activity) => {
+
+        if (!activity) {
+          return;
+        }
+        this.entity = activity.getNode(this.entityFormGroup.value['id']);
+      });
   }
 
   ngOnDestroy(): void {
-    this.unsubscribeAll.next(null);
-    this.unsubscribeAll.complete();
+    this._unsubscribeAll.next(null);
+    this._unsubscribeAll.complete();
   }
 
 

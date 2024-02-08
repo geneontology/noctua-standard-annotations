@@ -1,11 +1,12 @@
 import { NoctuaFormUtils } from './../../utils/noctua-form-utils';
 
 
-
-
-
-
-
+export enum RootTypes {
+  COMPLEX = 'complex',
+  MF = 'mf',
+  BP = 'bp',
+  CC = 'cc',
+}
 
 export enum EntityType {
   ACTIVITY_NODE = 'activity_node',

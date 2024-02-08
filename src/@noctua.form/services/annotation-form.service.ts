@@ -19,8 +19,6 @@ import { AnnotationActivity } from '../models/activity/annotation-activity';
   providedIn: 'root'
 })
 export class NoctuaAnnotationFormService {
-  public state: ActivityState;
-  public mfLocation;
   public errors = [];
   public currentActivity: Activity;
   public activity: Activity;
@@ -49,29 +47,33 @@ export class NoctuaAnnotationFormService {
 
       this.cam = cam;
     });
-    this.activity = this.noctuaFormConfigService.createActivityModel(ActivityType.simpleAnnoton);
+
     this.onActivityCreated = new BehaviorSubject(null);
     this.onActivityChanged = new BehaviorSubject(null);
     this.annotationFormGroup = new BehaviorSubject(null);
     this.annotationFormGroup$ = this.annotationFormGroup.asObservable();
 
     this.initializeForm();
+
   }
 
-  initializeForm(rootTypes?) {
+  initializeForm() {
+
+    this.activity = this.noctuaFormConfigService.createActivityModel(ActivityType.simpleAnnoton);
+
 
     this.errors = [];
 
-    this.state = ActivityState.creation;
     this.currentActivity = null;
 
     this.activity.resetPresentation();
     this.annotationForm = this.createAnnotationForm();
     this.annotationFormGroup.next(this._fb.group(this.annotationForm));
-    this.activity.updateShapeMenuShex(rootTypes);
     this.activity.enableSubmit();
     this.annotationActivity = new AnnotationActivity(this.activity);
     this._onActivityFormChanges();
+    this.onActivityChanged.next(this.activity);
+
   }
 
   initializeFormData() {
@@ -82,9 +84,7 @@ export class NoctuaAnnotationFormService {
   createAnnotationForm() {
     const self = this;
     const formMetadata = new ActivityFormMetadata(self.noctuaLookupService.lookupFunc.bind(self.noctuaLookupService));
-
     const activityForm = new AnnotationForm(formMetadata);
-
     activityForm.createMolecularEntityForm(self.activity.presentation.gp);
 
     return activityForm;
@@ -187,10 +187,6 @@ export class NoctuaAnnotationFormService {
   }
 
   clearForm() {
-    this.activity = this.noctuaFormConfigService.createActivityModel(
-      this.activity.activityType
-    );
-
     this.initializeForm();
   }
 

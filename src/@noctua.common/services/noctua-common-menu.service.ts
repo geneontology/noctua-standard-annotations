@@ -49,6 +49,7 @@ export class NoctuaCommonMenuService {
       const urls =
       {
         [WorkbenchId.GRAPH_EDITOR]: `${environment.noctuaUrl}/editor/graph/${modelId}?${paramsString}`,
+        [WorkbenchId.STANDARD_ANNOTATIONS]: `${environment.workbenchUrl}${WorkbenchId.STANDARD_ANNOTATIONS}?${paramsString}`,
         [WorkbenchId.FORM]: `${environment.workbenchUrl}${WorkbenchId.FORM}?${paramsString}`,
         [WorkbenchId.VISUAL_PATHWAY_EDITOR]: `${environment.workbenchUrl}${WorkbenchId.VISUAL_PATHWAY_EDITOR}?${paramsString}`
       }
