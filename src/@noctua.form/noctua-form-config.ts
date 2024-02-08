@@ -1,5 +1,5 @@
 import { environment } from './../environments/environment';
-import { Entity } from './models/activity/entity';
+import { Entity, RootTypes } from './models/activity/entity';
 import vpeJson from './data/vpe-decision.json'
 
 const edge = {
@@ -236,7 +236,7 @@ const simpleAnnotationEdgeConfig = {
     gpToTermPredicate: edge.hasPart.id,
     mfToTermPredicate: edge.enabledBy.id,
     mfNodeRequired: true,
-    root: rootNode.complex,
+    root: RootTypes.COMPLEX,
     gpToTermReverse: false,
     mfToTermReverse: true
   },
@@ -489,6 +489,11 @@ export const noctuaFormConfig = {
     edge.causallyUpstreamOfOrWithinNegativeEffect.id,
     edge.causallyUpstreamOfPositiveEffect.id,
     edge.causallyUpstreamOfNegativeEffect.id,
+  ],
+
+  ccOnlyEdges: [
+    edge.locatedIn.id,
+    edge.partOf.id,
   ],
 
   edgePriority: [

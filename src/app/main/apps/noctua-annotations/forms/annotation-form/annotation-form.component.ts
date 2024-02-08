@@ -34,15 +34,14 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
 
   cam: Cam;
   annotationFormGroup: FormGroup;
-  annotationFormSub: Subscription;
-  molecularEntity: FormGroup;
+  //molecularEntity: FormGroup;
   searchCriteria: any = {};
   annotationFormPresentation: any;
   evidenceFormArray: FormArray;
   annotationFormData: any = [];
   activity: Activity;
-  currentActivity: Activity;
-  state: ActivityState;
+  // currentActivity: Activity;
+  // state: ActivityState;
 
   descriptionSectionTitle = 'Function Description';
   annotatedSectionTitle = 'Gene Product';
@@ -60,7 +59,7 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.annotationFormSub = this.noctuaAnnotationFormService.annotationFormGroup$
+    this.noctuaAnnotationFormService.annotationFormGroup$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(annotationFormGroup => {
         if (!annotationFormGroup) {
@@ -68,12 +67,17 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
         }
 
         this.annotationFormGroup = annotationFormGroup;
-        this.currentActivity = this.noctuaAnnotationFormService.currentActivity;
-        this.activity = this.noctuaAnnotationFormService.activity;
-        this.annotationActivity = this.noctuaAnnotationFormService.annotationActivity;
-        this.state = this.noctuaAnnotationFormService.state;
-        this.molecularEntity = <FormGroup>this.annotationFormGroup.get('molecularEntity');
+      });
 
+    this.noctuaAnnotationFormService.onActivityChanged
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((activity: Activity) => {
+
+        if (!activity) {
+          return;
+        }
+        this.activity = activity;
+        this.annotationActivity = this.noctuaAnnotationFormService.annotationActivity;
       });
   }
 

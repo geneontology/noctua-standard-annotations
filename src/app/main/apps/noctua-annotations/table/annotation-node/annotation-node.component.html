@@ -1,5 +1,5 @@
 <div class="w-100-p">
-  <div class="noc-activity-node w-100-p"
+  <div *ngIf="annotationActivity.gp" class="noc-activity-node w-100-p"
     [ngClass]="{'noc-selected': annotationActivity.activity.displayId===camService.currentMatch?.activityDisplayId}"
     fxLayout="row" fxLayoutAlign="start stretch">
 
@@ -34,7 +34,7 @@
     <div class="noc-relation-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch">
       <span class="">
         <strong *ngIf="annotationActivity.goterm.predicate?.isComplement"> NOT </strong>
-        <span>{{annotationActivity.goterm.predicate?.edge?.inverseEntity?.label}}</span>
+        <span>{{annotationActivity.gpToTermEdge.inverseEntity?.label}}</span>
 
       </span>
 

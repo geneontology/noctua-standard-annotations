@@ -95,7 +95,8 @@ mat-radio-button {
   }
 }
 
-.mat-autocomplete-panel {
+.mat-autocomplete-panel,
+.mat-select-panel {
   &.noc-term-autocomplete {
     background-color: #fbf9de;
     @include deep-width(400px !important);

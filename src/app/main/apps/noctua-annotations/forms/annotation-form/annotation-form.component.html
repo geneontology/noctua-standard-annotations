@@ -1,12 +1,10 @@
 <form name="annotationFormGroup" [formGroup]="annotationFormGroup" fxLayout="column" fxLayoutAlign="start center"
   class="noc-activity-form-container">
-
   <div class="noc-activity-form">
     <div *ngIf="!noctuaUserService.user" class="noc-draw-body-disabled" fxLayoutAlign="center center">
       Log in to Continue
     </div>
     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
-
       <div class="noc-section-body p-0" fxLayout="row" fxLayoutAlign="start center">
         <div fxFlex="35" class="">
           <noc-annotation-entity-form [entityFormGroup]="annotationFormGroup.get('gp')" fxLayout="row"
@@ -14,11 +12,25 @@
           </noc-annotation-entity-form>
         </div>
         <div class="p-4" fxFlex="30" fxLayout="row" fxLayoutAlign="start stretch">
-          <mat-form-field appearance="outline" class="noc-sm w-100-p">
+          <mat-form-field appearance="outline" class="noc-sm w-100-p" [attr.data-cy]="'form-input-gpterm-relation'">
             <mat-label>GP to Term Relation</mat-label>
-            <mat-select placeholder="" formControlName="gpToTermEdge" [compareWith]="compareFn">
-              <mat-option *ngFor="let gpToTermEdge of annotationActivity.gpToTermEdges" [value]="gpToTermEdge">
-                {{gpToTermEdge.label}}
+            <mat-select panelClass="noc-term-autocomplete" placeholder="" formControlName="gpToTermEdge"
+              [compareWith]="compareFn">
+              <mat-option *ngFor="let item of annotationActivity.gpToTermEdges" [value]="item">
+                <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+                  <div class="noc-term-label">
+                    {{ item.label }}
+                  </div>
+                  <span fxFlex></span>
+                  <div class="noc-term-id">
+                    <a *ngIf="item.link" (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
+                      {{ item.id }}
+                    </a>
+                    <span *ngIf="!item.link">
+                      {{ item.id }}
+                    </span>
+                  </div>
+                </div>
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -31,23 +43,34 @@
       </div>
     </div>
     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
-
       <div class="noc-section-body p-0" fxLayout="column" fxLayoutAlign="start stretch">
         <noc-annotation-evidence-form [entityFormGroup]="annotationFormGroup.get('goterm')" fxLayout="row"
           fxLayoutAlign="start center" class="w-100-p">
         </noc-annotation-evidence-form>
       </div>
     </div>
-
     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
-
       <div class="noc-section-body p-0" fxLayout="row" fxLayoutAlign="start center">
         <div fxFlex="50" class="">
-          <mat-form-field appearance="outline" class="noc-sm w-100-p">
-            <mat-label>Extension Edge</mat-label>
-            <mat-select placeholder="" formControlName="extensionEdge" [compareWith]="compareFn">
-              <mat-option *ngFor="let extensionEdge of annotationActivity.extensionEdges" [value]="extensionEdge">
-                {{extensionEdge.label}}
+          <mat-form-field appearance="outline" class="noc-sm w-100-p" [attr.data-cy]="'form-input-extension-relation'">
+            <mat-label>Extension Relation</mat-label>
+            <mat-select panelClass="noc-term-autocomplete" placeholder="" formControlName="extensionEdge"
+              [compareWith]="compareFn">
+              <mat-option *ngFor="let item of annotationActivity.extensionEdges" [value]="item">
+                <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+                  <div class="noc-term-label">
+                    {{ item.label }}
+                  </div>
+                  <span fxFlex></span>
+                  <div class="noc-term-id">
+                    <a *ngIf="item.link" (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
+                      {{ item.id }}
+                    </a>
+                    <span *ngIf="!item.link">
+                      {{ item.id }}
+                    </span>
+                  </div>
+                </div>
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -59,7 +82,6 @@
         </div>
       </div>
     </div>
-
     <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
       <button *ngIf="noctuaAnnotationFormService.activity.submitErrors.length>0" (click)='checkErrors()' mat-button
         color="warn" class="noc-rounded-button noc-sm">
@@ -68,7 +90,7 @@
       <span fxFlex></span>
       <button (click)='clear()' type="button" mat-raised-button color="" class="mr-8">Clear</button>
       <button [disabled]="noctuaAnnotationFormService.activity.submitErrors.length>0" (click)="save()" type="submit"
-        class="" mat-raised-button color="primary">Save</button>
+        class="" mat-raised-button color="primary" [attr.data-cy]="'save-annotation-button'">Save</button>
     </div>
   </div>
 </form>

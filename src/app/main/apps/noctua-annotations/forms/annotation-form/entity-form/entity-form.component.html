@@ -1,13 +1,13 @@
 <div *ngIf="entity" [formGroup]="entityFormGroup" fxLayout="row" fxLayoutAlign="start stretch" class="w-100-p">
 
   <div class="p-4" fxFlex="flex" fxLayout="row" fxLayoutAlign="start stretch">
-    <mat-form-field class="noc-sm w-100-p" appearance="outline">
+    <mat-form-field class="noc-sm w-100-p" appearance="outline" [attr.data-cy]="'form-input-' + entity.id">
       <mat-label>{{entity.label}}</mat-label>
       <textarea type="text" matInput formControlName="term" (focus)="updateTermList()" [matAutocomplete]="termAuto"
         row="2">
       </textarea>
       <mat-autocomplete #termAuto="matAutocomplete" [displayWith]="termDisplayFn"
-        (optionSelected)="selectTerm($event.option.value)" class="noc-term-autocomplete " fxLayout="row"
+        (optionSelected)="selectTerm($event.option.value)" class="noc-term-autocomplete" fxLayout="row"
         fxLayoutAlign="start start">
         <div class="" fxFlex="400px">
           <mat-option *ngFor="let item of entity?.termLookup.results" [value]="item">

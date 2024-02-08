@@ -136,8 +136,6 @@ export class NoctuaAnnotationsComponent implements OnInit, OnDestroy {
           this.camService.addCamEdit(this.cam)
           this.camService.addCamAnnotationActivities(this.cam)
           this.camService.cams = [cam]
-
-
         }
         //this.noctuaReviewSearchService.addCamsToReview([this.cam], this.camService.cams);
 

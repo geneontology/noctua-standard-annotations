@@ -1,5 +1,5 @@
 import { ActivityNode } from './activity-node';
-import { Entity } from './entity';
+import { Entity, RootTypes } from './entity';
 import { noctuaFormConfig } from './../../noctua-form-config';
 import { Activity } from './activity';
 import { Triple } from './triple';
@@ -12,7 +12,7 @@ export interface AnnotationEdgeConfig {
   gpToTermReverse?: boolean;
   mfNodeRequired: boolean;
   mfToTermPredicate?: string;
-  root?: string;
+  root?: RootTypes;
   mfToTermReverse?: boolean;
 }
 
@@ -88,8 +88,10 @@ export class AnnotationActivity {
 
     if (config.mfNodeRequired) {
       const mfNode = ShapeUtils.generateBaseTerm([]);
-      const rootMF = config.root ? config.root : noctuaFormConfig.rootNode.mf;
+
+      const rootMF = config.root ? noctuaFormConfig.rootNode[config.root] : noctuaFormConfig.rootNode.mf;
       mfNode.term = new Entity(rootMF.id, rootMF.label);
+
       const triple = this._createTriple(mfNode, this.gp, config.gpToTermPredicate, this.goterm.predicate.evidence, config.gpToTermReverse)
       saveData.triples.push(triple);
 
