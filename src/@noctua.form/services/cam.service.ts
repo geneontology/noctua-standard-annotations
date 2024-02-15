@@ -18,6 +18,7 @@ import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { finalize, map, mergeMap } from 'rxjs/operators';
 import { noctuaFormConfig } from './../noctua-form-config';
+import { DataGeneratorUtils } from './../data/data-generator-utils';
 
 declare const require: any;
 
@@ -189,12 +190,18 @@ export class CamService {
 
 
   addCamAnnotationActivities(cam: Cam) {
+
     cam.annotationActivities = cam.activities.map((activity: Activity) => {
       const annotationActivity = this.noctuaFormConfigService.activityToAnnotation(activity);
 
       annotationActivity.activity = activity;
       return annotationActivity
     });
+
+    // For data generation purposes e2e testing
+
+    const data = DataGeneratorUtils.getCreateAnnotationsData(cam.annotationActivities);
+    DataGeneratorUtils.getDataJSON(data);
   }
 
   getStoredModel(cam: Cam): Observable<any> {
