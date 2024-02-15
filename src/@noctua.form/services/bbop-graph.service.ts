@@ -589,6 +589,7 @@ export class BbopGraphService {
     return predicateId === noctuaFormConfig.edge.enabledBy.id ||
       ((predicateId === noctuaFormConfig.edge.partOf.id ||
         predicateId === noctuaFormConfig.edge.locatedIn.id ||
+        predicateId === noctuaFormConfig.edge.contributesTo.id ||
         predicateId === noctuaFormConfig.edge.isActiveIn.id) &&
 
         subjectNode.hasRootType(EntityDefinition.GoMolecularEntity))
@@ -782,6 +783,7 @@ export class BbopGraphService {
 
     if ((predicateId === noctuaFormConfig.edge.partOf.id ||
       predicateId === noctuaFormConfig.edge.locatedIn.id ||
+      predicateId === noctuaFormConfig.edge.contributesTo.id ||
       predicateId === noctuaFormConfig.edge.isActiveIn.id) &&
       subjectNode.hasRootType(EntityDefinition.GoMolecularEntity)) {
 

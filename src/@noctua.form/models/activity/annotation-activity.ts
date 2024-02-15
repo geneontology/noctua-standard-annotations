@@ -1,6 +1,6 @@
 import { ActivityNode } from './activity-node';
 import { Entity, RootTypes } from './entity';
-import { noctuaFormConfig } from './../../noctua-form-config';
+import { SAConfigEdgeMap, noctuaFormConfig } from './../../noctua-form-config';
 import { Activity } from './activity';
 import { Triple } from './triple';
 import { Predicate } from './predicate';
@@ -79,7 +79,7 @@ export class AnnotationActivity {
     };
 
     const edgeType = this.gpToTermEdge.id
-    const config = noctuaFormConfig.simpleAnnotationEdgeConfig[edgeType];
+    const config = noctuaFormConfig.simpleAnnotationEdgeConfig[edgeType]
 
     if (!config) {
       console.warn('No configuration defined for edge:', edgeType);
@@ -89,14 +89,14 @@ export class AnnotationActivity {
     if (config.mfNodeRequired) {
       const mfNode = ShapeUtils.generateBaseTerm([]);
 
-      const rootMF = config.root ? noctuaFormConfig.rootNode[config.root] : noctuaFormConfig.rootNode.mf;
+      const rootMF = noctuaFormConfig.rootNode.mf;
       mfNode.term = new Entity(rootMF.id, rootMF.label);
 
       const triple = this._createTriple(mfNode, this.gp, config.gpToTermPredicate, this.goterm.predicate.evidence, config.gpToTermReverse)
       saveData.triples.push(triple);
 
       if (config.mfToTermPredicate) {
-        const mfTriple = this._createTriple(mfNode, this.goterm, config.mfToTermPredicate, this.goterm.predicate.evidence, config.mfToTermReverse)
+        const mfTriple = this._createTriple(mfNode, this.goterm, config.mfToTermPredicate, this.goterm.predicate.evidence)
         saveData.triples.push(mfTriple);
       }
 

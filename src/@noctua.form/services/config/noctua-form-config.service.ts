@@ -346,7 +346,7 @@ export class NoctuaFormConfigService {
 
       activity.getEdges(activity.gpNode.id).forEach((edge) => {
 
-        if (edge.predicate.edge.id === noctuaFormConfig.edge.locatedIn.id) {
+        if (noctuaFormConfig.ccOnlyEdges.includes(edge.predicate.edge.id)) {
           criteria.gpToTermPredicate = edge.predicate.edge.id;
           annotationActivity.goterm = edge.object;
           annotationActivity.gp.predicate = edge.predicate;

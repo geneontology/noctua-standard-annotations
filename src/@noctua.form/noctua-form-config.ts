@@ -2,6 +2,17 @@ import { environment } from './../environments/environment';
 import { Entity, RootTypes } from './models/activity/entity';
 import vpeJson from './data/vpe-decision.json'
 
+export interface SAEdgeDefinition {
+  gpToTermPredicate: string;
+  mfToTermPredicate?: string;
+  mfNodeRequired: boolean;
+  gpToTermReverse?: boolean;
+}
+
+export type SAConfigEdgeMap = {
+  [key: string]: SAEdgeDefinition;
+};
+
 const edge = {
   placeholder: {
     id: null,
@@ -79,7 +90,10 @@ const edge = {
     id: 'RO:0012009',
     label: 'constitutively upstream of',
   },
-
+  contributesTo: {
+    "id": "RO:0002326",
+    "label": "contributes to",
+  },
   directlyProvidesInput: {
     id: 'RO:0002413',
     label: 'directly provides input for'
@@ -196,7 +210,7 @@ const rootNode = {
   }
 }
 
-const simpleAnnotationEdgeConfig = {
+const simpleAnnotationEdgeConfig: SAConfigEdgeMap = {
   [inverseEdge.enables.id]: {
     gpToTermPredicate: edge.enabledBy.id,
     gpToTermReverse: true,
@@ -233,12 +247,9 @@ const simpleAnnotationEdgeConfig = {
     mfNodeRequired: true
   },
   [inverseEdge.contributesTo.id]: {
-    gpToTermPredicate: edge.hasPart.id,
-    mfToTermPredicate: edge.enabledBy.id,
-    mfNodeRequired: true,
-    root: RootTypes.COMPLEX,
-    gpToTermReverse: false,
-    mfToTermReverse: true
+    gpToTermPredicate: edge.contributesTo.id,
+    mfNodeRequired: false,
+    gpToTermReverse: false
   },
   [inverseEdge.locatedIn.id]: {
     gpToTermPredicate: edge.locatedIn.id,
@@ -494,6 +505,7 @@ export const noctuaFormConfig = {
   ccOnlyEdges: [
     edge.locatedIn.id,
     edge.partOf.id,
+    edge.contributesTo.id,
   ],
 
   edgePriority: [
