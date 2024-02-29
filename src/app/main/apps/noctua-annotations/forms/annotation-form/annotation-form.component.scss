@@ -50,7 +50,7 @@ $accent: map-get($theme, accent);
 
   .noc-activity-form-container {
     padding: 20px 10px;
-    background-color: #b4e1f3;
+    background-color: rgba($annotation-primary-color, 0.3);
   }
 
   .noc-activity-form {
