@@ -1,18 +1,17 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ElementRef, ViewChild, Input } from '@angular/core';
-import { Overlay, OverlayConfig, OriginConnectionPosition, OverlayConnectionPosition } from '@angular/cdk/overlay';
+import { Component, OnDestroy, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { cloneDeep } from 'lodash';
 
-import { InlineEditorService, EditorDropdownDialogConfig } from './inline-editor.service';
+import { InlineEditorService } from './inline-editor.service';
 
 import {
     CamService,
     NoctuaActivityEntityService,
     ActivityNode,
     Activity,
-    Cam
+    Cam,
+    Entity
 } from '@geneontology/noctua-form-base';
 import { EditorCategory } from './../models/editor-category';
 
@@ -30,6 +29,7 @@ export class NoctuaInlineEditorComponent implements OnInit, OnDestroy {
     @Input() entity: ActivityNode;
     @Input() category: EditorCategory;
     @Input() evidenceIndex = 0;
+    @Input() relationshipChoices: Entity[] = [];
 
     @ViewChild('editorDropdownTrigger', { read: ElementRef })
     private editorDropdownTrigger: ElementRef;
@@ -52,7 +52,8 @@ export class NoctuaInlineEditorComponent implements OnInit, OnDestroy {
             activity: this.activity,
             entity: displayEntity,
             category: this.category,
-            evidenceIndex: this.evidenceIndex
+            evidenceIndex: this.evidenceIndex,
+            relationshipChoices: this.relationshipChoices
         };
         this.camService.onCamChanged.next(this.cam);
         this.camService.activity = this.activity;

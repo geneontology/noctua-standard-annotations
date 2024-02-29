@@ -135,27 +135,6 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
     self.noctuaActivityFormService.initializeForm();
   }
 
-  deleteEntity(entity: ActivityNode) {
-    const self = this;
-
-    const success = () => {
-      this.noctuaActivityEntityService.deleteActivityNode(self.annotationActivity.activity, entity).then(() => {
-        self.noctuaFormDialogService.openInfoToast(`${entity.term.label} successfully deleted.`, 'OK');
-
-      });
-    };
-
-    const descendants = this.annotationActivity.activity.descendants(entity.id).map((node: ActivityNode) => {
-      return node.term.label
-    }).join(", ");
-    let message = `You are about to delete an ${entity.term.label}`;
-    if (descendants) {
-      message += ` and its descendants ${descendants}`;
-    }
-
-    this.confirmDialogService.openConfirmDialog('Confirm Delete?',
-      `${message}`, success);
-  }
 
   removeEvidence(entity: ActivityNode, index: number) {
     const self = this;
@@ -278,6 +257,29 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
 
   updateCurrentMenuEvent(event) {
     this.currentMenuEvent = event;
+  }
+
+  deleteAnnotation() {
+    const self = this;
+
+    const success = () => {
+      this.camService.deleteActivity(this.annotationActivity.activity).then(() => {
+        self.noctuaFormDialogService.openInfoToast('Annotation successfully deleted.', 'OK');
+        this.camService.onSelectedActivityChanged.next(null);
+        this.camService.getCam(this.cam.id);
+
+      });
+    };
+
+    if (!self.noctuaUserService.user) {
+      this.confirmDialogService.openConfirmDialog('Not Logged In',
+        'Please log in to continue.',
+        null);
+    } else {
+      this.confirmDialogService.openConfirmDialog('Confirm Delete?',
+        'You are about to delete an annotation.',
+        success);
+    }
   }
 
   ngOnDestroy(): void {

@@ -39,6 +39,7 @@ export class NoctuaEditorDropdownComponent implements OnInit, OnDestroy {
   insertEntity = false;
   entity: ActivityNode;
   category: EditorCategory;
+  relationshipChoices: Entity[] = [];
   evidenceIndex: number;
   entityFormGroup: FormGroup;
   evidenceFormGroup: FormGroup;
@@ -74,6 +75,7 @@ export class NoctuaEditorDropdownComponent implements OnInit, OnDestroy {
     this.category = data.category;
     this.evidenceIndex = data.evidenceIndex;
     this.insertEntity = data.insertEntity;
+    this.relationshipChoices = data.relationshipChoices;
   }
 
   ngOnInit(): void {

@@ -27,7 +27,8 @@
         </a>
       </span>
       <noctua-inline-editor *ngIf="noctuaUserService.user && annotationActivity.gp.term && options.editableTerms"
-        [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.term" class="noc-edit-button">
+        [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.gp"
+        [category]="EditorCategory.term" class="noc-edit-button">
       </noctua-inline-editor>
     </div>
 
@@ -38,9 +39,10 @@
 
       </span>
 
-      <noctua-inline-editor [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.gp"
-        [category]="EditorCategory.relationship" class="noc-edit-button">
-      </noctua-inline-editor>
+      <!--     <noctua-inline-editor [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.gp"
+        [category]="EditorCategory.relationship" [relationshipChoices]="annotationActivity.gpToTermEdges"
+        class="noc-edit-button">
+      </noctua-inline-editor> -->
     </div>
 
     <div class="noc-term-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch" fxFlex=""
@@ -120,10 +122,8 @@
       </button>
     </div>
     <div class="noc-cell noc-action-cell" fxLayout="column" fxLayoutAlign="start center">
-      <button mat-icon-button
-        *ngIf="noctuaUserService.user &&  options.showMenu && annotationActivity.goterm.showEvidence"
-        (click)="updateCurrentMenuEvent($event)" class="noc-action-button" fxFlex="40px"
-        [matMenuTriggerFor]="entityMenu">
+      <button mat-icon-button *ngIf="noctuaUserService.user" (click)="updateCurrentMenuEvent($event)"
+        class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu">
@@ -134,11 +134,14 @@
           (click)="toggleIsComplement(entity)">
           NOT Qualifier
         </button>
-        <button mat-menu-item *ngIf="annotationActivity.goterm.insertMenuNodes"
+        <!-- <button mat-menu-item *ngIf="annotationActivity.goterm.insertMenuNodes"
           [matMenuTriggerFor]="addMenu">Add</button>
-        <button mat-menu-item [matMenuTriggerFor]="evidenceMenu">Evidence</button>
+       <button mat-menu-item [matMenuTriggerFor]="evidenceMenu">Evidence</button> -->
         <button mat-menu-item (click)="openCommentsForm(annotationActivity.goterm)" class="">
           Add Comment
+        </button>
+        <button mat-menu-item (click)="deleteAnnotation()" class="noc-delete-button">
+          <fa-icon [icon]="['far', 'trash-alt']"></fa-icon> Delete Annotation
         </button>
       </mat-menu>
       <mat-menu #addMenu="matMenu">
