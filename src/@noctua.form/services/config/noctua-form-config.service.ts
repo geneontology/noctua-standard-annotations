@@ -387,15 +387,14 @@ export class NoctuaFormConfigService {
             activity.getEdges(edge.object.id).forEach((extensionEdge) => {
               annotationActivity.extensionEdge = extensionEdge.predicate.edge;
               annotationActivity.extension = extensionEdge.object;
-
             });
           }
         });
       }
     }
+
     const edgeId = this.findEdge(criteria.gpToTermPredicate);
     const inverseEdgeId = annotationActivity.findEdgeByCriteria(criteria);
-
     const inverseEdge = this.findEdge(inverseEdgeId);
 
     if (edgeId && inverseEdge) {
@@ -467,7 +466,6 @@ export class NoctuaFormConfigService {
     return predicates.map((predicate) => {
       return this.findEdge(predicate);
     });
-
   }
 
   setTermLookup(activityNode: ActivityNode, goCategories: GoCategory[]) {
@@ -501,7 +499,6 @@ export class NoctuaFormConfigService {
     objectNode: Partial<ActivityNode>): ActivityNode {
     return ModelDefinition.addNodeShex(activity, subjectNode, predExpr, objectNode);
   }
-
 
   insertActivityNodeShex(activity: Activity,
     subjectNode: ActivityNode,

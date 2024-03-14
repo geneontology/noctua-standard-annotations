@@ -33,7 +33,7 @@ export class NoctuaAnnotationFormService {
   private destroy$ = new Subject<void>();
 
   // for setting edge when goterm is changed
-  private previousGotermValue: any = null
+  private previousGotermRelation: string = null
 
   constructor(private _fb: FormBuilder, public noctuaFormConfigService: NoctuaFormConfigService,
     private camService: CamService,
@@ -131,10 +131,12 @@ export class NoctuaAnnotationFormService {
         this.destroy$.next();
         //this.annotationForm.gpToTermEdge.setValue(edges[0]);
 
-        //console.log(this.annotationActivity.goterm?.term?.id, "--", this.previousGotermValue)
-        if (this.annotationActivity.goterm?.term?.id !== this.previousGotermValue) {
+        //console.log(this.annotationActivity.goterm, "--", this.previousGotermRelation)
+
+        const exists = edges.some(e => e.id === this.annotationActivity.gpToTermEdge?.id);
+        if (!exists) {
           this.annotationForm.gpToTermEdge.setValue(edges[0]);
-          this.previousGotermValue = this.annotationActivity.goterm?.term.id;
+          this.previousGotermRelation = this.annotationActivity.gpToTermEdge?.id;
         }
 
         this.destroy$ = new Subject<void>();

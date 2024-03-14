@@ -79,14 +79,14 @@ $noc-breakpoints: (
   }
 
   .noc-reference-cell {
-    @include deep-width(100px);
+    @include deep-width(80px);
     @include noc-media-breakpoint("noc-lg") {
       @include deep-width(80px);
     }
   }
 
   .noc-with-cell {
-    @include deep-width(100px);
+    @include deep-width(80px);
     @include noc-media-breakpoint("noc-lg") {
       @include deep-width(80px);
     }
