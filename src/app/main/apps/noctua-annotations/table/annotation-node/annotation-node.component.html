@@ -36,13 +36,12 @@
       <span class="">
         <strong *ngIf="annotationActivity.goterm.predicate?.isComplement"> NOT </strong>
         <span>{{annotationActivity.gpToTermEdge.inverseEntity?.label}}</span>
-
       </span>
 
-      <!--     <noctua-inline-editor [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.gp"
-        [category]="EditorCategory.relationship" [relationshipChoices]="annotationActivity.gpToTermEdges"
-        class="noc-edit-button">
-      </noctua-inline-editor> -->
+      <noctua-inline-editor *ngIf="false" [cam]="cam" [activity]='annotationActivity.activity'
+        [entity]="annotationActivity.gp" [category]="EditorCategory.relationship"
+        [relationshipChoices]="annotationActivity.gpToTermEdges" class="noc-edit-button">
+      </noctua-inline-editor>
     </div>
 
     <div class="noc-term-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch" fxFlex=""

@@ -46,7 +46,7 @@ export class DataGeneratorUtils {
   public static getDataJSON(data: any) {
     const jsonData = JSON.stringify(data, null, 2);
 
-    console.log(jsonData)
+    // console.log(jsonData)
 
   }
 
