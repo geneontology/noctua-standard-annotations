@@ -110,10 +110,7 @@ export class NoctuaFormConfigService {
   get activitySortField() {
     const options = [
       noctuaFormConfig.activitySortField.options.gp,
-      noctuaFormConfig.activitySortField.options.date,
-      noctuaFormConfig.activitySortField.options.mf,
-      noctuaFormConfig.activitySortField.options.bp,
-      noctuaFormConfig.activitySortField.options.cc,
+      noctuaFormConfig.activitySortField.options.date
     ];
 
     return {
@@ -351,28 +348,13 @@ export class NoctuaFormConfigService {
           annotationActivity.goterm = edge.object;
           annotationActivity.gp.predicate = edge.predicate;
         }
+
       });
     } else {
 
-      if (activity.gpNode?.term.id === noctuaFormConfig.rootNode.complex.id) {
-        criteria.gpToTermPredicate = noctuaFormConfig.edge.hasPart.id;
-        criteria.mfToTermPredicate = noctuaFormConfig.edge.enabledBy.id;
-        criteria.root = RootTypes.COMPLEX;
-        criteria.mfToTermReverse = true
-        criteria.mfNodeRequired = true;
-
-        activity.getEdges(activity.gpNode.id).forEach((edge) => {
-          if (edge.predicate.edge.id === noctuaFormConfig.edge.hasPart.id) {
-            annotationActivity.gp = edge.object;
-            annotationActivity.goterm = activity.mfNode;
-          }
-        });
-
-      } else {
-        criteria.gpToTermPredicate = noctuaFormConfig.edge.enabledBy.id;
-        annotationActivity.gp = activity.gpNode;
-        annotationActivity.goterm = activity.mfNode;
-      }
+      criteria.gpToTermPredicate = noctuaFormConfig.edge.enabledBy.id;
+      annotationActivity.gp = activity.gpNode;
+      annotationActivity.goterm = activity.mfNode;
 
       if (activity.mfNode?.term.id === noctuaFormConfig.rootNode.mf.id) {
         criteria.mfNodeRequired = true;

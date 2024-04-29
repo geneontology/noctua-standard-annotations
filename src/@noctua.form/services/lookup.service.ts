@@ -26,6 +26,18 @@ const golr_response = require('bbop-response-golr');
 const engine = new impl_engine(golr_response);
 engine.use_jsonp(true)
 
+interface GOlrResponse {
+  id: string;
+  label: string;
+  link: string;
+  description: string;
+  isObsolete: boolean;
+  replacedBy: string;
+  rootTypes: any[];
+  xref: string;
+  notAnnotatable: boolean;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -462,10 +474,10 @@ export class NoctuaLookupService {
     return article;
   }
 
-  private _lookupMap(response) {
+  private _lookupMap(response): GOlrResponse[] {
     const self = this;
     const data = response.response.docs;
-    const result = data.map((item) => {
+    const result: GOlrResponse[] = data.map((item) => {
       let xref;
       if (item.database_xref && item.database_xref.length > 0) {
         const xrefDB = item.database_xref[0].split(':');
@@ -480,8 +492,9 @@ export class NoctuaLookupService {
         isObsolete: item.is_obsolete,
         replacedBy: item.replaced_by,
         rootTypes: self._makeEntitiesArray(item.isa_closure, item.isa_closure_label),
-        xref: xref
-      };
+        xref: xref,
+        notAnnotatable: !item.subset?.includes('gocheck_do_not_annotate')
+      } as GOlrResponse;
     });
 
     return result;

@@ -1076,7 +1076,7 @@
       "subject": "CHEBI:33695",
       "root_subject": "CHEBI:24431",
       "object": [
-        "CARO:0000000"
+        "GO:0110165"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -1088,7 +1088,7 @@
       "subject": "CHEBI:33695",
       "root_subject": "CHEBI:24431",
       "object": [
-        "CARO:0000000",
+        "GO:0110165",
         "GO:0005575"
       ],
       "is_multivalued": false,

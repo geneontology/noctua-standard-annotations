@@ -126,6 +126,10 @@ mat-radio-button {
         padding: 0 8px;
         @include deep-width(50px);
       }
+
+      &.mat-option-disabled {
+        background-color: #f8cccc;
+      }
     }
 
     .scard-more-info {
