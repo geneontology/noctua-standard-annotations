@@ -76,6 +76,83 @@
         "GO:0032991"
       ],
       "predicate": "BFO:0000050"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0003674"
+      ],
+      "predicate": "RO:0002327"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0003674"
+      ],
+      "predicate": "RO:0002326"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0008150"
+      ],
+      "predicate": "RO:0002331"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0008150"
+      ],
+      "predicate": "RO:0004034"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0008150"
+      ],
+      "predicate": "RO:0004032"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0008150"
+      ],
+      "predicate": "RO:0004033"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0008150"
+      ],
+      "predicate": "RO:0004034"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0008150"
+      ],
+      "predicate": "RO:0004035"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0005575"
+      ],
+      "predicate": "RO:0002432"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0005575"
+      ],
+      "predicate": "RO:0001025"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0032991"
+      ],
+      "predicate": "BFO:0000050"
     }
   ]
 }

@@ -37,7 +37,7 @@ export class NoctuaFormConfigService {
   constructor(private noctuaUserService: NoctuaUserService) {
     this.onSetupReady = new BehaviorSubject(null);
     this.termLookupTable = DataUtils.genTermLookupTable();
-    this.shapePredicates = DataUtils.getPredicates(shexJson.goshapes);
+    this.shapePredicates = DataUtils.getPredicates(shexJson.goshapes, null, null, false);
   }
 
   get edges() {
@@ -445,6 +445,8 @@ export class NoctuaFormConfigService {
     const predicates = DataUtils.getPredicates(
       gpToTerm ? gpToTermJson.goshapes : shexJson.goshapes, subjectIds, objectIds);
 
+
+    console.log('predicates', predicates)
     return predicates.map((predicate) => {
       return this.findEdge(predicate);
     });

@@ -10,6 +10,13 @@ export const ObsoleteTerm = {
     categoryType: 'is_obsolete',
 } as GoCategory;
 
+export const GPProteinContainingComplex = {
+    id: ActivityNodeType.GoProteinContainingComplex,
+    category: 'GO:0032991',
+    categoryType: 'isa_closure',
+    suffix: `OR NOT idspace:"GO"`,
+} as GoCategory;
+
 export const GoProteinContainingComplex = {
     id: ActivityNodeType.GoProteinContainingComplex,
     category: 'GO:0032991',
