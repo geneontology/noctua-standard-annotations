@@ -110,7 +110,7 @@ export const simpleAnnotonDescription: ActivityDescription = {
         gp: <ActivityNodeDisplay>{
             id: 'gp',
             type: ActivityNodeType.GoMolecularEntity,
-            category: [EntityDefinition.GoMolecularEntity, EntityDefinition.GoProteinContainingComplex],
+            category: [EntityDefinition.GoMolecularEntity, EntityDefinition.GPProteinContainingComplex],
             label: 'Gene Product',
             displaySection: noctuaFormConfig.displaySection.gp,
             displayGroup: noctuaFormConfig.displayGroup.gp,

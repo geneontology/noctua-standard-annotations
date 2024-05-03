@@ -200,8 +200,8 @@ export class CamService {
 
     // For data generation purposes e2e testing
 
-    const data = DataGeneratorUtils.getCreateAnnotationsData(cam.annotationActivities);
-    DataGeneratorUtils.getDataJSON(data);
+    // const data = DataGeneratorUtils.getCreateAnnotationsData(cam.annotationActivities);
+    // DataGeneratorUtils.getDataJSON(data);
   }
 
   getStoredModel(cam: Cam): Observable<any> {

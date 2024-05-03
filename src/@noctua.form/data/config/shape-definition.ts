@@ -65,7 +65,6 @@ export const getShexJson = (subjectIds: string[], excludeFromExtensions = true) 
     subjectIds.forEach((subjectId: string) => {
         const subjectShapes = DataUtils.getSubjectShapes(shapes, subjectId, excludeFromExtensions);
         if (subjectShapes) {
-            const predicates = DataUtils.getPredicates(shapes);
             const entities = DataUtils.getRangeLabels(subjectShapes, lookupTable)
 
             pred.push(...entities)

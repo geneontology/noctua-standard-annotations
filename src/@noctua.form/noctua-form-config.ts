@@ -257,9 +257,9 @@ const simpleAnnotationEdgeConfig: SAConfigEdgeMap = {
     gpToTermReverse: false
   },
   [edge.partOf.id]: {
-    gpToTermPredicate: edge.hasPart.id,
+    gpToTermPredicate: edge.partOf.id,
     mfNodeRequired: false,
-    gpToTermReverse: true
+    gpToTermReverse: false
   }
 };
 
@@ -271,21 +271,9 @@ export const noctuaFormConfig = {
         'id': 'gp',
         'label': 'Gene Product (default)'
       },
-      'mf': {
-        'id': 'mf',
-        'label': 'Molecular Function'
-      },
-      'bp': {
-        'id': 'bp',
-        'label': 'Biological Process'
-      },
-      'cc': {
-        'id': 'cc',
-        'label': 'Cellular Component'
-      },
       'date': {
         'id': 'date',
-        'label': 'Activity Date'
+        'label': 'Annotation Date'
       }
     }
   },

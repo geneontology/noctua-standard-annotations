@@ -21,13 +21,17 @@ export class DataUtils {
     return result;
   }
 
-  public static getPredicates(shapes: ShexShapeAssociation[], subjectIds?: string[], objectIds?: string[]): string[] {
+  public static getPredicates(shapes: ShexShapeAssociation[], subjectIds?: string[], objectIds?: string[], excludeFromExtension = true): string[] {
     const matchedPredicates = new Set<string>();
+
+    console.log(shapes, subjectIds, objectIds, excludeFromExtension)
 
     // If neither subjectIds nor objectIds is provided, return all predicates
     if (!subjectIds && !objectIds) {
       shapes.forEach((shape) => {
-        matchedPredicates.add(shape.predicate);
+        if (shape.exclude_from_extensions !== excludeFromExtension) {
+          matchedPredicates.add(shape.predicate);
+        }
       });
       return [...matchedPredicates];
     }
@@ -36,7 +40,7 @@ export class DataUtils {
       const subjectMatch = !subjectIds || subjectIds.length === 0 || subjectIds.includes(shape.subject);
       const objectMatch = !objectIds || objectIds.length === 0 || shape.object.some(objId => objectIds.includes(objId));
 
-      if (subjectMatch && objectMatch) {
+      if (subjectMatch && objectMatch && shape.exclude_from_extensions !== excludeFromExtension) {
         matchedPredicates.add(shape.predicate);
       }
     });

@@ -53,6 +53,12 @@ $accent: map-get($theme, accent);
     background-color: rgba($annotation-primary-color, 0.3);
   }
 
+  .noc-go-term-box {
+    .noc-qualifier-cbx {
+      //position: absolute;
+    }
+  }
+
   .noc-activity-form {
     @include deep-width(800px);
 

@@ -10,7 +10,7 @@
         (optionSelected)="selectTerm($event.option.value)" class="noc-term-autocomplete" fxLayout="row"
         fxLayoutAlign="start start">
         <div class="" fxFlex="400px">
-          <mat-option *ngFor="let item of entity?.termLookup.results" [value]="item">
+          <mat-option *ngFor="let item of entity?.termLookup.results" [disabled]="!item.notAnnotatable" [value]="item">
             <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
               <div class="noc-term-label">
                 {{ item.label }}

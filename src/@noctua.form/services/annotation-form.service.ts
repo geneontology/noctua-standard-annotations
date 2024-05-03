@@ -14,6 +14,8 @@ import { cloneDeep, each } from 'lodash';
 import { Cam } from '../models/activity/cam';
 import { AnnotationForm } from '@noctua.form/models/forms/annotation-form';
 import { AnnotationActivity } from '../models/activity/annotation-activity';
+import * as EntityDefinition from './../data/config/entity-definition';
+import { noctuaFormConfig } from './../noctua-form-config';
 
 @Injectable({
   providedIn: 'root'
@@ -92,6 +94,8 @@ export class NoctuaAnnotationFormService {
 
   activityFormToActivity() {
     this.annotationForm.populateActivity(this.annotationActivity);
+
+    this.annotationActivity.goterm.isComplement = this.annotationForm.isComplement.value;
   }
 
   private _onActivityFormChanges(): void {
@@ -136,6 +140,12 @@ export class NoctuaAnnotationFormService {
         const exists = edges.some(e => e.id === this.annotationActivity.gpToTermEdge?.id);
         if (!exists) {
           this.annotationForm.gpToTermEdge.setValue(edges[0]);
+
+          if (this.annotationActivity.goterm.hasRootType(EntityDefinition.GoProteinContainingComplex)) {
+            const partOfEdge = edges.find(e => e.id === noctuaFormConfig.edge.partOf.id);
+            this.annotationForm.gpToTermEdge.setValue(partOfEdge);
+
+          }
           this.previousGotermRelation = this.annotationActivity.gpToTermEdge?.id;
         }
 
@@ -183,6 +193,8 @@ export class NoctuaAnnotationFormService {
   saveAnnotation() {
     const self = this;
     self.activityFormToActivity();
+
+    console.log(self.activity)
     self.annotationActivity.activityToAnnotation(self.activity);
     const saveData = self.annotationActivity.createSave();
     return forkJoin(self.bbopGraphService.addActivity(self.cam, saveData.nodes, saveData.triples, saveData.title));
