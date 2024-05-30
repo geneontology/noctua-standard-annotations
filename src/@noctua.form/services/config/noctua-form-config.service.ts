@@ -389,7 +389,31 @@ export class NoctuaFormConfigService {
       annotationActivity.goterm.rootTypes,
       true
     );
+
+    this._getAnnotationExtensions(activity, annotationActivity)
+
+
     return annotationActivity
+  }
+
+  private _getAnnotationExtensions(activity: Activity, annotationActivity: AnnotationActivity) {
+
+    const edges = activity.getEdges(annotationActivity.goterm.id)
+
+    edges.forEach((edge) => {
+
+      const allowedPredicate = this.getTermRelations(edge.subject.rootTypes, edge.object.rootTypes)
+
+      const isAllowedPredicate = allowedPredicate.some((predicate) => {
+        return predicate.id === edge.predicate.edge.id
+      });
+
+      console.log('allowedPredicate', allowedPredicate)
+      if (isAllowedPredicate) {
+        annotationActivity.extensionEdge = edge.predicate.edge;
+        annotationActivity.extension = edge.object;
+      }
+    });
   }
 
 

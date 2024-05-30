@@ -80,6 +80,8 @@ export class AnnotationTableComponent implements OnInit, OnDestroy {
     // this.nodes = this.activity.nodes
 
     //console.log('this.nodes', this.nodes)
+
+    console.log('this.cam', this.cam)
   }
 
 
