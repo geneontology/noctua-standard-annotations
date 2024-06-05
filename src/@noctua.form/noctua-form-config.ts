@@ -169,6 +169,16 @@ const inverseEdge = {
     "id": "RO:0002326",
     "label": "contributes to",
   },
+
+  actsUpstreamOf: {
+    "id": "RO:0002263",
+    "label": "acts upstream of",
+  },
+  actsUpstreamOfOrWithin: {
+    "id": "RO:0002264",
+    "label": "acts upstream of or within",
+  },
+
   actsUpstreamOfOrWithinPositive: {
     "id": "RO:0004032",
     "label": "acts upstream of or within, positive effect",
@@ -224,6 +234,16 @@ const simpleAnnotationEdgeConfig: SAConfigEdgeMap = {
   [inverseEdge.isActiveIn.id]: {
     gpToTermPredicate: edge.enabledBy.id,
     mfToTermPredicate: edge.occursIn.id,
+    mfNodeRequired: true
+  },
+  [inverseEdge.actsUpstreamOf.id]: {
+    gpToTermPredicate: edge.enabledBy.id,
+    mfToTermPredicate: edge.causallyUpstreamOf.id,
+    mfNodeRequired: true
+  },
+  [inverseEdge.actsUpstreamOfOrWithin.id]: {
+    gpToTermPredicate: edge.enabledBy.id,
+    mfToTermPredicate: edge.causallyUpstreamOfOrWithin.id,
     mfNodeRequired: true
   },
   [inverseEdge.actsUpstreamOfOrWithinPositive.id]: {
@@ -484,6 +504,8 @@ export const noctuaFormConfig = {
   mfToTermEdges: [
     edge.partOf.id,
     edge.occursIn.id,
+    edge.causallyUpstreamOf.id,
+    edge.causallyUpstreamOfOrWithin.id,
     edge.causallyUpstreamOfOrWithinPositiveEffect.id,
     edge.causallyUpstreamOfOrWithinNegativeEffect.id,
     edge.causallyUpstreamOfPositiveEffect.id,

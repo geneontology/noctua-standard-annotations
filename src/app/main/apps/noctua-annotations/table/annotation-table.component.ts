@@ -78,10 +78,6 @@ export class AnnotationTableComponent implements OnInit, OnDestroy {
 
     this.optionsDisplay = { ...this.options, hideHeader: true };
     // this.nodes = this.activity.nodes
-
-    //console.log('this.nodes', this.nodes)
-
-    console.log('this.cam', this.cam)
   }
 
 
