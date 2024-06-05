@@ -41,6 +41,14 @@
             fxLayout="row" fxLayoutAlign="start center" class="w-100-p">
           </noc-annotation-entity-form>
         </div>
+        <!--       <button mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu noc-menu-panel">
+          <button mat-menu-item class="" (click)="addMFRootTerm()">
+            Add MF Root Term
+          </button>
+        </mat-menu> -->
       </div>
     </div>
     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
@@ -84,14 +92,13 @@
       </div>
     </div>
     <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
-      <button *ngIf="noctuaAnnotationFormService.activity.submitErrors.length>0" (click)='checkErrors()' mat-button
-        color="warn" class="noc-rounded-button noc-sm">
+      <button *ngIf="hasErrors()" (click)='checkErrors()' mat-button color="warn" class="noc-rounded-button noc-sm">
         Why is the "Save" button disabled?
       </button>
       <span fxFlex></span>
       <button (click)='clear()' type="button" mat-raised-button color="" class="mr-8">Clear</button>
-      <button [disabled]="noctuaAnnotationFormService.activity.submitErrors.length>0" (click)="save()" type="submit"
-        class="" mat-raised-button color="primary" [attr.data-cy]="'save-annotation-button'">Save</button>
+      <button [disabled]="hasErrors()" (click)="save()" type="submit" class="" mat-raised-button color="primary"
+        [attr.data-cy]="'save-annotation-button'">Save</button>
     </div>
   </div>
 </form>

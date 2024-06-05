@@ -6,6 +6,7 @@ import { Triple } from './triple';
 import { Predicate } from './predicate';
 import * as ShapeUtils from './../../data/config/shape-utils';
 import { Evidence } from './evidence';
+import { ActivityError, ErrorLevel, ErrorType } from './parser';
 
 export interface AnnotationEdgeConfig {
   gpToTermPredicate?: string;
@@ -29,6 +30,7 @@ export class AnnotationActivity {
   gpToTermEdges: Entity[] = [];
   extensionEdges: Entity[] = [];
   activity: Activity;
+  submitErrors = [];
 
 
   constructor(activity?: Activity) {
@@ -114,6 +116,33 @@ export class AnnotationActivity {
     }
 
     return saveData;
+  }
+
+
+  enableSubmit() {
+    let result = true;
+
+    this.submitErrors = [];
+
+    if (!this.extension?.term.id && !this.extensionEdge?.id) { return result }
+
+    if (!this.extension?.term.id) {
+      const meta = {
+        aspect: 'Extension'
+      };
+      const error = new ActivityError(ErrorLevel.error, ErrorType.general, `is required`, meta);
+      this.submitErrors.push(error);
+    }
+
+    if (!this.extensionEdge?.id) {
+      const meta = {
+        aspect: 'Extension Relation'
+      };
+      const error = new ActivityError(ErrorLevel.error, ErrorType.general, `is required`, meta);
+      this.submitErrors.push(error);
+    }
+
+    return result;
   }
 
 

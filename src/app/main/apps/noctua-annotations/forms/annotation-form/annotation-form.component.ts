@@ -12,8 +12,12 @@ import {
   ActivityType,
   NoctuaUserService,
   AnnotationActivity,
+  noctuaFormConfig,
+  Evidence,
+  Entity,
 } from '@geneontology/noctua-form-base';
 import { NoctuaAnnotationsDialogService } from '../../services/dialog.service';
+import { NoctuaFormDialogService } from 'app/main/apps/noctua-form/services/dialog.service';
 
 @Component({
   selector: 'noc-annotation-form',
@@ -51,6 +55,7 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private noctuaAnnotationsDialogService: NoctuaAnnotationsDialogService,
+    private noctuaFormDialogService: NoctuaFormDialogService,
     public noctuaUserService: NoctuaUserService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaAnnotationFormService: NoctuaAnnotationFormService
@@ -81,9 +86,45 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
       });
   }
 
+
+  addMFRootTerm() {
+    this._addRootTerm(noctuaFormConfig.rootNode.mf);
+
+    console.log(this.annotationFormGroup)
+  }
+
+
+  private _addRootTerm(rootTerm) {
+    const self = this;
+
+    if (rootTerm) {
+      this.noctuaAnnotationFormService.annotationActivity.goterm.term = new Entity(rootTerm.id, rootTerm.label);
+      const goterm = this.annotationFormGroup.get('goterm')
+      goterm.patchValue(this.noctuaAnnotationFormService.annotationActivity.goterm);
+      //self.noctuaAnnotationFormService.initializeForm();
+
+      const evidence = new Evidence();
+      evidence.setEvidence(new Entity(
+        noctuaFormConfig.evidenceAutoPopulate.nd.evidence.id,
+        noctuaFormConfig.evidenceAutoPopulate.nd.evidence.label));
+      evidence.reference = noctuaFormConfig.evidenceAutoPopulate.nd.reference;
+      //self.annotationActivity.gpToTermEdge.setEvidence([evidence]);
+      self.noctuaAnnotationFormService.initializeForm();
+    }
+  }
+
+
   checkErrors() {
-    const errors = this.noctuaAnnotationFormService.activity.submitErrors;
-    // this.noctuaAnnotationsDialogService.openActivityErrorsDialog(errors);
+    const errors = [...this.noctuaAnnotationFormService.activity.submitErrors, ...this.noctuaAnnotationFormService.annotationActivity.submitErrors]
+    this.noctuaFormDialogService.openActivityErrorsDialog(errors);
+  }
+
+  hasErrors() {
+    const hasError = this.noctuaAnnotationFormService.activity.submitErrors.length > 0 ||
+      this.noctuaAnnotationFormService.annotationActivity.submitErrors.length > 0;
+
+    return hasError
+
   }
 
   save() {

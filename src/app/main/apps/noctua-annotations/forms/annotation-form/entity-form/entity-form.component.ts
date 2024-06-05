@@ -114,93 +114,6 @@ export class AnnotationEntityFormComponent implements OnInit, OnDestroy {
     self.noctuaAnnotationFormService.initializeForm();
   }
 
-  removeEvidence(index: number) {
-    const self = this;
-
-    self.entity.predicate.removeEvidence(index);
-    self.noctuaAnnotationFormService.initializeForm();
-  }
-
-  openSearchDatabaseDialog(entity: ActivityNode) {
-    const self = this;
-    const gpNode = this.noctuaAnnotationFormService.activity.gpNode
-
-    if (gpNode && gpNode.hasValue()) {
-      const data = {
-        readonly: false,
-        gpNode: gpNode.term,
-        aspect: entity.aspect,
-        entity: entity,
-        params: {
-          term: '',
-          evidence: ''
-        }
-      };
-
-      const success = (selected) => {
-        if (selected.term) {
-          entity.term = new Entity(selected.term.term.id, selected.term.term.label);
-
-          if (selected.evidences && selected.evidences.length > 0) {
-            entity.predicate.setEvidence(selected.evidences);
-
-            selected.evidences.forEach((evidence: Evidence) => {
-
-              evidence.evidenceExts.forEach((evidenceExt) => {
-                /*                 evidenceExt.relations.forEach((relation) => {
-                                  const node = self.noctuaFormConfigService.insertActivityNodeByPredicate(self.noctuaAnnotationFormService.activity, self.entity, relation.id);
-                                  node.term = new Entity(evidenceExt.term.id, evidenceExt.term.id);
-                                  node.predicate.setEvidence([evidence]);
-                                }); */
-              });
-
-            });
-          }
-
-
-          self.noctuaAnnotationFormService.initializeForm();
-        }
-      };
-      self.noctuaFormDialogService.openSearchDatabaseDialog(data, success);
-    } else {
-      const meta = {
-        aspect: 'Gene Product'
-      };
-      const error = new ActivityError(ErrorLevel.error, ErrorType.general, 'Please enter a gene product', meta)
-      self.noctuaFormDialogService.openActivityErrorsDialog([error])
-    }
-  }
-
-  openSearchEvidenceDialog(entity: ActivityNode) {
-    const self = this;
-    const gpNode = this.noctuaAnnotationFormService.activity.gpNode
-
-    if (gpNode) {
-      const data = {
-        readonly: false,
-        gpNode: gpNode.term,
-        aspect: entity.aspect,
-        entity: entity,
-        params: {
-          term: '',
-          evidence: ''
-        }
-      };
-
-      const success = function (selected) {
-        if (selected && selected.evidences) {
-          entity.predicate.setEvidence(selected.evidences);
-          self.noctuaAnnotationFormService.initializeForm();
-        }
-      };
-      self.noctuaFormDialogService.openSearchEvidenceDialog(data, success);
-    } else {
-      // const error = new ActivityError(ErrorLevel.error, ErrorType.general,  "Please enter a gene product", meta)
-      //errors.push(error);
-      // self.dialogService.openActivityErrorsDialog(ev, entity, errors)
-    }
-  }
-
   openSearchModels() {
     const self = this;
     const gpNode = this.noctuaAnnotationFormService.activity.gpNode;
@@ -219,27 +132,6 @@ export class AnnotationEntityFormComponent implements OnInit, OnDestroy {
   insertEntityShex(predExpr: ShapeDefinition.PredicateExpression) {
     this.noctuaFormConfigService.insertActivityNodeShex(this.noctuaAnnotationFormService.activity, this.entity, predExpr);
     this.noctuaAnnotationFormService.initializeForm();
-  }
-
-  addRootTerm() {
-    const self = this;
-
-    const term = find(noctuaFormConfig.rootNode, (rootNode) => {
-      return rootNode.aspect === self.entity.aspect;
-    });
-
-    if (term) {
-      self.entity.term = new Entity(term.id, term.label);
-      self.noctuaAnnotationFormService.initializeForm();
-
-      const evidence = new Evidence();
-      evidence.setEvidence(new Entity(
-        noctuaFormConfig.evidenceAutoPopulate.nd.evidence.id,
-        noctuaFormConfig.evidenceAutoPopulate.nd.evidence.label));
-      evidence.reference = noctuaFormConfig.evidenceAutoPopulate.nd.reference;
-      self.entity.predicate.setEvidence([evidence]);
-      self.noctuaAnnotationFormService.initializeForm();
-    }
   }
 
   clearValues() {

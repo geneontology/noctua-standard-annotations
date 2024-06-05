@@ -408,7 +408,6 @@ export class NoctuaFormConfigService {
         return predicate.id === edge.predicate.edge.id
       });
 
-      console.log('allowedPredicate', allowedPredicate)
       if (isAllowedPredicate) {
         annotationActivity.extensionEdge = edge.predicate.edge;
         annotationActivity.extension = edge.object;
@@ -469,8 +468,6 @@ export class NoctuaFormConfigService {
     const predicates = DataUtils.getPredicates(
       gpToTerm ? gpToTermJson.goshapes : shexJson.goshapes, subjectIds, objectIds);
 
-
-    console.log('predicates', predicates)
     return predicates.map((predicate) => {
       return this.findEdge(predicate);
     });

@@ -38,7 +38,6 @@ export class DataUtils {
 
       });
 
-      console.log('matchedPredicates', matchedPredicates)
       return [...matchedPredicates];
     }
 

@@ -26,6 +26,20 @@
       "object": [
         "GO:0008150"
       ],
+      "predicate": "RO:0002263"
+    },
+    {
+      "subject": "CHEBI:33695",
+      "object": [
+        "GO:0008150"
+      ],
+      "predicate": "RO:0002264"
+    },
+    {
+      "subject": "CHEBI:33695",
+      "object": [
+        "GO:0008150"
+      ],
       "predicate": "RO:0004034"
     },
     {
@@ -97,6 +111,20 @@
         "GO:0008150"
       ],
       "predicate": "RO:0002331"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0008150"
+      ],
+      "predicate": "RO:0002263"
+    },
+    {
+      "subject": "GO:0032991",
+      "object": [
+        "GO:0008150"
+      ],
+      "predicate": "RO:0002264"
     },
     {
       "subject": "GO:0032991",
