@@ -1,15 +1,14 @@
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
 $primary: map-get($theme, primary);
 $accent: map-get($theme, accent);
 
 :host {
-
-  @include media-breakpoint('xs') {
+  @include media-breakpoint("xs") {
     width: 100%;
   }
 
-  @include media-breakpoint-up('sm') {
+  @include media-breakpoint-up("sm") {
     width: 600px;
   }
 
@@ -38,7 +37,8 @@ $accent: map-get($theme, accent);
     padding: 0;
   }
 
-  .mat-dialog-content {}
+  .mat-dialog-content {
+  }
 
   .dialog-content-wrapper {
     width: 100%;

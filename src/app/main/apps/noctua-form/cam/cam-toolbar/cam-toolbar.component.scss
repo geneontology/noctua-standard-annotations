@@ -1,6 +1,6 @@
 @use "@angular/material" as mat;
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
 
 $primary: map-get($theme, primary);
 $accent: map-get($theme, accent);
@@ -55,8 +55,6 @@ $accent: map-get($theme, accent);
     background-color: #fff;
     font-size: 12px;
 
-    @include mat.elevation(2);
-
     .noc-cam-title {
       max-width: 400px !important;
     }
@@ -81,6 +79,7 @@ $accent: map-get($theme, accent);
     }
 
     .noc-toolbar-button {
+      padding: 0;
       font-size: 18px;
       color: map-get($primary, 400);
 

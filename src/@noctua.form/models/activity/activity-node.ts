@@ -89,7 +89,6 @@ export class ActivityNode implements ActivityNodeDisplay {
   isComplement = false;
   assignedBy: boolean = null;
   contributor: Contributor = null;
-  isCatalyticActivity = false;
   isKey = false;
   displaySection: any;
   displayGroup: any;
@@ -219,7 +218,6 @@ export class ActivityNode implements ActivityNodeDisplay {
     self.term = node.term;
     self.assignedBy = node.assignedBy;
     self.isComplement = node.isComplement;
-    self.isCatalyticActivity = node.isCatalyticActivity;
   }
 
   setTermLookup(value) {

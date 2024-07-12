@@ -1,4 +1,4 @@
-<div class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start">
+<div class="w-full h-full" fxLayout="row" fxLayoutAlign="start start">
   <div class="noc-sidemenu" fxLayout="column" fxLayoutAlign="start center">
     <button mat-icon-button color="" class="noc-rounded-button"
       [ngClass]="{'noc-active': noctuaCommonMenuService.selectedLeftPanel === LeftPanel.activityForm}" color="primary"
@@ -46,7 +46,7 @@
     </button>
   </div>
 
-  <div class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start start">
+  <div class="w-full h-full" fxLayout="column" fxLayoutAlign="start start">
     <div *ngIf="!noctuaUserService.user" class="noc-not-loggedin" fxLayout="row" fxLayoutAlign="center center">
       Not Logged In: You can only view existing annotations
     </div>
@@ -63,11 +63,11 @@
       </button>
     </div>
     <noc-cam-toolbar [cam]="cam" [options]="camToolbarOptions"></noc-cam-toolbar>
-    <mat-drawer-container class="noc-drawer-container w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start"
+    <mat-drawer-container class="noc-drawer-container w-full h-full" fxLayout="row" fxLayoutAlign="start start"
       autosize>
       <mat-drawer #leftDrawer class="noc-left-drawer" mode="side" position="start">
         <div class="resize-handle-right" mwlResizeHandle [resizeEdges]="{ right: true }"></div>
-        <div [ngSwitch]="noctuaCommonMenuService.selectedLeftPanel" class="h-100-p">
+        <div [ngSwitch]="noctuaCommonMenuService.selectedLeftPanel" class="h-full">
           <noc-cam-form [panelDrawer]="leftDrawer" *ngSwitchCase="LeftPanel.camForm">
           </noc-cam-form>
           <noc-copy-model [panelDrawer]="leftDrawer" [panelSide]="'left'" *ngSwitchCase="LeftPanel.copyModel">
@@ -84,14 +84,13 @@
             [hidden]="noctuaCommonMenuService.selectedLeftPanel !== LeftPanel.camStats"></noc-cam-stats>
         </div>
       </mat-drawer>
-      <mat-drawer-content class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start stretch">
-        <div *ngIf="cam" [ngSwitch]="noctuaCommonMenuService.selectedMiddlePanel" class="w-100-p h-100-p"
-          noctuaPerfectScrollbar>
+      <mat-drawer-content class="w-full h-full" fxLayout="column" fxLayoutAlign="start stretch">
+        <div *ngIf="cam" [ngSwitch]="noctuaCommonMenuService.selectedMiddlePanel" class="w-full h-full">
           <noc-cam-table *ngSwitchCase="MiddlePanel.camTable" [cam]="cam" [options]="tableOptions"></noc-cam-table>
         </div>
       </mat-drawer-content>
       <mat-drawer #rightDrawer class="noc-right-drawer" mode="side" position="end">
-        <div [ngSwitch]="noctuaCommonMenuService.selectedRightPanel" class="h-100-p">
+        <div [ngSwitch]="noctuaCommonMenuService.selectedRightPanel" class="h-full">
           <noc-term-detail [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.termDetail">
           </noc-term-detail>
         </div>

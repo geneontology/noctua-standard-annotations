@@ -135,18 +135,6 @@ export const simpleAnnotonDescription: ActivityDescription = {
             canDelete: false,
             weight: 1
         },
-        'extension': <ActivityNodeDisplay>{
-            id: 'extension',
-            type: ActivityNodeType.GoCellularComponent,
-            category: [],
-            label: 'Extension',
-            displaySection: noctuaFormConfig.displaySection.gp,
-            displayGroup: noctuaFormConfig.displayGroup.gp,
-            termRequired: false,
-            skipEvidenceCheck: true,
-            canDelete: false,
-            weight: 1
-        },
     },
     triples: [{
         subject: ActivityNodeType.GoMolecularFunction,

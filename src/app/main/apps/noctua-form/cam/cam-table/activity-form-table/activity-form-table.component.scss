@@ -1,6 +1,6 @@
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
-@import "src/@noctua.common/scss/noctua-form.common";
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
+@import "@noctua.common/scss/noctua-form.common";
 
 $primary: map-get($theme, primary);
 $accent: map-get($theme, accent);

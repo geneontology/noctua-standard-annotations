@@ -1,6 +1,6 @@
-@use '@angular/material' as mat;
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
+@use "@angular/material" as mat;
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
 
 :host {
   width: 100%;
@@ -37,14 +37,13 @@
       padding: 0 12px;
       @include deep-height(50px);
       background-color: transparent;
-      border-top: 1px solid #CCC;
+      border-top: 1px solid #ccc;
       z-index: 10002;
       box-shadow: none;
     }
 
     .noc-section-row {
       padding: 10px 0;
-
 
       .noc-title {
         padding-bottom: 8px;
@@ -77,6 +76,7 @@
       overflow: hidden;
     }
 
-    .noc-article-date {}
+    .noc-article-date {
+    }
   }
 }

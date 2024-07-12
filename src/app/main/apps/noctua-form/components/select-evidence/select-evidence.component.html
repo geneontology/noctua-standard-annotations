@@ -1,5 +1,4 @@
-<mat-table class="noc-evidence-table w-100-p" #table [dataSource]="dataSource" matSort [@animateStagger]="{value:'50'}"
-  noctuaPerfectScrollbar>
+<mat-table class="noc-evidence-table w-full" #table [dataSource]="dataSource" matSort [@animateStagger]="{value:'50'}">
   <ng-container matColumnDef="select" class="">
     <mat-header-cell *matHeaderCellDef fxFlex="30px">
       <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"

@@ -1,5 +1,5 @@
-<div class="w-100-p h-100-p noc-graph-holder">
-  <ngx-graph class="w-100-p h-100-p" [links]="edges" [nodes]="nodes" [curve]="curve" [layout]="layout"
+<div class="w-full h-full noc-graph-holder">
+  <ngx-graph class="w-full h-full" [links]="edges" [nodes]="nodes" [curve]="curve" [layout]="layout"
     [layoutSettings]="layoutSettings" [curve]="curve" [draggingEnabled]="draggingEnabled"
     [panningEnabled]="panningEnabled" [enableZoom]="zoomEnabled" [zoomSpeed]="zoomSpeed" [minZoomLevel]="minZoomLevel"
     [maxZoomLevel]="maxZoomLevel" [panOnZoom]="panOnZoom" [autoZoom]="autoZoom" [autoCenter]="autoCenter"
@@ -12,10 +12,11 @@
     </ng-template>
 
     <ng-template #nodeTemplate let-node>
-      <svg:g *ngIf="node.data.activity" class="node" xmlns="http://www.w3.org/2000/xhtml" width="180" height="80">
+      @if (node.data.activity) {
+      <svg:g class="node" xmlns="http://www.w3.org/2000/xhtml" width="180" height="80">
         <svg:foreignObject width="180" height="80">
           <xhtml:div class="noc-node" xmlns="http://www.w3.org/1999/xhtml" [ngStyle]=getStyles(node)>
-            <div class="noc-node-conntent w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start">
+            <div class="noc-node-conntent w-full h-full" fxLayout="row" fxLayoutAlign="start start">
               <div fxFlex="100%">
                 <small>{{ node.label}}</small>
                 enabled by:
@@ -32,11 +33,12 @@
           </xhtml:div>
         </svg:foreignObject>
       </svg:g>
-      <svg:g *ngIf="node.data.connectorActivity" class="node" xmlns="http://www.w3.org/2000/xhtml" width="120"
-        height="50">
+      }
+      @if (node.data.connectorActivity) {
+      <svg:g class="node" xmlns="http://www.w3.org/2000/xhtml" width="120" height="50">
         <svg:foreignObject width="120" height="50">
           <xhtml:div class="noc-node noc-sm" xmlns="http://www.w3.org/1999/xhtml" [ngStyle]=getStyles(node)>
-            <div class="noc-node-conntent w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start center">
+            <div class="noc-node-conntent w-full h-full" fxLayout="row" fxLayoutAlign="start center">
               <div fxFlex="100%">
                 <small>{{ node.label}}</small>
               </div>
@@ -50,6 +52,7 @@
           </xhtml:div>
         </svg:foreignObject>
       </svg:g>
+      }
     </ng-template>
 
     <ng-template #linkTemplate let-link>
@@ -61,10 +64,11 @@
             startOffset="50%"></textPath>
         </svg:text>
       </svg:g>
-      <svg:g class="linkMidpoint" *ngIf="link.midPoint"
-        [attr.transform]="'translate(' + (link.midPoint.x) + ',' + (link.midPoint.y) + ')'">
+      @if (link.midPoint) {
+      <svg:g class="linkMidpoint" [attr.transform]="'translate(' + (link.midPoint.x) + ',' + (link.midPoint.y) + ')'">
         <svg:text alignment-baseline="central">{{ link.label }}</svg:text>
       </svg:g>
+      }
     </ng-template>
   </ngx-graph>
 </div>

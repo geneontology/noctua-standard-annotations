@@ -1,6 +1,6 @@
-@use '@angular/material' as mat;
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
+@use "@angular/material" as mat;
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
 
 :host {
   padding: 0px;
@@ -26,7 +26,7 @@
   }
 
   .noc-drawer-header {
-    border-bottom: #DDD solid 1px;
+    border-bottom: #ddd solid 1px;
   }
 
   .noc-cams {
@@ -46,14 +46,15 @@
     padding: 0 10px 0 20px;
     @include deep-height(30px);
     //  min-height: 40px; //min-height: 35px;
-    background-color: #FFF;
+    background-color: #fff;
     font-size: 16px;
     overflow: hidden;
     z-index: 10;
 
     @include mat.elevation(2);
 
-    .noc-header-title {}
+    .noc-header-title {
+    }
 
     .noc-review-number {
       color: #555;
@@ -74,7 +75,6 @@
       font-weight: normal;
       @include deep-height(30px);
     }
-
   }
 
   .noc-cams-results {
@@ -88,7 +88,6 @@
         border-left: darken($noc-highlight-model-color, 15%) solid 1px;
 
         .noc-cam-table {
-
           &::before {
             left: 43px;
             width: 5px;
@@ -105,7 +104,7 @@
       @include deep-height(35px);
       width: 100%;
       //min-height: 35px;
-      background-color: #FFFFFF;
+      background-color: #ffffff;
       font-size: 12px;
 
       .noc-toggle-expand-button {
@@ -146,14 +145,11 @@
       mat-icon-button {
         border-radius: 0 !important;
       }
-
-
     }
 
     .noc-cam-table {
       position: relative;
       padding-left: 60px;
-
 
       &::before {
         position: absolute;
@@ -167,5 +163,4 @@
       }
     }
   }
-
 }

@@ -1,4 +1,5 @@
-import { AnnotationActivity } from "./../models/activity/annotation-activity";
+import { AnnotationActivity } from "./../models/standard-annotation/annotation-activity"
+
 
 export class DataGeneratorUtils {
 
@@ -22,16 +23,16 @@ export class DataGeneratorUtils {
         },
         {
           target: 'goterm-evidence-0',
-          input: annotationActivity.gp.predicate.evidence[0].evidence.label,
-          optionId: annotationActivity.gp.predicate.evidence[0].evidence.id
+          // input: annotationActivity.evidence.label,
+          //optionId: annotationActivity.evidence.term.id
         },
         {
           target: 'goterm-reference-0',
-          input: annotationActivity.gp.predicate.evidence[0].reference
+          // input: annotationActivity.reference
         },
         {
           target: 'goterm-with-0',
-          input: annotationActivity.gp.predicate.evidence[0].with
+          // input: annotationActivity.with
         }
       ]
 

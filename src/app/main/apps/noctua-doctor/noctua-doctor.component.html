@@ -1,4 +1,4 @@
-<div class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start">
+<div class="w-full h-full" fxLayout="row" fxLayoutAlign="start start">
   <div class="noc-sidemenu" fxLayout="column" fxLayoutAlign="start center">
     <button mat-button color="" class="noc-rounded-button green-400-bg" fxLayout="row" fxLayoutAlign="start center"
       matTooltip="Filter" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
@@ -57,15 +57,17 @@
       </div>
     </button>
   </div>
-  <mat-drawer-container class="h-100-p" fxFlex="" fxLayout="row" fxLayoutAlign="start start" [hasBackdrop]="false"
+  <mat-drawer-container class="h-full" fxFlex="" fxLayout="row" fxLayoutAlign="start start" [hasBackdrop]="false"
     autosize>
     <mat-drawer #leftDrawer class="noc-left-drawer" mode="side" position="start" opened>
-      <div [ngSwitch]="noctuaSearchMenuService.selectedLeftPanel" class="h-100-p">
+      <div class="h-full">
+        @switch (noctuaSearchMenuService.selectedLeftPanel) {
+        }
       </div>
     </mat-drawer>
-    <mat-drawer-content #scrollbarRef class="noc-section-body w-100-p" [perfectScrollbar]="scrollbarConfig">
+    <mat-drawer-content #scrollbarRef class="noc-section-body w-full">
 
-      <div class="header accent p-8 w-100-p" fxLayout="column" fxLayoutAlign="center center">
+      <div class="header accent p-8 w-full" fxLayout="column" fxLayoutAlign="center center">
         <h1 [@animate]="{value:'*',params:{delay:'100ms', y:'25px'}}">
           WELCOME TO NOCTUA DOCTOR
         </h1>
@@ -73,15 +75,16 @@
           Notify
         </h3>
       </div>
-      <div class="noc-middle-panel w-100-p">
+      <div class="noc-middle-panel w-full">
       </div>
-      <div class="w-100-p">
+      <div class="w-full">
         <app-footer></app-footer>
       </div>
     </mat-drawer-content>
     <mat-drawer #rightDrawer class="noc-right-drawer" mode="over" position="end">
-      <div [ngSwitch]="noctuaSearchMenuService.selectedRightPanel" class="h-100-p">
-
+      <div class="h-full">
+        @switch (noctuaSearchMenuService.selectedRightPanel) {
+        }
       </div>
     </mat-drawer>
   </mat-drawer-container>

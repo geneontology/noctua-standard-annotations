@@ -1,14 +1,15 @@
-<div class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start start">
-  <div *ngIf="!noctuaUserService.user" class="noc-not-loggedin" fxLayout="row" fxLayoutAlign="center center">
-    Not Logged In: You can only view existing annotations
-  </div>
-  <div *ngIf="cam" class="noc-cam-heading" fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="start center">
-    <div *ngIf="cam.title" class="noc-title" fxLayout="row" fxLayoutAlign="start center">
+<div class="w-full h-full" fxLayout="column" fxLayoutAlign="start start">
+  @if (cam) {
+  <div class="noc-cam-heading" fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="start center">
+    @if (cam.title) {
+    <div class="noc-title" fxLayout="row" fxLayoutAlign="start center">
       <div class="text-truncate pr-8">
         <strong>Title: </strong>{{cam.title }}
       </div>
     </div>
-    <div *ngIf="cam.state" class="noc-model-state" fxLayout="row" fxLayoutAlign="start center">
+    }
+    @if (cam.state) {
+    <div class="noc-model-state" fxLayout="row" fxLayoutAlign="start center">
       <mat-chip class="noc-table-chip noc-state-chip" [ngClass]="{'noc-development': cam.state.name === 'development',
       'noc-production': cam.state.name === 'production',
       'noc-review': cam.state.name === 'review'}" fxLayout="row" fxLayoutAlign="start center">
@@ -20,7 +21,9 @@
         </div>
       </mat-chip>
     </div>
-    <div *ngIf="cam.date" class="noc-date" fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">
+    }
+    @if (cam.date) {
+    <div class="noc-date" fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">
       <mat-chip class="noc-table-chip noc-date-chip" fxLayout="row" fxLayoutAlign="start center"
         (click)="openCamForm()">
         <div class="noc-icon">
@@ -31,10 +34,12 @@
         </div>
       </mat-chip>
     </div>
+    }
     <div fxFlex="" fxLayout="row" fxLayoutAlign="start center">
       <mat-chip-list>
+        @for (contributor of cam.contributors; track contributor) {
         <mat-chip class="noc-table-chip noc-user-chip" fxLayout="row" fxLayoutAlign="start center"
-          *ngFor="let contributor of cam.contributors" (click)="openCamForm()">
+          (click)="openCamForm()">
           <div class="noc-icon">
             <fa-icon [icon]="['fas', 'user']"></fa-icon>
           </div>
@@ -42,6 +47,7 @@
             {{contributor.name}}
           </div>
         </mat-chip>
+        }
       </mat-chip-list>
     </div>
     <div fxFlex="50px" fxLayout="row" fxLayoutAlign="start center">
@@ -66,16 +72,18 @@
       </mat-menu>
     </div>
   </div>
-  <mat-drawer-container class="noc-drawer-container w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start"
-    autosize>
+  }
+  <mat-drawer-container class="noc-drawer-container w-full h-full" fxLayout="row" fxLayoutAlign="start start" autosize>
     <mat-drawer #leftDrawer class="noc-left-drawer" mode="side" position="start">
     </mat-drawer>
-    <mat-drawer-content class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start stretch">
-      <div *ngIf="modelId" class="noc-gocam-viz-container w-100-p h-100-p" fxLayout="row" fxLayoutAlign="center start">
+    <mat-drawer-content class="w-full h-full" fxLayout="column" fxLayoutAlign="start stretch">
+      @if (modelId) {
+      <div class="noc-gocam-viz-container w-full h-full" fxLayout="row" fxLayoutAlign="center start">
         <wc-gocam-viz [attr.gocam-id]="modelId" repository="dev" show-go-cam-selector=false show-has-input=false
           show-has-output=false show-gene-product=true show-activity=false show-isolated-activity=true>
         </wc-gocam-viz>
       </div>
+      }
     </mat-drawer-content>
   </mat-drawer-container>
 </div>

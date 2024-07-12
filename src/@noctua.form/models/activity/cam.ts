@@ -10,7 +10,7 @@ import { each, find, orderBy } from 'lodash';
 import { NoctuaFormUtils } from './../../utils/noctua-form-utils';
 import { Violation } from './error/violation-error';
 import { PendingChange } from './pending-change';
-import { AnnotationActivity } from './annotation-activity';
+import { AnnotationActivity } from '../standard-annotation/annotation-activity';
 
 export enum ReloadType {
   RESET = 'reset',

@@ -1,6 +1,7 @@
-<div *ngIf="cam" class="noc-cam-heading" fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="start center">
-  <div *ngIf="noctuaCommonMenuService.selectedMiddlePanel===RightPanel.camTable && camToolbarOptions.showCreateButton"
-    class="" fxFlex="180px">
+@if (cam) {
+<div class="noc-cam-heading" fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="start center">
+  @if (noctuaCommonMenuService.selectedMiddlePanel===RightPanel.camTable && camToolbarOptions.showCreateButton) {
+  <div class="" fxFlex="180px">
     <button mat-flat-button (click)="openActivityForm(ActivityType.default)" color="primary"
       class="noc-rounded-button noc-half-button noc-r noc-sm">
       <mat-icon class=""> add </mat-icon> Create Activity
@@ -18,7 +19,9 @@
       </a>
     </mat-menu>
   </div>
-  <div *ngIf="cam.title" class="noc-title" fxLayout="row" fxLayoutAlign="start center">
+  }
+  @if (cam.title) {
+  <div class="noc-title" fxLayout="row" fxLayoutAlign="start center">
     <div class="text-truncate pr-8">
       <strong>Title: </strong>{{cam.title }}
     </div>
@@ -26,8 +29,9 @@
       <fa-icon [icon]="['fas', 'pen']"></fa-icon>
     </div>
   </div>
+  }
   <div class="noc-br noc-bl px-4">
-    <button mat-icon-button class="noc-toolbar-button noc-rounded-button" (click)="openCamForm()"
+    <button mat-button class="noc-toolbar-button noc-rounded-button" (click)="openCamForm()"
       matTooltip="{{cam?.comment}}" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
       <fa-icon [icon]="['fas', 'comment']"></fa-icon>
       <div class="noc-comments-badge">
@@ -36,12 +40,13 @@
     </button>
   </div>
   <div class="noc-br px-4">
-    <button mat-icon-button color="" class="noc-toolbar-button noc-rounded-button" (click)="openCopyModel()"
+    <button mat-button color="" class="noc-toolbar-button noc-rounded-button" (click)="openCopyModel()"
       matTooltip="Make a copy of this model" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
       <fa-icon [icon]="['fas', 'clone']"></fa-icon>
     </button>
   </div>
-  <div *ngIf="cam.state" class="noc-model-state" fxLayout="row" fxLayoutAlign="start center">
+  @if (cam.state) {
+  <div class="noc-model-state" fxLayout="row" fxLayoutAlign="start center">
     <mat-chip class="noc-table-chip noc-state-chip" [ngClass]="{'noc-development': cam.state.name === 'development',
         'noc-production': cam.state.name === 'production',
         'noc-review': cam.state.name === 'review'}" fxLayout="row" fxLayoutAlign="start center">
@@ -56,7 +61,9 @@
       </div>
     </mat-chip>
   </div>
-  <div *ngIf="cam.date" class="noc-date noc-br mr-8" fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">
+  }
+  @if (cam.date) {
+  <div class="noc-date noc-br mr-8" fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">
     <mat-chip class="noc-table-chip noc-date-chip" fxLayout="row" fxLayoutAlign="start center" (click)="openCamForm()">
       <div class="noc-icon">
         <fa-icon [icon]="['fas', 'calendar-day']"></fa-icon>
@@ -66,10 +73,12 @@
       </div>
     </mat-chip>
   </div>
+  }
   <div fxFlex="" fxLayout="row" fxLayoutAlign="start center">
     <mat-chip-list>
+      @for (contributor of cam.contributors; track contributor) {
       <mat-chip class="noc-table-chip noc-user-chip" fxLayout="row" fxLayoutAlign="start center"
-        *ngFor="let contributor of cam.contributors" (click)="openCamForm()">
+        (click)="openCamForm()">
         <div class="noc-icon">
           <fa-icon [icon]="['fas', 'user']"></fa-icon>
         </div>
@@ -77,6 +86,7 @@
           {{contributor.name}}
         </div>
       </mat-chip>
+      }
     </mat-chip-list>
   </div>
   <div fxFlex="115px" fxLayout="row" fxLayoutAlign="start center">
@@ -93,7 +103,5 @@
       </a>
     </mat-menu>
   </div>
-  <button mat-icon-button (click)="openSettings()" class="noc-icon-button" color="primary">
-    <fa-icon [icon]="['fas', 'cog']"></fa-icon>
-  </button>
 </div>
+}

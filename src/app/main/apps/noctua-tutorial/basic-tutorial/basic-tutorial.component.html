@@ -15,7 +15,8 @@
       with that allows for the creation of workbenches (end-user UI to access and manipulate the models in different
       ways)
     </section>
-    <section *ngFor="let activity of cam.activities">
+    @for (activity of cam.activities; track activity) {
+    <section>
       <section>
         <div class="noc-card-content" fxLayout="column" fxLayoutAlign="start center">
           <div class="card">
@@ -27,18 +28,19 @@
           </div>
         </div>
       </section>
-      <section *ngFor="let node of activity.nodes" fxLayout="column" fxLayoutAlign="center center">
+      @for (node of activity.nodes; track node) {
+      <section fxLayout="column" fxLayoutAlign="center center">
         {{node.term?.label}}
         <!--   <noc-entity-form [entityFormGroup]="entityForm" fxLayout="row" fxLayoutAlign="start center"
-        class="w-100-p">
-      </noc-entity-form>      -->
-
+            class="w-full">
+          </noc-entity-form>      -->
         <noc-activity-tree-node [options]="tableOptions" [cam]="cam" [activity]="activity" [entity]="node" class="">
         </noc-activity-tree-node>
-
         What is the evidence
         <input />
       </section>
+      }
     </section>
+    }
   </div>
 </div>

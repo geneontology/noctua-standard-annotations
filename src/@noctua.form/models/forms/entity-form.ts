@@ -7,7 +7,6 @@ import { termValidator } from './validators/term-validator';
 import { EntityLookup } from '../activity/entity-lookup';
 import { Entity } from './../activity/entity';
 import { ActivityNode } from './../activity/activity-node';
-import { Predicate } from '../activity';
 
 export class EntityForm {
     id: string;

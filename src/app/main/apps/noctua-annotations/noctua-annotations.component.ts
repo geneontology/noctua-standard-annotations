@@ -31,7 +31,6 @@ import { NoctuaDataService } from '@noctua.common/services/noctua-data.service';
 import { TableOptions } from '@noctua.common/models/table-options';
 import { NoctuaSearchDialogService } from '@noctua.search/services/dialog.service';
 import { NoctuaReviewSearchService } from '@noctua.search/services/noctua-review-search.service';
-import { ResizeEvent } from 'angular-resizable-element';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 import { CamToolbarOptions } from '@noctua.common/models/cam-toolbar-options';
 
@@ -141,7 +140,6 @@ export class NoctuaAnnotationsComponent implements OnInit, OnDestroy {
 
       });
 
-
   }
 
   ngOnDestroy(): void {
@@ -178,12 +176,6 @@ export class NoctuaAnnotationsComponent implements OnInit, OnDestroy {
     this.noctuaCommonMenuService.openLeftDrawer();
   }
 
-  openAnnotationForm(activityType: ActivityType) {
-    this.noctuaAnnotationFormService.setActivityType(activityType);
-    this.noctuaCommonMenuService.selectLeftPanel(LeftPanel.activityForm);
-    this.noctuaCommonMenuService.closeRightDrawer();
-    this.noctuaCommonMenuService.openLeftDrawer();
-  }
 
   openCopyModel() {
     this.noctuaCommonMenuService.selectLeftPanel(LeftPanel.copyModel);

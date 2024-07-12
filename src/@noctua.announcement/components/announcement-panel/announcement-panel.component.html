@@ -1,4 +1,4 @@
-<form fxLayout="column" fxLayoutAlign="start stretch" class="noc-cam-form noc-drawer h-100-p">
+<form fxLayout="column" fxLayoutAlign="start stretch" class="noc-cam-form noc-drawer h-full">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
       Announcements</span>
@@ -8,13 +8,17 @@
       <mat-icon>close</mat-icon> Close
     </button>
   </div>
-  <div class="noc-drawer-body w-100-p p-8" noctuaPerfectScrollbar>
-    <div *ngFor="let announcement of announcements" class="alert alert-{{announcement.level}} w-100-p my-8">
+  <div class="noc-drawer-body w-full p-8">
+    @for (announcement of announcements; track announcement) {
+    <div class="alert alert-{{announcement.level}} w-full my-8">
       <strong>{{announcement.title}}</strong><br>
       {{announcement.description}}
-      <a *ngIf="announcement.descriptionUrl" href="{{announcement.descriptionUrl}}" target="_banl">
+      @if (announcement.descriptionUrl) {
+      <a href="{{announcement.descriptionUrl}}" target="_banl">
         More Details
       </a>
+      }
     </div>
+    }
   </div>
 </form>

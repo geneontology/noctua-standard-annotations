@@ -1,15 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
+  BbopGraphService,
   Cam,
   CamService,
   Contributor,
-  NoctuaActivityFormService,
   NoctuaFormConfigService,
-  BbopGraphService,
   NoctuaUserService
-} from '@geneontology/noctua-form-base';
-import { NoctuaSearchDialogService } from '@noctua.search/services/dialog.service';
+} from '@geneontology/noctua-form-base'
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
@@ -26,11 +24,8 @@ export class NoctuaPathwayComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private camService: CamService,
     private _bbopGraphService: BbopGraphService,
-    public noctuaSearchDialogService: NoctuaSearchDialogService,
     public noctuaUserService: NoctuaUserService,
-    public noctuaFormConfigService: NoctuaFormConfigService,
-    public noctuaActivityFormService: NoctuaActivityFormService,
-  ) {
+    public noctuaFormConfigService: NoctuaFormConfigService) {
 
     this._unsubscribeAll = new Subject();
 
@@ -65,13 +60,6 @@ export class NoctuaPathwayComponent implements OnInit, OnDestroy {
           return;
         }
         this.cam = cam;
-
-        if (cam.activities.length > 0) {
-          this.camService.addCamEdit(this.cam)
-          this.camService.cams = [cam]
-        }
-        //this.noctuaReviewSearchService.addCamsToReview([this.cam], this.camService.cams);
-
       });
   }
 

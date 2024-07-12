@@ -1,27 +1,23 @@
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
-
-
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
 
 :host {
-
-
-  @include media-breakpoint('xs') {
+  @include media-breakpoint("xs") {
     width: 100%;
   }
 
-  @include media-breakpoint-up('sm') {
+  @include media-breakpoint-up("sm") {
     width: 600px;
   }
 
   .noc-error-row {
-    border-bottom: #CCC double 1px;
+    border-bottom: #ccc double 1px;
     width: 100%;
 
     .noc-number {
       padding: 18px 2px;
       @include deep-width(40px);
-      background-color: #DDD;
+      background-color: #ddd;
       font-size: 12px;
       text-align: center;
     }
@@ -39,7 +35,7 @@
       padding: 5px;
       @include deep-height(100px);
       @include deep-width(250px);
-      border: #AAA double 2px;
+      border: #aaa double 2px;
       font-size: 10px;
       text-align: center;
       overflow: hidden;
@@ -60,7 +56,7 @@
         padding-top: 15px;
         @include deep-height(35px);
         @include deep-width(100%);
-        border-bottom: #AAA solid 2px;
+        border-bottom: #aaa solid 2px;
         text-align: center;
       }
     }
@@ -76,7 +72,8 @@
     padding: 0;
   }
 
-  .mat-dialog-content {}
+  .mat-dialog-content {
+  }
 
   .dialog-content-wrapper {
     width: 900px;

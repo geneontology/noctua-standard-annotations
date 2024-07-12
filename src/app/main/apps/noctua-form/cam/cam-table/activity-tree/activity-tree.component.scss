@@ -1,7 +1,7 @@
-@use '@angular/material' as mat;
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
-@import "src/@noctua.common/scss/noctua-form.common";
+@use "@angular/material" as mat;
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
+@import "@noctua.common/scss/noctua-form.common";
 
 $primary: map-get($theme, primary);
 $accent: map-get($theme, accent);
@@ -372,21 +372,30 @@ $accent: map-get($theme, accent);
         &.noc-mf {
           border: mat.get-color-from-palette(mat.$green-palette, 300) solid 1px;
           .noc-icon {
-            background-color: mat.get-color-from-palette(mat.$green-palette, 100);
+            background-color: mat.get-color-from-palette(
+              mat.$green-palette,
+              100
+            );
           }
         }
 
         &.noc-bp {
           border: mat.get-color-from-palette(mat.$brown-palette, 300) solid 1px;
           .noc-icon {
-            background-color: mat.get-color-from-palette(mat.$brown-palette, 100);
+            background-color: mat.get-color-from-palette(
+              mat.$brown-palette,
+              100
+            );
           }
         }
 
         &.noc-cc {
           border: mat.get-color-from-palette(mat.$purple-palette, 300) solid 1px;
           .noc-icon {
-            background-color: mat.get-color-from-palette(mat.$purple-palette, 100);
+            background-color: mat.get-color-from-palette(
+              mat.$purple-palette,
+              100
+            );
           }
         }
       }

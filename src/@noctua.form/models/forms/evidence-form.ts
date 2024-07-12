@@ -34,8 +34,9 @@ export class EvidenceForm {
 
     populateEvidence(evidence: Evidence) {
         evidence.evidence = new Entity(this.evidence.value.id, this.evidence.value.label);
-        evidence.reference = this.reference.value;
-        evidence.with = this.with.value;
+
+        evidence.reference = this.reference.value ? this.reference.value.replace(/\s/g, '') : null;
+        evidence.with = this.with.value ? this.with.value.replace(/\s/g, '') : null;
     }
 
     onValueChanges(predicate: Predicate) {

@@ -12,7 +12,7 @@ import { NoctuaReviewSearchService } from './../../../services/noctua-review-sea
 import { ReviewMode } from './../../../models/review-mode';
 import { NoctuaSearchMenuService } from './../../../services/search-menu.service';
 import { MiddlePanel, LeftPanel, RightPanel } from './../../../models/menu-panels';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 
 @Component({
   selector: 'noc-cams-review-changes-dialog',

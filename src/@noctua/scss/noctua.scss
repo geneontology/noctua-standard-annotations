@@ -19,6 +19,8 @@ $noc-mf: #7cd488;
 $noc-bp: #f4c89c;
 $noc-cc: #d3b5f5;
 
+$primary: map-get($theme, primary);
+
 .ps__rail-x {
   top: 3px;
   top: initial !important;
@@ -175,6 +177,20 @@ mat-chip {
   }
 }
 
+.noc-evidence-db-trigger {
+  @include deep-height(20px);
+  @include deep-width(20px);
+
+  @include noc-icon-size(12px);
+}
+
+.mat-mdc-raised-button {
+  &.noc-primary {
+    color: #eee;
+    background-color: map-get($primary, default);
+  }
+}
+
 .noc-display-number {
   display: flex;
   align-items: center;
@@ -197,8 +213,17 @@ textarea {
   resize: none !important;
   overflow: hidden;
 }
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: $noc-primary-color !important;
+}
 
+// mat-label focused style
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: $noc-primary-color !important;
+}
 .mat-form-field {
+  //mat-input focused color
+
   .mat-form-field-wrapper {
     padding-bottom: 0;
   }
@@ -210,6 +235,18 @@ textarea {
   &.noc-sm {
     .mat-form-field-wrapper {
       font-size: 12px;
+    }
+
+    .mat-select {
+      height: 26px;
+      line-height: 14px;
+
+      .mat-select-value-text {
+        white-space: normal;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
 
     textarea {

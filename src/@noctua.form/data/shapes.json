@@ -2,7 +2,7 @@
   "goshapes": [
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150"
       ],
@@ -14,7 +14,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:24431",
         "CARO:0000000",
@@ -29,7 +29,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:24431",
         "CARO:0000000",
@@ -43,7 +43,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:24431"
       ],
@@ -55,7 +55,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:24431"
       ],
@@ -67,7 +67,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -79,7 +79,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:33695",
         "GO:0032991"
@@ -92,7 +92,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -104,7 +104,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -116,10 +116,11 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150",
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
@@ -129,10 +130,11 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150",
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
@@ -142,10 +144,11 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150",
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
@@ -155,7 +158,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150"
       ],
@@ -167,7 +170,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150"
       ],
@@ -179,7 +182,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150"
       ],
@@ -191,7 +194,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000",
         "NCBITaxon:1"
@@ -204,7 +207,7 @@
     },
     {
       "subject": "GO:0008150",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0044848",
         "UBERON:0000105",
@@ -501,7 +504,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:33695",
         "GO:0032991"
@@ -514,7 +517,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150"
       ],
@@ -526,7 +529,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0003674"
       ],
@@ -538,7 +541,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -550,7 +553,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:24431",
         "GO:0032991"
@@ -563,7 +566,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:24431",
         "GO:0032991"
@@ -576,7 +579,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:24431",
         "GO:0032991"
@@ -589,7 +592,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:24431",
         "GO:0032991"
@@ -602,9 +605,10 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
@@ -614,81 +618,88 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
       "context": "",
       "predicate": "RO:0002211",
-      "exclude_from_extensions": false
+      "exclude_from_extensions": true
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
       "context": "",
       "predicate": "RO:0002212",
-      "exclude_from_extensions": false
+      "exclude_from_extensions": true
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
       "context": "",
       "predicate": "RO:0002213",
-      "exclude_from_extensions": false
+      "exclude_from_extensions": true
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
       "context": "",
       "predicate": "RO:0002578",
-      "exclude_from_extensions": false
+      "exclude_from_extensions": true
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
       "context": "",
       "predicate": "RO:0002630",
-      "exclude_from_extensions": false
+      "exclude_from_extensions": true
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
       "context": "",
       "predicate": "RO:0002629",
-      "exclude_from_extensions": false
+      "exclude_from_extensions": true
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
@@ -698,9 +709,10 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
@@ -710,9 +722,10 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
@@ -722,9 +735,10 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
@@ -734,9 +748,10 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
@@ -746,7 +761,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:24431"
       ],
@@ -758,7 +773,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:24431"
       ],
@@ -770,7 +785,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:24431"
       ],
@@ -782,9 +797,10 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent",
         "GO:0008150"
       ],
       "is_multivalued": true,
@@ -795,7 +811,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150"
       ],
@@ -807,7 +823,7 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150"
       ],
@@ -819,46 +835,49 @@
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150",
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
       "context": "",
       "predicate": "RO:0002411",
-      "exclude_from_extensions": false
+      "exclude_from_extensions": true
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150",
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
       "context": "",
       "predicate": "RO:0002305",
-      "exclude_from_extensions": false
+      "exclude_from_extensions": true
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150",
-        "GO:0003674"
+        "GO:0003674",
+        "http://purl.obolibrary.org/obo/go/shapes/MolecularEvent"
       ],
       "is_multivalued": true,
       "is_required": false,
       "context": "",
       "predicate": "RO:0002304",
-      "exclude_from_extensions": false
+      "exclude_from_extensions": true
     },
     {
       "subject": "GO:0003674",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0044848",
         "UBERON:0000105",
@@ -936,7 +955,7 @@
     },
     {
       "subject": "CARO:0000000",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -948,7 +967,7 @@
     },
     {
       "subject": "CARO:0000000",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:33695",
         "GO:0032991"
@@ -961,7 +980,7 @@
     },
     {
       "subject": "CL:0000000",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -973,7 +992,7 @@
     },
     {
       "subject": "GO:0005575",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -985,7 +1004,7 @@
     },
     {
       "subject": "GO:0005575",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -997,7 +1016,7 @@
     },
     {
       "subject": "GO:0005575",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -1009,7 +1028,7 @@
     },
     {
       "subject": "GO:0005575",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150",
         "UBERON:0000105",
@@ -1023,7 +1042,7 @@
     },
     {
       "subject": "GO:0005575",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150",
         "UBERON:0000105",
@@ -1037,7 +1056,7 @@
     },
     {
       "subject": "GO:0032991",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -1049,9 +1068,10 @@
     },
     {
       "subject": "GO:0032991",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
-        "CARO:0000000"
+        "CARO:0000000",
+        "http://purl.obolibrary.org/obo/go/shapes/RootCellularComponent"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -1061,7 +1081,7 @@
     },
     {
       "subject": "GO:0032991",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -1073,7 +1093,7 @@
     },
     {
       "subject": "GO:0032991",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -1085,7 +1105,7 @@
     },
     {
       "subject": "GO:0032991",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CARO:0000000"
       ],
@@ -1097,7 +1117,7 @@
     },
     {
       "subject": "GO:0032991",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150",
         "UBERON:0000105",
@@ -1111,7 +1131,7 @@
     },
     {
       "subject": "GO:0032991",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0008150",
         "UBERON:0000105",
@@ -1125,7 +1145,7 @@
     },
     {
       "subject": "GO:0032991",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "CHEBI:33695",
         "GO:0032991"
@@ -1138,7 +1158,7 @@
     },
     {
       "subject": "CHEBI:24431",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0003674"
       ],
@@ -1150,7 +1170,7 @@
     },
     {
       "subject": "CHEBI:24431",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0003674"
       ],
@@ -1162,7 +1182,7 @@
     },
     {
       "subject": "CHEBI:24431",
-      "root_subject": null,
+      "root_subject": "",
       "object": [
         "GO:0003674"
       ],
@@ -1188,7 +1208,8 @@
       "subject": "CHEBI:36080",
       "root_subject": "CHEBI:24431",
       "object": [
-        "CARO:0000000"
+        "CARO:0000000",
+        "http://purl.obolibrary.org/obo/go/shapes/RootCellularComponent"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -1236,7 +1257,8 @@
       "subject": "CHEBI:33695",
       "root_subject": "CHEBI:24431",
       "object": [
-        "CARO:0000000"
+        "CARO:0000000",
+        "http://purl.obolibrary.org/obo/go/shapes/RootCellularComponent"
       ],
       "is_multivalued": false,
       "is_required": false,
