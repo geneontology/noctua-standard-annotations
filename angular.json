@@ -40,6 +40,12 @@
               "node_modules/reveal.js/dist/reveal.css",
               "node_modules/reveal.js/dist/theme/black.css"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src",
+                "./node_modules"
+              ]
+            },
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/jqueryui/jquery-ui.min.js",
@@ -115,11 +121,16 @@
             "styles": [
               "src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src",
+                "./node_modules"
+              ]
+            },
             "scripts": []
           }
         }
       }
     }
-  },
-  "defaultProject": "noctua"
+  }
 }

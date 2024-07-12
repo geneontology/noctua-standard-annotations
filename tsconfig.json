@@ -14,7 +14,7 @@
     "downlevelIteration": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2017",
+    "target": "es5",
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
