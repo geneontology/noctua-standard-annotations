@@ -129,7 +129,8 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
 
   private _addRootTerm(rootTerm) {
     const goterm = this.dynamicForm.get('goterm')
-    const evidenceFormGroup = this.dynamicForm.get('evidence') as FormGroup;
+    const evidenceCode = this.dynamicForm.get('evidenceCode')
+    const reference = this.dynamicForm.get('reference')
 
     const term = {
       "id": rootTerm.id,
@@ -143,13 +144,13 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
 
     goterm.patchValue(term);
 
-    evidenceFormGroup.patchValue({
-      evidenceCode: {
-        id: noctuaFormConfig.evidenceAutoPopulate.nd.evidence.id,
-        label: noctuaFormConfig.evidenceAutoPopulate.nd.evidence.label
-      },
-      reference: noctuaFormConfig.evidenceAutoPopulate.nd.reference
+    evidenceCode.patchValue({
+      id: noctuaFormConfig.evidenceAutoPopulate.nd.evidence.id,
+      label: noctuaFormConfig.evidenceAutoPopulate.nd.evidence.label
     });
+
+    reference.patchValue(noctuaFormConfig.evidenceAutoPopulate.nd.reference);
+
   }
 
 
