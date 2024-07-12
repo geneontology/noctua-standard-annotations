@@ -1,6 +1,6 @@
-<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-100-p">
+<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-full">
   <div class="noc-drawer-header" fxLayout="column" fxLayoutAlign="start stretch">
-    <div class="noc-header w-100-p" fxLayout="row" fxLayoutAlign="start center">
+    <div class="noc-header w-full" fxLayout="row" fxLayoutAlign="start center">
       <span class="noc-drawer-header-title">
         Find and Replace</span>
       <span fxFlex></span>
@@ -11,11 +11,14 @@
     </div>
     <noc-review-form class="pt-4 px-12"></noc-review-form>
   </div>
-  <div class="noc-drawer-body" noctuaPerfectScrollbar>
-    <div *ngIf="!noctuaUserService.user" class="noc-draw-body-disabled" fxLayoutAlign="center center">
+  <div class="noc-drawer-body">
+    @if (!noctuaUserService.user) {
+    <div class="noc-draw-body-disabled" fxLayoutAlign="center center">
       Log in to Continue
     </div>
-    <div *ngIf="summary?.stats.totalChanges>0" class="noc-stats-results" fxLayout="column" fxLayoutAlign="start center">
+    }
+    @if (summary?.stats.totalChanges>0) {
+    <div class="noc-stats-results" fxLayout="column" fxLayoutAlign="start center">
       <div class="noc-stat-summary">
         <span class="noc-number">
           {{summary?.stats.totalChanges }}
@@ -43,6 +46,7 @@
         </tr>
       </table>
     </div>
+    }
   </div>
   <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
 

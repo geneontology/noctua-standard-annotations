@@ -1,4 +1,4 @@
-<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-100-p">
+<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-full">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
       Graph Settings</span>
@@ -8,9 +8,9 @@
       <mat-icon>close</mat-icon> CLOSE
     </button>
   </div>
-  <div class="noc-drawer-body" noctuaPerfectScrollbar>
-    <form *ngIf="settingsForm" fxLayout="column" fxLayoutAlign="start stretch" name="settingsForm"
-      [formGroup]="settingsForm">
+  <div class="noc-drawer-body">
+    @if (settingsForm) {
+    <form fxLayout="column" fxLayoutAlign="start stretch" name="settingsForm" [formGroup]="settingsForm">
       <h2>Columns</h2>
       <mat-checkbox formControlName="showAspect" class="noc-checkbox" color="primary">Show Aspect
       </mat-checkbox>
@@ -29,5 +29,6 @@
       <mat-checkbox formControlName="showContributor" class="noc-checkbox" color="primary">Show Contributor
       </mat-checkbox>
     </form>
+    }
   </div>
 </div>

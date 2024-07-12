@@ -9,11 +9,11 @@
       </button>
     </mat-toolbar-row>
   </mat-toolbar>
-  <div class="noc-dialog-body noc-form-section" noctuaPerfectScrollbar>
+  <div class="noc-dialog-body noc-form-section">
     <div class="noc-stats-results" fxLayout="column" fxLayoutAlign="start center">
-      <div class="alert alert-warning w-100-p">
+      <div class="alert alert-warning w-full">
         {{message}}
-        <div class="noc-stat-summary w-100-p">
+        <div class="noc-stat-summary w-full">
           <span class="noc-number">
             {{summary?.stats.totalChanges }}
           </span>
@@ -46,14 +46,18 @@
       </table>
     </div>
   </div>
-  <div *ngIf="!readonlyDialog" class="m-0 p-16 noc-dialog-footer" fxLayout="row" fxLayoutAlign="space-between center">
+  @if (!readonlyDialog) {
+  <div class="m-0 p-16 noc-dialog-footer" fxLayout="row" fxLayoutAlign="space-between center">
     <button (click)='cancel()' type="button" mat-raised-button color="" class="mr-8">
       {{cancelLabel}}</button>
     <button (click)="confirm()" type="button" mat-raised-button color="primary">
       {{confirmLabel}}
     </button>
   </div>
-  <div *ngIf="readonlyDialog" class="m-0 p-16 noc-dialog-footer" fxLayout="row" fxLayoutAlign="space-between center">
+  }
+  @if (readonlyDialog) {
+  <div class="m-0 p-16 noc-dialog-footer" fxLayout="row" fxLayoutAlign="space-between center">
     <button (click)='cancel()' type="button" mat-raised-button color="" class="mr-8">Close</button>
   </div>
+  }
 </div>

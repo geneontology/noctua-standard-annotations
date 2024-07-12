@@ -1,21 +1,20 @@
-@use '@angular/material' as mat;
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
+@use "@angular/material" as mat;
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
 $primary: map-get($theme, primary);
 $accent: map-get($theme, accent);
 
 :host {
-
-  @include media-breakpoint('xs') {
+  @include media-breakpoint("xs") {
     width: 100%;
   }
 
-  @include media-breakpoint-up('sm') {
+  @include media-breakpoint-up("sm") {
     width: 600px;
   }
 
   .noc-section-body {
-    background-color: #EEE;
+    background-color: #eee;
   }
 
   .noc-term-box {
@@ -58,7 +57,6 @@ $accent: map-get($theme, accent);
       text-transform: uppercase;
     }
 
-
     .noc-paginator {
       @include deep-height(0);
     }
@@ -69,7 +67,6 @@ $accent: map-get($theme, accent);
       min-height: 40px;
       font-size: 12px;
     }
-
 
     .mat-cell {
       min-width: 0;
@@ -112,7 +109,8 @@ $accent: map-get($theme, accent);
     padding: 0;
   }
 
-  .mat-dialog-content {}
+  .mat-dialog-content {
+  }
 
   .dialog-content-wrapper {
     @include deep-width(100%);

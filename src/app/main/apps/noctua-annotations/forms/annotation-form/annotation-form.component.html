@@ -1,104 +1,152 @@
-<form name="annotationFormGroup" [formGroup]="annotationFormGroup" fxLayout="column" fxLayoutAlign="start center"
+<form name="dynamicForm" [formGroup]="dynamicForm" fxLayout="column" fxLayoutAlign="start center"
   class="noc-activity-form-container">
   <div class="noc-activity-form">
-    <div *ngIf="!noctuaUserService.user" class="noc-draw-body-disabled" fxLayoutAlign="center center">
+    @if (!noctuaUserService.user) {
+    <div class="noc-draw-body-disabled" fxLayoutAlign="center center">
       Log in to Continue
     </div>
+    }
     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
-      <div class="noc-section-body p-0" fxLayout="row" fxLayoutAlign="start center">
-        <div fxFlex="35" class="">
-          <noc-annotation-entity-form [entityFormGroup]="annotationFormGroup.get('gp')" fxLayout="row"
-            fxLayoutAlign="start center" class="w-100-p">
-          </noc-annotation-entity-form>
-        </div>
-        <div class="p-4 noc-go-term-box" fxFlex="30" fxLayout="column" fxLayoutAlign="start stretch">
+      <div class="p-0 px-3 pt-1" fxLayout="row" fxLayoutAlign="start end">
+        <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="gp" [label]="annotationActivity?.gp.label"
+          [category]="annotationActivity?.gp.category" solrField="gp"></noc-term-autocomplete>
+        <div class="p-1 " fxFlex="30" fxLayout="column" fxLayoutAlign="start stretch">
           <mat-checkbox class="noc-qualifier-cbx" formControlName="isComplement">NOT</mat-checkbox>
-          <mat-form-field appearance="outline" class="noc-sm w-100-p" [attr.data-cy]="'form-input-gpterm-relation'">
+          <mat-form-field appearance="fill" class="noc-sm w-full" [attr.data-cy]="'form-input-gpterm-relation'">
             <mat-label>GP to Term Relation</mat-label>
-            <mat-select panelClass="noc-term-autocomplete" placeholder="" formControlName="gpToTermEdge"
+            <mat-select class="" panelClass="noc-term-autocomplete" placeholder="" formControlName="gpToTermEdge"
               [compareWith]="compareFn">
-              <mat-option *ngFor="let item of annotationActivity.gpToTermEdges" [value]="item">
-                <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+              @for (item of annotationActivity?.gpToTermEdges; track item) {
+              <mat-option [value]="item">
+                <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
                   <div class="noc-term-label">
                     {{ item.label }}
                   </div>
                   <span fxFlex></span>
                   <div class="noc-term-id">
-                    <a *ngIf="item.link" (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
+                    @if (item.link) {
+                    <a (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
                       {{ item.id }}
                     </a>
-                    <span *ngIf="!item.link">
+                    }
+                    @if (!item.link) {
+                    <span>
                       {{ item.id }}
                     </span>
+                    }
                   </div>
                 </div>
               </mat-option>
+              }
             </mat-select>
           </mat-form-field>
         </div>
-        <div fxFlex="35" class="">
-          <noc-annotation-entity-form [entityFormGroup]="annotationFormGroup.get('goterm')" [selectTerm]="updateMenu"
-            fxLayout="row" fxLayoutAlign="start center" class="w-100-p">
-          </noc-annotation-entity-form>
-        </div>
-        <!--       <button mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
+        <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="goterm"
+          [label]="annotationActivity?.goterm.label" [category]="annotationActivity?.goterm.category"
+          solrField="goterm"></noc-term-autocomplete>
+
+        <button mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
           <mat-icon>more_vert</mat-icon>
         </button>
-        <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu noc-menu-panel">
+        <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu">
           <button mat-menu-item class="" (click)="addMFRootTerm()">
-            Add MF Root Term
+            Add MF Root
           </button>
-        </mat-menu> -->
+          <button mat-menu-item class="" (click)="addBPRootTerm()">
+            Add BP Root
+          </button>
+          <button mat-menu-item class="" (click)="addCCRootTerm()">
+            Add CC Root
+          </button>
+        </mat-menu>
       </div>
-    </div>
-    <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
-      <div class="noc-section-body p-0" fxLayout="column" fxLayoutAlign="start stretch">
-        <noc-annotation-evidence-form [entityFormGroup]="annotationFormGroup.get('goterm')" fxLayout="row"
-          fxLayoutAlign="start center" class="w-100-p">
-        </noc-annotation-evidence-form>
-      </div>
-    </div>
-    <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
-      <div class="noc-section-body p-0" fxLayout="row" fxLayoutAlign="start center">
-        <div fxFlex="50" class="">
-          <mat-form-field appearance="outline" class="noc-sm w-100-p" [attr.data-cy]="'form-input-extension-relation'">
-            <mat-label>Extension Relation</mat-label>
-            <mat-select panelClass="noc-term-autocomplete" placeholder="" formControlName="extensionEdge"
-              [compareWith]="compareFn">
-              <mat-option *ngFor="let item of annotationActivity.extensionEdges" [value]="item">
-                <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
-                  <div class="noc-term-label">
-                    {{ item.label }}
-                  </div>
-                  <span fxFlex></span>
-                  <div class="noc-term-id">
-                    <a *ngIf="item.link" (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
-                      {{ item.id }}
-                    </a>
-                    <span *ngIf="!item.link">
-                      {{ item.id }}
-                    </span>
-                  </div>
-                </div>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+      <div class="noc-section-header pr-8" fxLayout="row" fxLayoutAlign="start center">
+        <div class="noc-section-heading">
+          Evidence
         </div>
-        <div fxFlex="50" class="">
-          <noc-annotation-entity-form [entityFormGroup]="annotationFormGroup.get('extension')" fxLayout="row"
-            fxLayoutAlign="start center" class="w-100-p">
-          </noc-annotation-entity-form>
+        <span fxFlex></span>
+      </div>
+      <div class="p-0 px-3" fxLayout="row" fxLayoutAlign="start center">
+        <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="evidenceCode"
+          [autocompleteType]="AutocompleteType.EVIDENCE_CODE" [label]="annotationActivity?.evidenceCode.label"
+          [category]="annotationActivity?.evidenceCode.category" solrField="evidenceCode"></noc-term-autocomplete>
+        <noc-term-autocomplete fxFlex="30" class="p-1" formControlName="reference"
+          [autocompleteType]="AutocompleteType.REFERENCE" [label]="annotationActivity?.reference.label"
+          solrField="reference"></noc-term-autocomplete>
+        <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="withFrom"
+          [label]="annotationActivity?.with.label" solrField="withFrom"></noc-term-autocomplete>
+        <div fxFlex="40px"></div>
+      </div>
+      <div class="noc-section-header pr-4" fxLayout="row" fxLayoutAlign="start center">
+        <div class="noc-section-heading">
+          Extensions
+        </div>
+        <span fxFlex></span>
+        <!--  <button mat-stroked-button (click)="addExtension()" type="submit" class="noc-xs noc-rounded-button"
+          color="primary">
+          Add
+        </button> -->
+      </div>
+      <div formArrayName="annotationExtensions" class="px-3 pt-1" fxLayout="column" fxLayoutAlign="start center">
+        <div *ngFor="let item of annotationExtensions.controls; let i=index" [formGroupName]="i" class="w-full">
+          <div class="p-1" fxFlex="35" fxLayout="column" fxLayoutAlign="start stretch">
+            <mat-form-field appearance="fill" class="noc-sm w-full" [attr.data-cy]="'form-input-extension-relation'">
+              <mat-label>Extension Relation</mat-label>
+              <mat-select class="" panelClass="noc-term-autocomplete" placeholder="" formControlName="extensionEdge"
+                [compareWith]="compareFn">
+                @for (item of annotationActivity?.extensions[i]?.extensionEdges; track item) {
+                <mat-option [value]="item">
+                  <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
+                    <div class="noc-term-label">
+                      {{ item.label }}
+                    </div>
+                    <span fxFlex></span>
+                    <div class="noc-term-id">
+                      @if (item.link) {
+                      <a (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
+                        {{ item.id }}
+                      </a>
+                      }
+                      @if (!item.link) {
+                      <span>
+                        {{ item.id }}
+                      </span>
+                      }
+                    </div>
+                  </div>
+                </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <noc-term-autocomplete fxFlex="" class="p-1" formControlName="extensionTerm"
+            [label]="annotationActivity?.extensions[i]?.extensionTerm.label"
+            [category]="annotationActivity?.extensions[i]?.extensionTerm?.category"
+            solrField="extensionTerm"></noc-term-autocomplete>
+          <button mat-icon-button (click)="deleteExtension(i)" class="text-warn">
+            <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
+          </button>
         </div>
       </div>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
-      <button *ngIf="hasErrors()" (click)='checkErrors()' mat-button color="warn" class="noc-rounded-button noc-sm">
-        Why is the "Save" button disabled?
-      </button>
-      <span fxFlex></span>
-      <button (click)='clear()' type="button" mat-raised-button color="" class="mr-8">Clear</button>
-      <button [disabled]="hasErrors()" (click)="save()" type="submit" class="" mat-raised-button color="primary"
-        [attr.data-cy]="'save-annotation-button'">Save</button>
+      <div class="pl-4 py-4">
+        <button mat-stroked-button (click)="addExtension()" class="noc-xs px-2 w-[170px] noc-rounded-button "
+          color="primary">
+          Add @if(annotationActivity?.extensions.length>1) {<span>Another</span>} Extension
+        </button>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer py-6 px-4">
+        @if (hasErrors()) {
+        <button (click)='checkErrors()' mat-button color="warn" class="noc-rounded-button noc-sm">
+          Why is the "Save" button disabled?
+        </button>
+        }
+        <span fxFlex></span>
+        <button mat-stroked-button (click)='clearForm()' color="primary"
+          class="mr-[8px!important] noc-rounded-button">Clear</button>
+        <button mat-stroked-button [disabled]="hasErrors()" (click)="save()" type="submit"
+          class="noc-rounded-button noc-primary" color="accent" [attr.data-cy]="'save-annotation-button'">Save</button>
+      </div>
     </div>
   </div>
 </form>

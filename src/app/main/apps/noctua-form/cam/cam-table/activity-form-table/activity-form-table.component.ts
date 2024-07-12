@@ -32,7 +32,7 @@ import { takeUntil } from 'rxjs/operators';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 import { SettingsOptions } from '@noctua.common/models/graph-settings';
 import { TableOptions } from '@noctua.common/models/table-options';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 
 @Component({
   selector: 'noc-activity-form-table',

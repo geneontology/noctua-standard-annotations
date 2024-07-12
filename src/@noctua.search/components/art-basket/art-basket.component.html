@@ -1,6 +1,6 @@
-<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-100-p">
+<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-full">
   <div class="noc-drawer-header" fxLayout="column" fxLayoutAlign="start stretch">
-    <div class="noc-header w-100-p" fxLayout="row" fxLayoutAlign="start center">
+    <div class="noc-header w-full" fxLayout="row" fxLayoutAlign="start center">
       <span class="noc-drawer-header-title">
         Annotation Review</span>
       <span fxFlex></span>
@@ -11,17 +11,22 @@
     </div>
     <noc-review-form class="pt-4 px-12"></noc-review-form>
   </div>
-  <div class="noc-drawer-body" noctuaPerfectScrollbar>
-    <div *ngIf="!noctuaUserService.user" class="noc-draw-body-disabled" fxLayoutAlign="center center">
+  <div class="noc-drawer-body">
+    @if (!noctuaUserService.user) {
+    <div class="noc-draw-body-disabled" fxLayoutAlign="center center">
       Log in to Continue
     </div>
-    <div *ngFor="let cam of cams" id="{{'noc-basket-'+cam.displayId}}" (click)="selectItem(cam)" class="noc-group-row"
+    }
+    @for (cam of cams; track cam) {
+    <div id="{{'noc-basket-'+cam.displayId}}" (click)="selectItem(cam)" class="noc-group-row"
       [ngClass]="{'noc-selected': cam.id===camService.currentMatch?.modelId}" fxLayout="column"
       fxLayoutAlign="start stretch">
-      <mat-progress-bar *ngIf="cam.loading.status" class="noc-cam-progress" [color]="loadingSpinner.color"
-        [mode]="loadingSpinner.mode">
+      @if (cam.loading.status) {
+      <mat-progress-bar class="noc-cam-progress" [color]="loadingSpinner.color" [mode]="loadingSpinner.mode">
       </mat-progress-bar>
-      <div *ngIf="cam.modified" class="noc-modified-header w-100-p" fxLayout="row" fxLayoutAlign="start center">
+      }
+      @if (cam.modified) {
+      <div class="noc-modified-header w-full" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-title">Modified Model:
         </div>
         <span fxFlex></span>
@@ -41,30 +46,35 @@
           Save
         </button>
       </div>
-      <div class="noc-item-body w-100-p" fxLayout="row" fxLayoutAlign="start center">
-        <div class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start start">
+      }
+      <div class="noc-item-body w-full" fxLayout="row" fxLayoutAlign="start center">
+        <div class="w-full h-full" fxLayout="column" fxLayoutAlign="start start">
           <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
             <div class="noc-title">Title:</div> {{cam.title}}
           </div>
           <div class="noc-item" fxLayout="row" fxLayoutAlign="start center">
             <div class="noc-title">State:</div> {{cam.state?.label}}
           </div>
-          <div *ngIf="cam.moreDetail" class="w-100-p">
+          @if (cam.moreDetail) {
+          <div class="w-full">
             <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
               <div class="noc-title">Contributors:</div>
-              <div class="mr-8" *ngFor="let contributor of cam.contributors" matTooltip="{{contributor.name}}"
-                [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
+              @for (contributor of cam.contributors; track contributor) {
+              <div class="mr-8" matTooltip="{{contributor.name}}" [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="1000">
                 {{contributor.name ? contributor.name :contributor.orcid}};
               </div>
+              }
             </div>
             <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
               <div class="noc-title">Groups:</div>
-              <span class="" *ngFor="let group of cam.groups" matTooltip="{{group.name}}" [matTooltipPosition]="'below'"
-                [matTooltipShowDelay]="1000">
+              @for (group of cam.groups; track group) {
+              <span class="" matTooltip="{{group.name}}" [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
                 <div class="noc-chip-label">
                   {{group.name ? group.name :group.url}}
                 </div>
               </span>
+              }
             </div>
             <div class="noc-item" fxLayout="row" fxLayoutAlign="start center">
               <div class="noc-title">Open In:</div>
@@ -81,14 +91,19 @@
               </a>
             </div>
           </div>
+          }
           <div class="noc-item">
             <a (click)="$event.stopPropagation();cam.moreDetail =!cam.moreDetail" class="noc-more-details-button">
-              <span *ngIf="!cam.moreDetail">More Details
+              @if (!cam.moreDetail) {
+              <span>More Details
                 <fa-icon [icon]="['fas', 'angle-double-down']"></fa-icon>
               </span>
-              <span *ngIf="cam.moreDetail">Less Details
+              }
+              @if (cam.moreDetail) {
+              <span>Less Details
                 <fa-icon [icon]="['fas', 'angle-double-up']"></fa-icon>
               </span>
+              }
             </a>
           </div>
         </div>
@@ -96,25 +111,26 @@
         <button class="noc-remove-button" mat-icon-button (click)="remove(cam)" color="warn">X</button>
       </div>
     </div>
+    }
   </div>
   <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
-    <ng-container *ngIf="noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.cams">
-      <button (click)="clear()" type="button" mat-raised-button>Clear List</button>
-    </ng-container>
-    <ng-container *ngIf="noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.camsReview">
-      <button (click)="clear()" type="button" mat-raised-button>Clear List</button>
-      <span fxFlex=""></span>
-      <button (click)='resetCams()' type="button" mat-raised-button color="" class="mr-8">Undo Changes</button>
-      <button (click)="reviewChanges()" type="submit" class="" mat-raised-button color="primary">
-        Review Changes
-      </button>
-    </ng-container>
-    <ng-container *ngIf="noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.reviewChanges">
-      <span fxFlex=""></span>
-      <button (click)='backToReview()' type="button" mat-raised-button color="" class="mr-8">Back</button>
-      <button (click)="submitChanges()" type="submit" class="" mat-raised-button color="primary">
-        Submit
-      </button>
-    </ng-container>
+    @if (noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.cams) {
+    <button (click)="clear()" type="button" mat-raised-button>Clear List</button>
+    }
+    @if (noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.camsReview) {
+    <button (click)="clear()" type="button" mat-raised-button>Clear List</button>
+    <span fxFlex=""></span>
+    <button (click)='resetCams()' type="button" mat-raised-button color="" class="mr-8">Undo Changes</button>
+    <button (click)="reviewChanges()" type="submit" class="" mat-raised-button color="primary">
+      Review Changes
+    </button>
+    }
+    @if (noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.reviewChanges) {
+    <span fxFlex=""></span>
+    <button (click)='backToReview()' type="button" mat-raised-button color="" class="mr-8">Back</button>
+    <button (click)="submitChanges()" type="submit" class="" mat-raised-button color="primary">
+      Submit
+    </button>
+    }
   </div>
 </div>

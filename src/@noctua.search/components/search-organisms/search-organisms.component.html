@@ -1,4 +1,4 @@
-<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-100-p">
+<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-full">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
       Browse By Species</span>
@@ -8,14 +8,13 @@
       <mat-icon>close</mat-icon> CLOSE
     </button>
   </div>
-  <form fxLayout="column" fxLayoutAlign="start stretch" class="mt-8 noc-search-form" noctuaPerfectScrollbar>
-    <div fxFlex *ngFor="let organism of noctuaSearchService.organisms" (click)="selectOrganism(organism)"
-      class="noc-organism-row" fxLayout="row" fxLayoutAlign="start center">
+  <form fxLayout="column" fxLayoutAlign="start stretch" class="mt-8 noc-search-form">
+    @for (organism of noctuaSearchService.organisms; track organism) {
+    <div fxFlex (click)="selectOrganism(organism)" class="noc-organism-row" fxLayout="row" fxLayoutAlign="start center">
       <div class="noc-name">
         {{ organism.taxonName }}
       </div>
-      <div class="w-100-p" fxLayout="column" fxLayoutAlign="center center">
-
+      <div class="w-full" fxLayout="column" fxLayoutAlign="center center">
         <!--  <div class="">
           <strong>{{ organism.cams }}</strong> Models
         </div> -->
@@ -25,5 +24,6 @@
         chevron_right
       </mat-icon>
     </div>
+    }
   </form>
 </div>

@@ -1,5 +1,5 @@
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
 
 :host {
   @include deep-width(100%);

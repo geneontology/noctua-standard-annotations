@@ -2,6 +2,7 @@ export {
     ActivityNode,
     ActivityNodeType,
     ActivityNodeDisplay,
+    GoCategory,
     compareNodeWeight
 } from './activity-node';
 export {
@@ -15,7 +16,6 @@ export {
     ActivityTreeNode,
     compareActivity
 } from './activity';
-export { AnnotationActivity } from './annotation-activity';
 export {
     Cam,
     CamRebuildSignal,

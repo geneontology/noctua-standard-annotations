@@ -1,5 +1,5 @@
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
 
 $primary: map-get($theme, primary);
 $accent: map-get($theme, accent);
@@ -10,9 +10,14 @@ $grid-line-color: rgba(#000, 0.1);
   width: 100%;
   height: 100%;
 
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
   background-size: 10px 10px;
-  background-image: linear-gradient(to right, $grid-line-color 1px, transparent 1px), linear-gradient(to bottom, $grid-line-color 1px, transparent 1px);
+  background-image: linear-gradient(
+      to right,
+      $grid-line-color 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, $grid-line-color 1px, transparent 1px);
 
   .noc-graph-holder {
     @include deep-height(100%);
@@ -30,8 +35,6 @@ $grid-line-color: rgba(#000, 0.1);
     font-size: 10px;
     text-align: center;
     overflow: hidden;
-
-
 
     label {
       display: block;

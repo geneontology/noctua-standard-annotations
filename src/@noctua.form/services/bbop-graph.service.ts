@@ -1,7 +1,6 @@
 import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import * as ModelDefinition from './../data/config/model-definition';
 import * as EntityDefinition from './../data/config/entity-definition';
@@ -11,7 +10,7 @@ import { NoctuaFormConfigService } from './config/noctua-form-config.service';
 import { NoctuaLookupService } from './lookup.service';
 import { NoctuaUserService } from './../services/user.service';
 import { Activity, ActivityType, compareActivity } from './../models/activity/activity';
-import { find, each, differenceWith, cloneDeep, uniqWith, chain, filter, uniq } from 'lodash';
+import { find, each, differenceWith, chain, uniq } from 'lodash';
 import { CardinalityViolation, RelationViolation } from './../models/activity/error/violation-error';
 import { CurieService } from './../../@noctua.curie/services/curie.service';
 import { ActivityNode, ActivityNodeType, compareTerm, GoCategory } from './../models/activity/activity-node';
@@ -24,14 +23,12 @@ import { TermsSummary } from './../models/activity/summary';
 import { Article } from './../models/article';
 import { Contributor, equalContributor } from '../models/contributor';
 import * as moment from 'moment';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { graph as bbopGraph } from 'bbop-graph-noctua';
-import { AnnotationActivity } from './../models/activity/annotation-activity';
 
 declare const require: any;
 
 //const model = require('bbop-graph-noctua');
-const barista_client = require('bbop-client-barista');
 const amigo = require('amigo2');
 const barista_response = require('bbop-response-barista');
 const minerva_requests = require('minerva-requests');
@@ -117,37 +114,11 @@ export class BbopGraphService {
     return manager;
   }
 
-  registerBaristaClient(cam: Cam) {
-    const self = this;
-    const barclient = new barista_client(environment.globalBaristaLocation, this.noctuaUserService.baristaToken);
-    //barclient.register('connect', resFunc);
-    //barclient.register('initialization', resFunc);
-    // barclient.register('message', resFunc);
-    //barclient.register('broadcast', resFunc);
-    //barclient.register('clairvoyance', resFunc);
-    //barclient.register('telekinesis', resFunc);
-    barclient.register('merge', function (response) {
-      console.log('barista/merge response');
-      self.onCamMergeSignal(cam, response)
-    });
-    // _on_model_update);
-    barclient.register('rebuild', function (response) {
-      console.log('barista/rebuild response');
-      self.onCamRebuildSignal(cam, response)
-
-    });
-
-    barclient.connect(cam.id);
-
-    return barclient;
-  }
-
   getGraphInfo(cam: Cam, modelId) {
     const self = this;
 
     cam.loading = new CamLoadingIndicator(true, 'Loading Model Activities ...');
     cam.id = modelId;
-    //cam.baristaClient = this.registerBaristaClient(cam);
     cam.manager = this.registerManager();
     cam.copyModelManager = this.registerManager();
     cam.artManager = this.registerManager();

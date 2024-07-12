@@ -1,54 +1,67 @@
-<div [formGroup]="entityFormGroup" fxLayout="row" fxLayoutAlign="start center" class="w-100-p">
-  <div *ngIf="displaySection.relationship" class="noc-edit-field p-4" fxFlex="300px" fxLayout="row"
-    fxLayoutAlign="start stretch">
-    <div class="p-4 w-100-p">
-      <mat-form-field appearance="outline" class="noc-sm w-100-p">
+<div [formGroup]="entityFormGroup" fxLayout="row" fxLayoutAlign="start center" class="w-full">
+  @if (displaySection.relationship) {
+  <div class="noc-edit-field p-4" fxFlex="300px" fxLayout="row" fxLayoutAlign="start stretch">
+    <div class="p-4 w-full">
+      <mat-form-field appearance="outline" class="noc-sm w-full">
         <mat-label>Choose GP to Term Relation</mat-label>
         <mat-select placeholder="" [compareWith]="compareEntity" formControlName="relationship">
-          <mat-option *ngFor="let relationshipChoice of relationshipChoices" [value]="relationshipChoice">
+          @for (relationshipChoice of relationshipChoices; track relationshipChoice) {
+          <mat-option [value]="relationshipChoice">
             {{relationshipChoice.label}}
           </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
   </div>
-  <div *ngIf="displaySection.term" class="noc-edit-field p-4" fxFlex="250px" fxLayout="row"
-    fxLayoutAlign="start stretch">
-    <mat-form-field class="noc-sm w-100-p" appearance="outline">
+  }
+  @if (displaySection.term) {
+  <div class="noc-edit-field p-4" fxFlex="250px" fxLayout="row" fxLayoutAlign="start stretch">
+    <mat-form-field class="noc-sm w-full" appearance="outline">
       <mat-label>{{entity.label}}</mat-label>
       <textarea type="text" matInput formControlName="term" [matAutocomplete]="termAuto" row="2"
         (focus)="updateTermList()">
       </textarea>
       <mat-autocomplete #termAuto="matAutocomplete" [displayWith]="termDisplayFn" class="noc-term-autocomplete">
-        <mat-option *ngFor="let item of entity?.termLookup.results" [value]="item">
-          <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+        @for (item of entity?.termLookup.results; track item) {
+        <mat-option [value]="item">
+          <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
             <div class="noc-term-label">
               {{ item.label }}
             </div>
             <span fxFlex></span>
             <div class="noc-term-id">
-              <a *ngIf="item.link" (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
+              @if (item.link) {
+              <a (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
                 {{ item.id }}
               </a>
-              <span *ngIf="!item.link">
+              }
+              @if (!item.link) {
+              <span>
                 {{ item.id }}
               </span>
+              }
             </div>
           </div>
         </mat-option>
+        }
       </mat-autocomplete>
     </mat-form-field>
   </div>
-  <ng-container *ngIf="evidenceFormGroup" [formGroup]="evidenceFormGroup">
-    <div *ngIf="displaySection.evidence" class="noc-edit-field p-4" fxFlex="250px">
-      <mat-form-field appearance="outline" class="noc-sm w-100-p">
+  }
+  @if (evidenceFormGroup) {
+  <ng-container [formGroup]="evidenceFormGroup">
+    @if (displaySection.evidence) {
+    <div class="noc-edit-field p-4" fxFlex="250px">
+      <mat-form-field appearance="outline" class="noc-sm w-full">
         <mat-label>Evidence</mat-label>
         <textarea type="text" matInput formControlName="evidence" [matAutocomplete]="evidenceAuto" rows="2"
           (focus)="updateEvidenceList()"></textarea>
         <mat-autocomplete #evidenceAuto="matAutocomplete" [displayWith]="evidenceDisplayFn"
           class="noc-term-autocomplete">
-          <mat-option *ngFor="let item of entity?.predicate?.evidenceLookup.results" [value]="item">
-            <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+          @for (item of entity?.predicate?.evidenceLookup.results; track item) {
+          <mat-option [value]="item">
+            <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
               <div class="noc-term-label">
                 {{ item.label }}
               </div>
@@ -59,20 +72,27 @@
                 </strong>
               </div>
               <div class="noc-term-id">
-                <a *ngIf="item.link" (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
+                @if (item.link) {
+                <a (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
                   {{ item.id }}
                 </a>
-                <span *ngIf="!item.link">
+                }
+                @if (!item.link) {
+                <span>
                   {{ item.id }}
                 </span>
+                }
               </div>
             </div>
           </mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
     </div>
-    <div *ngIf="displaySection.reference" class="noc-edit-field p-4" fxFlex="150px">
-      <mat-form-field appearance="outline" class="noc-sm w-100-p">
+    }
+    @if (displaySection.reference) {
+    <div class="noc-edit-field p-4" fxFlex="150px">
+      <mat-form-field appearance="outline" class="noc-sm w-full">
         <mat-label>Reference</mat-label>
         <textarea matInput formControlName="reference" [matAutocomplete]="referenceAuto" rows="2" autocomplete="off"
           (focus)="updateReferenceList()"></textarea>
@@ -81,45 +101,57 @@
           <mat-icon>playlist_add</mat-icon>
         </button>
         <mat-autocomplete #referenceAuto="matAutocomplete" class="noc-term-autocomplete">
-          <mat-option *ngFor="let item of entity?.predicate?.referenceLookup.results" [value]="item">
-            <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+          @for (item of entity?.predicate?.referenceLookup.results; track item) {
+          <mat-option [value]="item">
+            <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
               <div class="noc-term-label">
                 {{ item }}
               </div>
             </div>
           </mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
     </div>
-    <div *ngIf="displaySection.with" class="noc-edit-field p-4" fxFlex fxFlex="150px">
-      <mat-form-field appearance="outline" class="noc-sm w-100-p">
+    }
+    @if (displaySection.with) {
+    <div class="noc-edit-field p-4" fxFlex fxFlex="150px">
+      <mat-form-field appearance="outline" class="noc-sm w-full">
         <mat-label>With</mat-label>
         <textarea matInput formControlName="with" [matAutocomplete]="withAuto" rows="2" (focus)="updateWithList()"
           autocomplete="off"></textarea>
         <mat-autocomplete #withAuto="matAutocomplete" class="noc-term-autocomplete">
-          <mat-option *ngFor="let item of entity?.predicate?.withLookup.results" [value]="item">
-            <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+          @for (item of entity?.predicate?.withLookup.results; track item) {
+          <mat-option [value]="item">
+            <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
               <div class="noc-term-label">
                 {{ item }}
               </div>
             </div>
           </mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
     </div>
+    }
   </ng-container>
-  <button *ngIf="true" mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
+  }
+  @if (true) {
+  <button mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
     <mat-icon>more_vert</mat-icon>
   </button>
+  }
   <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu">
     <!-- <button mat-menu-item *ngIf="entity.aspect" class="" (click)="openSearchDatabaseDialog(entity)">
-      Search Annotations
-    </button>
-    
-    <button mat-menu-item [matMenuTriggerFor]="evidenceMenu">Evidence</button> -->
-    <button mat-menu-item *ngIf="entity.aspect" class="" (click)="addRootTerm()">
+    Search Annotations
+  </button>
+
+  <button mat-menu-item [matMenuTriggerFor]="evidenceMenu">Evidence</button> -->
+    @if (entity.aspect) {
+    <button mat-menu-item class="" (click)="addRootTerm()">
       Add Root Term
     </button>
+    }
   </mat-menu>
   <mat-menu #evidenceMenu="matMenu">
 

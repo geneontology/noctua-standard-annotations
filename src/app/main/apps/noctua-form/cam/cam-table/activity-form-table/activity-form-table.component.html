@@ -1,4 +1,4 @@
-<div *ngIf="activity" [attr.id]="activity.displayId" fxLayout="column" fxLayoutAlign="start stretch" class="w-100-p"
+<div *ngIf="activity" [attr.id]="activity.displayId" fxLayout="column" fxLayoutAlign="start stretch" class="w-full"
   [ngClass]="{'noc-selected': activity.displayId===camService.currentMatch?.activityDisplayId}">
 
   <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
@@ -28,10 +28,10 @@
 
               <div class="noc-annotation-row" fxFlex="" fxLayout="column" fxLayoutAlign="start stretch">
                 <noc-activity-form-table-node *ngIf="node.data.node?.id ===activity.gpNode?.id" [settings]="gpSettings"
-                  [options]="gpOptions" [cam]="cam" [activity]="activity" [entity]="node.data.node" class="w-100-p">
+                  [options]="gpOptions" [cam]="cam" [activity]="activity" [entity]="node.data.node" class="w-full">
                 </noc-activity-form-table-node>
                 <noc-activity-form-table-node *ngIf="node.data.node?.id !==activity.gpNode?.id" [settings]="settings"
-                  [options]="options" [cam]="cam" [activity]="activity" [entity]="node.data.node" class="w-100-p">
+                  [options]="options" [cam]="cam" [activity]="activity" [entity]="node.data.node" class="w-full">
                 </noc-activity-form-table-node>
               </div>
             </div>
@@ -68,7 +68,7 @@
               <div class="noc-annotation-row" fxFlex="" fxLayout="column" fxLayoutAlign="start stretch">
 
                 <noc-activity-form-table-node [settings]="settings" [options]="options" [cam]="cam"
-                  [activity]="activity" [entity]="node.data.node" class="w-100-p">
+                  [activity]="activity" [entity]="node.data.node" class="w-full">
                 </noc-activity-form-table-node>
               </div>
             </div>

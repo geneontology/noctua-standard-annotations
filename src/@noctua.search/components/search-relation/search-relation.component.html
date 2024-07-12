@@ -1,5 +1,5 @@
 <form fxLayout="column" fxLayoutAlign="start stretch" name="searchForm" [formGroup]="searchForm"
-  class="noc-drawer h-100-p">
+  class="noc-drawer h-full">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
       Search Relations</span>
@@ -9,9 +9,9 @@
       <mat-icon>close</mat-icon> CLOSE
     </button>
   </div>
-  <div class="noc-drawer-body noc-filter-form" noctuaPerfectScrollbar>
+  <div class="noc-drawer-body noc-filter-form">
     <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
-      <div class="noc-section-body pt-8" fxLayout="column" fxLayoutAlign="start stretch">
+      <div class="noc-section-body pt-1" fxLayout="column" fxLayoutAlign="start stretch">
         <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm">
             <mat-label>Subject</mat-label>
@@ -19,9 +19,9 @@
               placeholder="e.g. an upstream activity"></textarea>
             <mat-autocomplete #subjectAuto="matAutocomplete" [displayWith]="termDisplayFn"
               class="noc-term-autocomplete">
-              <mat-option class="noc-term-autocomplete" *ngFor="let item of searchFormData['subject']?.searchResults"
-                [value]="item">
-                <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+              @for (item of searchFormData['subject']?.searchResults; track item) {
+              <mat-option class="noc-term-autocomplete" [value]="item">
+                <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
                   <div class="noc-term-label">
                     {{ item.label }}
                   </div>
@@ -31,6 +31,7 @@
                   </div>
                 </div>
               </mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
         </div>
@@ -41,9 +42,9 @@
               placeholder="e.g. a causal relation" rows="2"></textarea>
             <mat-autocomplete #predicateAuto="matAutocomplete" [displayWith]="termDisplayFn"
               class="noc-term-autocomplete">
-              <mat-option class="noc-term-autocomplete" *ngFor="let item of searchFormData['predicate']?.searchResults"
-                [value]="item">
-                <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+              @for (item of searchFormData['predicate']?.searchResults; track item) {
+              <mat-option class="noc-term-autocomplete" [value]="item">
+                <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
                   <div class="noc-term-label">
                     {{ item.label }}
                   </div>
@@ -53,6 +54,7 @@
                   </div>
                 </div>
               </mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
         </div>
@@ -62,9 +64,9 @@
             <textarea type="text" matInput formControlName="object" [matAutocomplete]="objectAuto"
               placeholder="e.g. a downstream activity" rows="2"></textarea>
             <mat-autocomplete #objectAuto="matAutocomplete" [displayWith]="termDisplayFn" class="noc-term-autocomplete">
-              <mat-option class="noc-term-autocomplete" *ngFor="let item of searchFormData['object']?.searchResults"
-                [value]="item">
-                <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+              @for (item of searchFormData['object']?.searchResults; track item) {
+              <mat-option class="noc-term-autocomplete" [value]="item">
+                <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
                   <div class="noc-term-label">
                     {{ item.label }}
                   </div>
@@ -74,6 +76,7 @@
                   </div>
                 </div>
               </mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
         </div>
@@ -81,9 +84,11 @@
     </div>
   </div>
   <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
-    <button *ngIf="false" (click)='cancel()' type="button" mat-raised-button color="" class="mr-8">
+    @if (false) {
+    <button (click)='cancel()' type="button" mat-raised-button color="" class="mr-8">
       Why is the "Search" button disabled?
     </button>
+    }
     <span fxFlex></span>
     <button (click)='clear()' type="button" mat-raised-button color="" class="mr-8">Clear</button>
     <button (click)="search()" type="button" mat-raised-button color="primary">Search</button>

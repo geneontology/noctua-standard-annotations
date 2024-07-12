@@ -12,7 +12,7 @@ import {
   ActivityDisplayType,
 } from '@geneontology/noctua-form-base';
 
-import { MatPaginatorIntl } from '@angular/material/paginator';
+import { MatLegacyPaginatorIntl as MatPaginatorIntl } from '@angular/material/legacy-paginator';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
 import { SelectionModel } from '@angular/cdk/collections';

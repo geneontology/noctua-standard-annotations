@@ -1,11 +1,13 @@
 <div class="noc-drawer-body" fxLayout="column" fxLayoutAlign="start stretch">
-  <div *ngIf="!noctuaUserService.user" class="noc-draw-body-disabled" fxLayoutAlign="center center">
-    Log in to Continue
-  </div>
+  @if (!noctuaUserService.user) {
+    <div class="noc-draw-body-disabled" fxLayoutAlign="center center">
+      Log in to Continue
+    </div>
+  }
 
   <div class="noc-summary-bar" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-header-title">
-      Review and submit changes</span>
+    Review and submit changes</span>
   </div>
   <div class="noc-stats-results" fxLayout="column" fxLayoutAlign="start center">
     <div class="noc-stat-summary">
@@ -38,32 +40,34 @@
       </tr>
     </table>
     <!--   <div fxLayout="row" fxLayoutAlign="start center">
-      <div fxFlex="200px">
-        Summary
-      </div>
-      <div fxFlex>
-        Details
-      </div>
+    <div fxFlex="200px">
+      Summary
     </div>
-    <div fxLayout="row" fxLayoutAlign="start center">
-      <div fxFlex="200px">
-        Terms
-      </div>
-      <div fxFlex>
-        <div *ngFor="let modelSummary of summary">
-          <div *ngFor="let term of modelSummary.changes?.terms">
-            <div *ngFor="let termHistory of term.termHistory">
-              {{term.label}} -> {{termHistory.label}}
-            </div>
+    <div fxFlex>
+      Details
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div fxFlex="200px">
+      Terms
+    </div>
+    <div fxFlex>
+      <div *ngFor="let modelSummary of summary">
+        <div *ngFor="let term of modelSummary.changes?.terms">
+          <div *ngFor="let termHistory of term.termHistory">
+            {{term.label}} -> {{termHistory.label}}
           </div>
         </div>
       </div>
-    </div> -->
-  </div>
-  <div *ngIf="artBasket?.cams.length===0" class="noc-no-info">
+    </div>
+  </div> -->
+</div>
+@if (artBasket?.cams.length===0) {
+  <div class="noc-no-info">
     No models to review
     <a (click)="selectMiddlePanel(MiddlePanel.camsReview)">
       Add Models
     </a>
   </div>
+}
 </div>

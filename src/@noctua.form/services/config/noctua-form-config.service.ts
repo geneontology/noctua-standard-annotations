@@ -18,7 +18,7 @@ import { Predicate } from './../../models/activity/predicate';
 import { DataUtils } from '../../data/config/data-utils';
 import shexJson from './../../data/shapes.json';
 import gpToTermJson from './../../data/gp-to-term.json';
-import { AnnotationActivity, AnnotationEdgeConfig } from './../../models/activity/annotation-activity';
+import { AnnotationActivity, AnnotationEdgeConfig, AnnotationExtension } from './../../models/standard-annotation/annotation-activity';
 
 @Injectable({
   providedIn: 'root'
@@ -338,6 +338,8 @@ export class NoctuaFormConfigService {
 
     const criteria = {} as AnnotationEdgeConfig
 
+    let evidence: Evidence = null;
+
     if (activity.activityType === ActivityType.ccOnly || activity.activityType === ActivityType.molecule) {
       annotationActivity.gp = activity.gpNode;
 
@@ -347,6 +349,7 @@ export class NoctuaFormConfigService {
           criteria.gpToTermPredicate = edge.predicate.edge.id;
           annotationActivity.goterm = edge.object;
           annotationActivity.gp.predicate = edge.predicate;
+          evidence = edge.predicate.evidence?.[0] ?? null;
         }
 
       });
@@ -355,6 +358,7 @@ export class NoctuaFormConfigService {
       criteria.gpToTermPredicate = noctuaFormConfig.edge.enabledBy.id;
       annotationActivity.gp = activity.gpNode;
       annotationActivity.goterm = activity.mfNode;
+      evidence = activity.mfNode.predicate.evidence?.[0] ?? null;;
 
       if (activity.mfNode?.term.id === noctuaFormConfig.rootNode.mf.id) {
         criteria.mfNodeRequired = true;
@@ -363,13 +367,7 @@ export class NoctuaFormConfigService {
 
             annotationActivity.gpToTermEdge = edge.predicate.edge
             criteria.mfToTermPredicate = edge.predicate.edge.id;
-
             annotationActivity.goterm = edge.object;
-
-            activity.getEdges(edge.object.id).forEach((extensionEdge) => {
-              annotationActivity.extensionEdge = extensionEdge.predicate.edge;
-              annotationActivity.extension = extensionEdge.object;
-            });
           }
         });
       }
@@ -390,29 +388,39 @@ export class NoctuaFormConfigService {
       true
     );
 
-    this._getAnnotationExtensions(activity, annotationActivity)
+    annotationActivity.extensions = this._getAnnotationExtensions(activity, annotationActivity.goterm.id)
 
+    annotationActivity.evidenceCode.term = evidence?.evidence;
+    annotationActivity.reference.term = new Entity(evidence?.reference, evidence?.reference);
+    annotationActivity.with.term = evidence?.withEntity;
 
     return annotationActivity
   }
 
-  private _getAnnotationExtensions(activity: Activity, annotationActivity: AnnotationActivity) {
 
-    const edges = activity.getEdges(annotationActivity.goterm.id)
 
-    edges.forEach((edge) => {
+  private _getAnnotationExtensions(activity: Activity, id: string): AnnotationExtension[] {
 
-      const allowedPredicate = this.getTermRelations(edge.subject.rootTypes, edge.object.rootTypes)
+    const extension: AnnotationExtension[] = []
+    const triples = activity.getEdges(id)
+
+    triples.forEach((triple) => {
+
+      const allowedPredicate = this.getTermRelations(triple.subject.rootTypes, triple.object.rootTypes)
 
       const isAllowedPredicate = allowedPredicate.some((predicate) => {
-        return predicate.id === edge.predicate.edge.id
+        return predicate.id === triple.predicate.edge.id
       });
 
       if (isAllowedPredicate) {
-        annotationActivity.extensionEdge = edge.predicate.edge;
-        annotationActivity.extension = edge.object;
+        const annotationExtension = new AnnotationExtension();
+        annotationExtension.extensionEdge = triple.predicate.edge;
+        annotationExtension.extensionTerm = triple.object;
+        extension.push(annotationExtension);
       }
     });
+
+    return extension;
   }
 
 

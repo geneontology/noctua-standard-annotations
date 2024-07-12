@@ -1,4 +1,22 @@
-$noc-border-color: #BBB;
+$noc-border-color: #bbb;
+
+@mixin custom-button-styles {
+  .mat-button,
+  .mat-raised-button,
+  .mat-icon-button,
+  .mat-stroked-button,
+  .mat-flat-button,
+  .mat-fab,
+  .mat-mini-fab {
+    height: 40px;
+    width: 40px;
+    min-width: 40px;
+    line-height: 40px;
+    padding: 0;
+  }
+}
+
+//@include custom-button-styles();
 
 .noc-rounded-button {
   border-radius: 20px !important;
