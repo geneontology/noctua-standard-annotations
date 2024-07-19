@@ -1,3 +1,5 @@
+import { Entity } from "./activity/entity";
+
 export interface GOlrResponse {
   id: string;
   label: string;
@@ -5,7 +7,7 @@ export interface GOlrResponse {
   description: string;
   isObsolete: boolean;
   replacedBy: string;
-  rootTypes: any[];
+  rootTypes: Entity[];
   xref: string;
   notAnnotatable: boolean;
 }

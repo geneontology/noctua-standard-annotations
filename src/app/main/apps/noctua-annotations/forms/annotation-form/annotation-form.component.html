@@ -9,13 +9,14 @@
     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="p-0 px-3 pt-1" fxLayout="row" fxLayoutAlign="start end">
         <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="gp" [label]="annotationActivity?.gp.label"
-          [category]="annotationActivity?.gp.category" solrField="gp"></noc-term-autocomplete>
+          [category]="annotationActivity?.gp.category"></noc-term-autocomplete>
         <div class="p-1 " fxFlex="30" fxLayout="column" fxLayoutAlign="start stretch">
           <mat-checkbox class="noc-qualifier-cbx" formControlName="isComplement">NOT</mat-checkbox>
           <mat-form-field appearance="fill" class="noc-sm w-full" [attr.data-cy]="'form-input-gpterm-relation'">
             <mat-label>GP to Term Relation</mat-label>
             <mat-select class="" panelClass="noc-term-autocomplete" placeholder="" formControlName="gpToTermEdge"
               [compareWith]="compareFn">
+              <mat-option [value]="null">None</mat-option>
               @for (item of annotationActivity?.gpToTermEdges; track item) {
               <mat-option [value]="item">
                 <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
@@ -42,8 +43,8 @@
           </mat-form-field>
         </div>
         <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="goterm"
-          [label]="annotationActivity?.goterm.label" [category]="annotationActivity?.goterm.category"
-          solrField="goterm"></noc-term-autocomplete>
+          [label]="annotationActivity?.goterm.label"
+          [category]="annotationActivity?.goterm.category"></noc-term-autocomplete>
 
         <button mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
           <mat-icon>more_vert</mat-icon>
@@ -69,12 +70,12 @@
       <div class="p-0 px-3" fxLayout="row" fxLayoutAlign="start center">
         <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="evidenceCode"
           [autocompleteType]="AutocompleteType.EVIDENCE_CODE" [label]="annotationActivity?.evidenceCode.label"
-          [category]="annotationActivity?.evidenceCode.category" solrField="evidenceCode"></noc-term-autocomplete>
+          [category]="annotationActivity?.evidenceCode.category"></noc-term-autocomplete>
         <noc-term-autocomplete fxFlex="30" class="p-1" formControlName="reference"
-          [autocompleteType]="AutocompleteType.REFERENCE" [label]="annotationActivity?.reference.label"
-          solrField="reference"></noc-term-autocomplete>
+          [autocompleteType]="AutocompleteType.REFERENCE"
+          [label]="annotationActivity?.reference.label"></noc-term-autocomplete>
         <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="withFrom"
-          [label]="annotationActivity?.with.label" solrField="withFrom"></noc-term-autocomplete>
+          [label]="annotationActivity?.with.label" [autocompleteType]="AutocompleteType.WITH"></noc-term-autocomplete>
         <div fxFlex="40px"></div>
       </div>
       <div class="noc-section-header pr-4" fxLayout="row" fxLayoutAlign="start center">
@@ -94,6 +95,7 @@
               <mat-label>Extension Relation</mat-label>
               <mat-select class="" panelClass="noc-term-autocomplete" placeholder="" formControlName="extensionEdge"
                 [compareWith]="compareFn">
+                <mat-option [value]="null">None</mat-option>
                 @for (item of annotationActivity?.extensions[i]?.extensionEdges; track item) {
                 <mat-option [value]="item">
                   <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
@@ -132,6 +134,39 @@
         <button mat-stroked-button (click)="addExtension()" class="noc-xs px-2 w-[170px] noc-rounded-button "
           color="primary">
           Add @if(annotationActivity?.extensions.length>1) {<span>Another</span>} Extension
+        </button>
+      </div>
+
+
+
+
+      <div class="noc-section-header pr-4" fxLayout="row" fxLayoutAlign="start center">
+        <div class="noc-section-heading">
+          Comments
+        </div>
+        <span fxFlex></span>
+      </div>
+      <div formArrayName="annotationComments" class="px-3 pt-1" fxLayout="column" fxLayoutAlign="start center">
+        <div *ngFor="let item of annotationComments.controls; let i=index" [formGroupName]="i" class="w-full">
+          <div class="p-1" fxFlex="60" fxLayout="column" fxLayoutAlign="start stretch">
+            <mat-form-field appearance="fill" class="noc-sm w-full">
+              <mat-label>Comment</mat-label>
+              <textarea type="text" matInput formControlName="comment" rows="2"></textarea>
+            </mat-form-field>
+          </div>
+          <button mat-icon-button (click)="deleteExtension(i)" class="text-warn">
+            <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
+          </button>
+        </div>
+      </div>
+
+
+
+
+      <div class="pl-4 py-4">
+        <button mat-stroked-button (click)="addComment() " class="noc-xs px-2 w-[170px] noc-rounded-button "
+          color="primary">
+          Add Comment(s)
         </button>
       </div>
 

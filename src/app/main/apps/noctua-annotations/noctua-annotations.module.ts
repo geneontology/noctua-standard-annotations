@@ -31,7 +31,7 @@ import { NoctuaFormModule } from '../noctua-form/noctua-form.module';
 import { AnnotationFormComponent } from './forms/annotation-form/annotation-form.component';
 import { AnnotationsTableComponent } from './table/annotations-table.component';
 import { AnnotationNodeComponent } from './table/annotation-node/annotation-node.component';
-import { TermAutocompleteComponent } from './forms/term-autocomplete/term-autocomplete.component';
+import { NoctuaAutocompleteModule } from '@noctua.autocomplete/noctua-autocomplete.module';
 
 const routes = [
   {
@@ -72,6 +72,7 @@ const routes = [
     MatTableModule,
     MatTooltipModule,
     NoctuaFormModule,
+    NoctuaAutocompleteModule,
   ],
   exports: [
     NoctuaAnnotationsComponent
@@ -84,7 +85,6 @@ const routes = [
     AnnotationFormComponent,
     AnnotationsTableComponent,
     AnnotationNodeComponent,
-    TermAutocompleteComponent
   ],
 })
 

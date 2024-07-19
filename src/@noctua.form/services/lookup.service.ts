@@ -16,6 +16,7 @@ import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 import * as EntityDefinition from './../data/config/entity-definition';
 import * as ShapeUtils from './../data/config/shape-utils';
 import { GOlrResponse } from './../models/golr';
+import { AutocompleteType } from './../models/autocomplete';
 
 declare const require: any;
 
@@ -59,7 +60,7 @@ export class NoctuaLookupService {
   lookupFunc() {
     return {
       termLookup: this.termLookup.bind(this),
-      evidenceLookup: this.evidenceLookup.bind(this)
+      // evidenceLookup: this.evidenceLookup.bind(this)
     };
   }
 
@@ -94,66 +95,92 @@ export class NoctuaLookupService {
     );
   }
 
-  termPreLookup(type: ActivityNodeType): Entity[] {
-    const self = this;
-
-    const filtered = filter(self.termList, (activityNode: ActivityNode) => {
-      return activityNode.type === type;
-    });
-
-    return filtered.map((activityNode: ActivityNode) => {
-      return activityNode.term;
-    });
+  preLookup(autocompleteType: AutocompleteType, categories: GoCategory[]) {
+    switch (autocompleteType) {
+      case AutocompleteType.TERM:
+        return this.termPreLookup(categories);
+      case AutocompleteType.EVIDENCE_CODE:
+        return this.evidencePreLookup();
+      case AutocompleteType.REFERENCE:
+        return this.referencePreLookup();
+      case AutocompleteType.WITH:
+        return this.withPreLookup();
+      default:
+        return [];
+    }
   }
 
-  evidencePreLookup(): Entity[] {
-    const self = this;
+  termPreLookup(categories: GoCategory[]): GOlrResponse[] {
 
+    if (!categories || categories.length === 0) {
+      return [];
+    }
+
+    const results: GOlrResponse[] = this.termList.map((node) => {
+      return {
+        id: node.term.id,
+        label: node.term.label,
+        rootTypes: node.rootTypes,
+        notAnnotatable: true,
+      } as GOlrResponse;
+
+    }).filter((result) =>
+      result.rootTypes.some((rootType) =>
+        categories.some((category) => category.category === rootType.id)
+      )
+    );;
+
+    return results;
+
+  }
+
+  evidencePreLookup(): GOlrResponse[] {
     const filtered = uniqWith(this.evidenceList, compareEvidenceEvidence);
     return filtered.map((evidence: Evidence) => {
-      return evidence.evidence;
+      return {
+        id: evidence.evidence.id,
+        label: evidence.evidence.label,
+        notAnnotatable: true,
+      } as GOlrResponse;
     });
   }
 
   referencePreLookup(): string[] {
-    const self = this;
 
-    const filtered = uniqWith(self.evidenceList, compareEvidenceReference);
+    const filtered = uniqWith(this.evidenceList, compareEvidenceReference);
     return filtered.map((evidence: Evidence) => {
-      return evidence.reference;
+      return evidence.reference
     });
   }
 
   withPreLookup(): string[] {
-    const self = this;
 
-    const filtered = uniqWith(self.evidenceList, compareEvidenceWith);
+    const filtered = uniqWith(this.evidenceList, compareEvidenceWith);
     return filtered.map((evidence: Evidence) => {
-      return evidence.with;
+      return evidence.with
     });
   }
 
-  evidenceLookup(searchText: string, category: 'reference' | 'with'): string[] {
-    const self = this;
-
-    const filterValue = searchText.toLowerCase();
-    let filteredResults: string[] = [];
-
-    switch (category) {
-      case 'reference':
-        filteredResults = self.referencePreLookup().filter(
-          option => option ? option.toLowerCase().includes(filterValue) : false
-        );
-        break;
-      case 'with':
-        filteredResults = self.withPreLookup().filter(
-          option => option ? option.toLowerCase().includes(filterValue) : false
-        );
-        break;
-    }
-
-    return filteredResults;
-  }
+  /*  evidenceLookup(searchText: string, category: 'reference' | 'with'): string[] {
+ 
+     const filterValue = searchText.toLowerCase();
+     let filteredResults: string[] = [];
+ 
+     switch (category) {
+       case 'reference':
+         filteredResults = this.referencePreLookup().filter(
+           option => option ? option.toLowerCase().includes(filterValue) : false
+         );
+         break;
+       case 'with':
+         filteredResults = this.withPreLookup().filter(
+           option => option ? option.toLowerCase().includes(filterValue) : false
+         );
+         break;
+     }
+ 
+     return filteredResults;
+   } */
 
 
   companionLookup(gp, aspect, extraParams) {

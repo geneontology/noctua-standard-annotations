@@ -147,62 +147,6 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
 
   }
 
-  openSearchDatabaseDialog(entity: ActivityNode) {
-    const self = this;
-    const gpNode = this.noctuaActivityFormService.activity.gpNode;
-
-    if (gpNode) {
-      const data = {
-        readonly: false,
-        gpNode: gpNode.term,
-        aspect: entity.aspect,
-        entity: entity,
-        params: {
-          term: '',
-          evidence: ''
-        }
-      };
-
-      const success = function (selected) {
-        if (selected.term) {
-          entity.term = new Entity(selected.term.term.id, selected.term.term.label);
-
-          if (selected.evidences && selected.evidences.length > 0) {
-            entity.predicate.setEvidence(selected.evidences);
-          }
-          self.noctuaActivityFormService.initializeForm();
-        }
-      };
-
-      self.noctuaFormDialogService.openSearchDatabaseDialog(data, success);
-    } else {
-      // const error = new ActivityError(ErrorLevel.error, ErrorType.general,  "Please enter a gene product", meta)
-      //errors.push(error);
-      // self.dialogService.openActivityErrorsDialog(ev, entity, errors)
-    }
-  }
-
-
-  insertEntity(entity: ActivityNode, predExpr: ShapeDefinition.PredicateExpression) {
-    const insertedNode = this.noctuaFormConfigService.insertActivityNodeShex(this.annotationActivity.activity, entity, predExpr);
-
-    //  this.noctuaActivityFormService.initializeForm();
-
-    const data = {
-      cam: this.cam,
-      activity: this.annotationActivity.activity,
-      entity: insertedNode,
-      category: EditorCategory.all,
-      evidenceIndex: 0,
-      insertEntity: true
-    };
-
-    this.camService.onCamChanged.next(this.cam);
-    this.camService.activity = this.annotationActivity.activity;
-    this.noctuaActivityEntityService.initializeForm(this.annotationActivity.activity, insertedNode);
-    this.inlineEditorService.open(this.currentMenuEvent.target, { data });
-  }
-
   addRootTerm(entity: ActivityNode) {
     const self = this;
 
@@ -224,12 +168,6 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
     }
   }
 
-  clearValues(entity: ActivityNode) {
-    const self = this;
-
-    entity.clearValues();
-    self.noctuaActivityFormService.initializeForm();
-  }
 
   openSelectEvidenceDialog(entity: ActivityNode) {
     const self = this;
@@ -252,7 +190,7 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
         this.bbopGraphService.savePredicateComments(self.cam, entity.predicate, comments);
       }
     };
-    self.noctuaFormDialogService.openCommentsDialog(entity.predicate, success)
+    self.noctuaFormDialogService.openCommentsDialog(entity.predicate?.comments, success)
   }
 
   updateCurrentMenuEvent(event) {

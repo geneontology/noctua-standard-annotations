@@ -8,6 +8,7 @@ import { NoctuaEditorDropdownComponent } from './inline-editor/editor-dropdown/e
 import { NoctuaReferenceDropdownComponent } from './inline-reference/reference-dropdown/reference-dropdown.component';
 import { NoctuaWithDropdownComponent } from './inline-with/with-dropdown/with-dropdown.component';
 import { NoctuaDetailDropdownComponent } from './inline-detail/detail-dropdown/detail-dropdown.component';
+import { NoctuaEditorStandardDropdownComponent } from './inline-editor/standard-dropdown/standard-dropdown.component';
 
 @NgModule({
     declarations: [
@@ -16,6 +17,7 @@ import { NoctuaDetailDropdownComponent } from './inline-detail/detail-dropdown/d
         NoctuaEditorDropdownComponent,
         NoctuaReferenceDropdownComponent,
         NoctuaWithDropdownComponent,
+        NoctuaEditorStandardDropdownComponent
     ],
     imports: [
         CommonModule,
@@ -28,7 +30,8 @@ import { NoctuaDetailDropdownComponent } from './inline-detail/detail-dropdown/d
         NoctuaDetailDropdownComponent,
         NoctuaInlineEditorComponent,
         NoctuaReferenceDropdownComponent,
-        NoctuaWithDropdownComponent
+        NoctuaWithDropdownComponent,
+        NoctuaEditorStandardDropdownComponent
     ]
 })
 export class NoctuaEditorModule {

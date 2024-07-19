@@ -226,24 +226,34 @@ export class CamService {
     return self._bbopGraphService.deleteActivity(self.cam, deleteData.uuids, deleteData.triples);
   }
 
-  updateTermList(formActivity: Activity, entity: ActivityNode) {
+  updateTermList(formActivity?: Activity, entity?: ActivityNode) {
     this.noctuaLookupService.termList = this.getUniqueTerms(formActivity);
-    entity.termLookup.results = this.noctuaLookupService.termPreLookup(entity.type);
+
+    if (entity) {
+      entity.termLookup.results = this.noctuaLookupService.termPreLookup(entity.category);
+    }
   }
 
-  updateEvidenceList(formActivity: Activity, entity: ActivityNode) {
+  updateEvidenceList(formActivity?: Activity, entity?: ActivityNode) {
     this.noctuaLookupService.evidenceList = this.getUniqueEvidence(formActivity);
-    entity.predicate.evidenceLookup.results = this.noctuaLookupService.evidencePreLookup();
+    if (entity) {
+      entity.predicate.evidenceLookup.results = this.noctuaLookupService.evidencePreLookup();
+    }
   }
 
-  updateReferenceList(formActivity: Activity, entity: ActivityNode) {
+  updateReferenceList(formActivity?: Activity, entity?: ActivityNode) {
     this.noctuaLookupService.evidenceList = this.getUniqueEvidence(formActivity);
-    entity.predicate.referenceLookup.results = this.noctuaLookupService.referencePreLookup();
+
+    if (entity) {
+      entity.predicate.referenceLookup.results = this.noctuaLookupService.referencePreLookup();
+    }
   }
 
-  updateWithList(formActivity: Activity, entity: ActivityNode) {
+  updateWithList(formActivity?: Activity, entity?: ActivityNode) {
     this.noctuaLookupService.evidenceList = this.getUniqueEvidence(formActivity);
-    entity.predicate.withLookup.results = this.noctuaLookupService.withPreLookup();
+    if (entity) {
+      entity.predicate.withLookup.results = this.noctuaLookupService.withPreLookup();
+    }
   }
 
   getNodesByType(activityType: ActivityNodeType): any[] {

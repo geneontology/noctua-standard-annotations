@@ -177,17 +177,6 @@ mat-chip {
     border-bottom: $noc-primary-color-light solid 1px;
   }
 
-  .noc-paginator {
-    @include deep-height(0);
-  }
-
-  .activity {
-    position: relative;
-    cursor: pointer;
-    min-height: 40px;
-    font-size: 12px;
-  }
-
   .mat-cell {
     display: flex;
     align-items: center;
@@ -228,19 +217,6 @@ mat-chip {
       text-decoration: line-through rgba(#ec6868, 0.5);
     }
   }
-
-  .mat-column-id {
-    flex: 0 1 84px;
-  }
-
-  .mat-column-buttons {
-    flex: 0 1 80px;
-  }
-
-  /* .mat-header-cell {
-      display:flex;
-      justify-content:flex-end;
-     } */
 
   &.noc-selected {
     table {

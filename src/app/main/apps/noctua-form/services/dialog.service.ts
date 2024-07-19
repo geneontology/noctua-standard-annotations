@@ -149,11 +149,11 @@ export class NoctuaFormDialogService {
             });
     }
 
-    openCommentsDialog(predicate, success): void {
+    openCommentsDialog(comments: string[], success): void {
         this.dialogRef = this._matDialog.open(CommentsDialogComponent, {
             panelClass: 'noc-comments-dialog',
             data: {
-                predicate
+                comments
             },
             width: '600px',
         });
