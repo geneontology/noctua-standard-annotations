@@ -146,6 +146,14 @@ $accent: map-get($theme, accent);
         padding-bottom: 0;
       }
 
+      &.noc-comments-cell {
+        color: rgba(map-get($accent, default), 0.5);
+        .noc-comments-badge {
+          top: 5px;
+          right: 8px;
+        }
+      }
+
       .noc-edit-button {
         //: hidden;
         position: absolute;

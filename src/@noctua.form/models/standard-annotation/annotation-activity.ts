@@ -44,11 +44,11 @@ export class AnnotationActivity {
   evidenceCode = ShapeUtils.generateBaseTerm([]);
   reference = ShapeUtils.generateBaseTerm([]);
   with = ShapeUtils.generateBaseTerm([]);
+  comments: string[] = [];
 
   extensions: AnnotationExtension[] = [];
   gpToTermEdges: Entity[] = [];
   activity: Activity;
-  submitErrors = [];
 
 
   constructor(activity?: Activity) {
@@ -114,6 +114,8 @@ export class AnnotationActivity {
     this.reference.term.id = annotationForm.reference;
     this.with.term.id = annotationForm.withFrom;
 
+    this.comments = annotationForm.annotationComments.map(comment => comment.comment);
+
     annotationForm.annotationExtensions.forEach((ext, index) => {
       this.extensions[index].extensionEdge = ext.extensionEdge;
       this.extensions[index].extensionTerm.term.id = ext.extensionTerm.id;
@@ -126,7 +128,7 @@ export class AnnotationActivity {
 
     this._populateAnnotationActivity(annotationForm);
     const saveData = {
-      title: 'enabled by ' + this.gp?.term.label,
+      title: 'enabled by ' + annotationForm.gp?.label,
       triples: [],
       nodes: [this.gp, this.goterm],
       graph: null
@@ -190,6 +192,7 @@ export class AnnotationActivity {
 
     const predicateEntity = Entity.createEntity(edgeConfig);
     const predicate = new Predicate(predicateEntity, [evidence]);
+    predicate.comments = this.comments;
 
     return reverse
       ? new Triple(objectNode, subjectNode, predicate)

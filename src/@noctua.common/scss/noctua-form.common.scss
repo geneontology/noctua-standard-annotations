@@ -116,16 +116,18 @@ $noc-breakpoints: (
   }
   .noc-term-cell {
     min-width: 100px !important;
-    max-width: 180px !important;
+    max-width: 300px !important;
   }
 
   .noc-gp-cell {
     min-width: 100px !important;
-    max-width: 150px !important;
+    max-width: 200px !important;
   }
 
   .noc-extensions-cell {
     //@include deep-width(150px);
+    min-width: 100px !important;
+    max-width: 300px !important;
   }
 
   .noc-comments-cell {
@@ -134,20 +136,20 @@ $noc-breakpoints: (
 
   .noc-evidence-code-cell {
     min-width: 120px !important;
-    max-width: 200px !important;
+    // max-width: 300px !important;
   }
 
   .noc-reference-cell {
-    @include deep-width(100px);
+    @include deep-width(120px);
     @include noc-media-breakpoint("noc-lg") {
       @include deep-width(80px);
     }
   }
 
   .noc-with-cell {
-    @include deep-width(100px);
+    @include deep-width(120px);
     @include noc-media-breakpoint("noc-lg") {
-      @include deep-width(80px);
+      @include deep-width(100px);
     }
   }
 

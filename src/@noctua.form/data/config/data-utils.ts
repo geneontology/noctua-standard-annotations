@@ -53,11 +53,11 @@ export class DataUtils {
     return [...matchedPredicates];
   }
 
-  public static getObjects(shapes: ShexShapeAssociation[], subjectIds: string[]): string[] {
+  public static getObjects(shapes: ShexShapeAssociation[], subjectIds: string[], predicateId?: string): string[] {
     const objectsSet = new Set<string>();
 
     shapes.forEach(shape => {
-      if (subjectIds.includes(shape.subject)) {
+      if (subjectIds.includes(shape.subject) && (!predicateId || shape.predicate === predicateId)) {
         shape.object.forEach(obj => objectsSet.add(obj));
       }
     });
@@ -97,4 +97,5 @@ export class DataUtils {
 
     return predicates;
   }
+
 }

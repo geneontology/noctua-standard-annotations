@@ -485,14 +485,15 @@ export class NoctuaFormConfigService {
     ShapeUtils.setTermLookup(activityNode, goCategories);
   }
 
-  getObjectsRelations(subjectRootTypes: Entity[], gpToTerm = false) {
+
+  getObjectRange(subjectRootTypes: Entity[], predicateId?: string, gpToTerm = false) {
     if (!subjectRootTypes) return [];
 
     const subjectIds = subjectRootTypes.map((rootType) => {
       return rootType.id
     });
 
-    const objectIds = DataUtils.getObjects(gpToTerm ? gpToTermJson.goshapes : shexJson.goshapes, subjectIds);
+    const objectIds = DataUtils.getObjects(gpToTerm ? gpToTermJson.goshapes : shexJson.goshapes, subjectIds, predicateId);
 
     return objectIds.reduce((acc, term) => {
       const node = this.termLookupTable[term];
@@ -505,6 +506,7 @@ export class NoctuaFormConfigService {
     }, []);
 
   }
+
 
   addActivityNodeShex(activity: Activity,
     subjectNode: ActivityNode,

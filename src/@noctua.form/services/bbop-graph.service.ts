@@ -1259,6 +1259,13 @@ export class BbopGraphService {
           triple.predicate.edge.id
         ]);
 
+        if (triple.predicate.comments) {
+          reqs.add_annotation_to_fact('comment', triple.predicate.comments, null,
+            [subject,
+              object,
+              triple.predicate.edge.id]);
+        }
+
         each(triple.predicate.evidence, function (evidence: Evidence) {
           const evidenceReference = evidence.reference;
           const evidenceWith = evidence.with;

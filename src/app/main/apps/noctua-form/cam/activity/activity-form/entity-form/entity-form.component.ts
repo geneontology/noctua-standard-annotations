@@ -316,7 +316,7 @@ export class EntityFormComponent implements OnInit, OnDestroy {
 
   updateTermList() {
     const self = this;
-    this.camService.updateTermList(self.noctuaActivityFormService.activity, this.entity);
+    this.camService.updateTermList(self.noctuaActivityFormService.activity);
   }
 
   updateEvidenceList() {

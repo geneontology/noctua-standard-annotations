@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
-import { MatDrawer } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import {
@@ -13,8 +12,6 @@ import {
   NoctuaUserService,
   AnnotationActivity,
   noctuaFormConfig,
-  Evidence,
-  Entity,
   AnnotationExtension,
   AutocompleteType,
   ActivityError,
@@ -39,6 +36,7 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
   annotationFormGroup: FormGroup;
   searchCriteria: any = {};
   extensionFormArray: FormArray;
+  commentFormArray: FormArray;
   activity: Activity;
   errors: ActivityError[] = [];
 
@@ -49,6 +47,7 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
   annotationActivity: AnnotationActivity;
 
   dynamicForm: FormGroup;
+  comments: string[] = [];
 
   constructor(
     private noctuaAnnotationsDialogService: NoctuaAnnotationsDialogService,
@@ -94,6 +93,7 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
         this.activity = activity;
         this.annotationActivity = { ...this.noctuaAnnotationFormService.annotationActivity } as AnnotationActivity;
 
+
         this.cdr.markForCheck()
       });
 
@@ -109,6 +109,7 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
       gpToTermEdge: '',
       goterm: '',
       annotationExtensions: this.fb.array([]),
+      annotationComments: this.fb.array([]),
       evidenceCode: '',
       reference: '',
       withFrom: '',
@@ -150,7 +151,18 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
     });
 
     reference.patchValue(noctuaFormConfig.evidenceAutoPopulate.nd.reference);
+  }
 
+  openCommentsForm() {
+    const self = this;
+
+    const success = (comments) => {
+      if (comments) {
+        console.log('Comments:', comments);
+        this.comments = comments;
+      }
+    };
+    self.noctuaFormDialogService.openCommentsDialog(this.comments, success)
   }
 
 
@@ -166,7 +178,7 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
   save() {
     const self = this;
 
-    self.noctuaAnnotationFormService.saveAnnotation(this.dynamicForm)
+    self.noctuaAnnotationFormService.saveAnnotation(this.dynamicForm.value)
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(() => {
         self.noctuaAnnotationsDialogService.openInfoToast('Annotation successfully created.', 'OK');
@@ -182,10 +194,10 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
     this.dynamicForm.reset(this.getInitialFormStructure());
     this.annotationActivity.extensions = [];
     this.annotationExtensions.clear();
+    this.annotationComments.clear();
     this.noctuaAnnotationFormService.clearForm();
 
     this.cdr.markForCheck();
-    console.log(this.dynamicForm)
   }
 
   compareFn(o1: any, o2: any): boolean {
@@ -194,6 +206,10 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
 
   get annotationExtensions() {
     return this.dynamicForm.get('annotationExtensions') as FormArray;
+  }
+
+  get annotationComments() {
+    return this.dynamicForm.get('annotationComments') as FormArray;
   }
 
   addExtension() {
@@ -210,6 +226,18 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
   deleteExtension(index: number): void {
     this.annotationExtensions.removeAt(index);
     this.annotationActivity.extensions.splice(index, 1);
+    this.dynamicForm.updateValueAndValidity();
+  }
+
+  addComment() {
+    this.annotationComments.push(this.fb.group({
+      comment: ''
+    }));
+    this.dynamicForm.updateValueAndValidity();
+  }
+
+  deleteComment(index: number): void {
+    this.annotationComments.removeAt(index);
     this.dynamicForm.updateValueAndValidity();
   }
 
