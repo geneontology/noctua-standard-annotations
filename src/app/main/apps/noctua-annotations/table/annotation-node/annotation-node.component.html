@@ -25,7 +25,7 @@
       </span>
       @if (noctuaUserService.user && annotationActivity.gp.term && options.editableTerms) {
       <noctua-inline-editor [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.gp"
-        [category]="EditorCategory.term" class="noc-edit-button">
+        [category]="EditorCategory.TERM" class="noc-edit-button">
       </noctua-inline-editor>
       }
     </div>
@@ -36,10 +36,10 @@
         }
         <span>{{annotationActivity.gpToTermEdge.inverseEntity?.label}}</span>
       </span>
-      <!--      <noctua-inline-editor [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.gp"
-        [category]="EditorCategory.relationship" [relationshipChoices]="annotationActivity.gpToTermEdges"
+      <noctua-inline-editor [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.gp"
+        [category]="EditorCategory.RELATIONSHIP" [relationshipChoices]="annotationActivity.gpToTermEdges"
         class="noc-edit-button">
-      </noctua-inline-editor> -->
+      </noctua-inline-editor>
     </div>
     <div class="noc-term-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch" fxFlex=""
       [attr.id]="annotationActivity.goterm.term?.displayId"
@@ -64,11 +64,10 @@
       </span>
       @if (noctuaUserService.user && annotationActivity.goterm.term && options.editableTerms) {
       <noctua-inline-editor [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.goterm"
-        [category]="EditorCategory.term" class="noc-edit-button">
+        [category]="EditorCategory.TERM" class="noc-edit-button">
       </noctua-inline-editor>
       }
     </div>
-
     <div class="noc-evidence-code-cell noc-entity-cell" fxFlex fxLayout="column" fxLayoutAlign="start stretch"
       [ngClass]="{'noc-highlight-modified': annotationActivity.evidenceCode.term?.modified}">
       @if (annotationActivity.evidenceCode.term?.modified &&
@@ -86,6 +85,12 @@
           {{ annotationActivity.evidenceCode.term?.id }}
         </a>
       </span>
+
+      @if (noctuaUserService.user ) {
+      <noctua-inline-editor [cam]="cam" [annotationActivity]='annotationActivity'
+        [category]="EditorCategory.EVIDENCE_CODE" [editorType]="EditorType.STANDARD" class="noc-edit-button">
+      </noctua-inline-editor>
+      }
     </div>
     <div class="noc-reference-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch"
       [ngClass]="{'noc-highlight-match': annotationActivity.reference.term?.highlight,
@@ -109,6 +114,11 @@
         </a>
       </span>
       }
+      @if (noctuaUserService.user ) {
+      <noctua-inline-editor [cam]="cam" [annotationActivity]='annotationActivity' [category]="EditorCategory.REFERENCE"
+        [editorType]="EditorType.STANDARD" class="noc-edit-button">
+      </noctua-inline-editor>
+      }
 
     </div>
     <div class="noc-with-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch"
@@ -130,6 +140,12 @@
           {{annotationActivity.with.term?.label}}
         </a>
       </span>
+      }
+
+      @if (noctuaUserService.user ) {
+      <noctua-inline-editor [cam]="cam" [annotationActivity]='annotationActivity' [category]="EditorCategory.WITH"
+        [editorType]="EditorType.STANDARD" class="noc-edit-button">
+      </noctua-inline-editor>
       }
 
     </div>
@@ -161,7 +177,7 @@
             </a>
           </span>
           @if (noctuaUserService.user && extension.term && options.editableTerms) {
-          <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.term"
+          <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.TERM"
             class="noc-edit-button">
           </noctua-inline-editor>
           }

@@ -24,7 +24,7 @@ import {
   ShapeDefinition
 } from '@geneontology/noctua-form-base';
 
-import { EditorCategory } from '@noctua.editor/models/editor-category';
+import { EditorCategory, EditorType } from '@noctua.editor/models/editor-category';
 import { find } from 'lodash';
 import { InlineEditorService } from '@noctua.editor/inline-editor/inline-editor.service';
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
@@ -41,6 +41,7 @@ import { SettingsOptions } from '@noctua.common/models/graph-settings';
 })
 export class AnnotationNodeComponent implements OnInit, OnDestroy {
   EditorCategory = EditorCategory;
+  EditorType = EditorType;
   ActivityType = ActivityType;
   activityTypeOptions = noctuaFormConfig.activityType.options;
 
@@ -83,23 +84,6 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
 
   }
 
-  editEntity(entity: ActivityNode) {
-
-    const data = {
-      cam: this.cam,
-      activity: this.annotationActivity.activity,
-      entity: entity,
-      category: EditorCategory.all,
-      evidenceIndex: 0,
-      insertEntity: true
-    };
-
-    this.camService.onCamChanged.next(this.cam);
-    this.camService.activity = this.annotationActivity.activity;
-    this.noctuaActivityEntityService.initializeForm(this.annotationActivity.activity, entity);
-    this.inlineEditorService.open(this.currentMenuEvent.target, { data });
-  }
-
   toggleExpand(activity: Activity) {
     activity.expanded = !activity.expanded;
   }
@@ -114,37 +98,11 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
     this.noctuaFormDialogService.openCamErrorsDialog(errors);
   }
 
-
-  addEvidence(entity: ActivityNode) {
-    const self = this;
-
-    entity.predicate.addEvidence();
-    const data = {
-      cam: this.cam,
-      activity: this.annotationActivity.activity,
-      entity: entity,
-      category: EditorCategory.evidenceAll,
-      evidenceIndex: entity.predicate.evidence.length - 1
-    };
-
-    this.camService.onCamChanged.next(this.cam);
-    this.camService.activity = this.annotationActivity.activity;
-    this.noctuaActivityEntityService.initializeForm(this.annotationActivity.activity, entity);
-    this.inlineEditorService.open(this.currentMenuEvent.target, { data });
-
-    self.noctuaActivityFormService.initializeForm();
-  }
-
-
   removeEvidence(entity: ActivityNode, index: number) {
     const self = this;
 
     entity.predicate.removeEvidence(index);
     self.noctuaActivityFormService.initializeForm();
-  }
-
-  toggleIsComplement() {
-
   }
 
   addRootTerm(entity: ActivityNode) {

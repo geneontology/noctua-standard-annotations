@@ -1267,7 +1267,7 @@ export class BbopGraphService {
         }
 
         each(triple.predicate.evidence, function (evidence: Evidence) {
-          const evidenceReference = evidence.reference;
+          const evidenceReference = Evidence.formatReference(evidence.reference);
           const evidenceWith = evidence.with;
 
           reqs.add_evidence(evidence.evidence.id, evidenceReference, evidenceWith, triple.predicate.uuid);
@@ -1438,6 +1438,55 @@ export class BbopGraphService {
       }
     })
     localStorage.setItem(`activityLocations-${cam.id}`, JSON.stringify(locations));
+  }
+
+  // Noctua Standard Annotations
+  editEvidenceCode(cam: Cam, oldEvidenceCodes: Entity[], newEvidenceCode: string) {
+    const reqs = new minerva_requests.request_set(this.noctuaUserService.baristaToken, cam.id);
+
+    oldEvidenceCodes.forEach((code: Entity) => {
+      reqs.remove_type_from_individual(
+        class_expression.cls(code.id),
+        code.uuid,
+        cam.id,
+      );
+
+      reqs.add_type_to_individual(
+        class_expression.cls(newEvidenceCode),
+        code.uuid,
+        cam.id,
+      );
+
+      this.editUserEvidenceAnnotations(reqs, code.uuid)
+    });
+
+    reqs.store_model(cam.id);
+    return cam.replaceManager.request_with(reqs);
+  }
+
+  editReference(cam: Cam, oldReferences: Entity[], newReference: string) {
+    return this._editEvidenceAnnotation(cam, oldReferences, newReference, 'source');
+  }
+
+  editWith(cam: Cam, oldWiths: Entity[], newWith: string) {
+    return this._editEvidenceAnnotation(cam, oldWiths, newWith, 'with');
+  }
+
+  private _editEvidenceAnnotation(cam: Cam, oldEntities: Entity[], newAnnotation: string, annotationType: 'source' | 'with') {
+    const reqs = new minerva_requests.request_set(this.noctuaUserService.baristaToken, cam.id);
+
+    oldEntities.forEach((oldEntity: Entity) => {
+      reqs.remove_annotation_from_individual(annotationType, oldEntity.id, null, oldEntity.uuid);
+      reqs.add_annotation_to_individual(annotationType, newAnnotation, null, oldEntity.uuid);
+      this.editUserEvidenceAnnotations(reqs, oldEntity.uuid);
+    });
+
+    if (this.noctuaUserService.user && this.noctuaUserService.user.groups.length > 0) {
+      reqs.use_groups([this.noctuaUserService.user.group.id]);
+    }
+
+    reqs.store_model(cam.id);
+    return cam.replaceManager.request_with(reqs);
   }
 
   private _graphToActivityDFS(camGraph, activity: Activity, bbopEdges, subjectNode: ActivityNode) {

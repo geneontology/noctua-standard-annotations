@@ -1,4 +1,4 @@
-<mat-form-field class="noc-sm w-full" appearance="fill" [attr.data-cy]="'form-input-' + control">
+<mat-form-field class="noc-sm w-full" [appearance]="appearance" [attr.data-cy]="'form-input-' + control">
   <mat-label>{{label}}</mat-label>
   <textarea type="text" matInput [formControl]="control" [matAutocomplete]="termAuto" row="2" (focus)="onFocus()">
   </textarea>

@@ -11,9 +11,10 @@ import {
     ActivityNode,
     Activity,
     Cam,
-    Entity
+    Entity,
+    AnnotationActivity
 } from '@geneontology/noctua-form-base';
-import { EditorCategory } from './../models/editor-category';
+import { EditorCategory, EditorConfig, EditorType } from './../models/editor-category';
 
 @Component({
     selector: 'noctua-inline-editor',
@@ -26,10 +27,12 @@ export class NoctuaInlineEditorComponent implements OnInit, OnDestroy {
 
     @Input() cam: Cam;
     @Input() activity: Activity;
+    @Input() annotationActivity: AnnotationActivity;
     @Input() entity: ActivityNode;
     @Input() category: EditorCategory;
     @Input() evidenceIndex = 0;
     @Input() relationshipChoices: Entity[] = [];
+    @Input() editorType: EditorType = EditorType.DEFAULT;
 
     @ViewChild('editorDropdownTrigger', { read: ElementRef })
     private editorDropdownTrigger: ElementRef;
@@ -46,18 +49,29 @@ export class NoctuaInlineEditorComponent implements OnInit, OnDestroy {
     }
 
     openEditorDropdown(event) {
+
         const displayEntity = cloneDeep(this.entity);
-        const data = {
+        const data: EditorConfig = {
             cam: this.cam,
             activity: this.activity,
             entity: displayEntity,
             category: this.category,
             evidenceIndex: this.evidenceIndex,
-            relationshipChoices: this.relationshipChoices
+            relationshipChoices: this.relationshipChoices,
+
+            //for Standard Editor
+            editorType: this.editorType,
+            annotationActivity: this.annotationActivity,
         };
-        this.camService.onCamChanged.next(this.cam);
-        this.camService.activity = this.activity;
-        this.noctuaActivityEntityService.initializeForm(this.activity, displayEntity);
+
+        console.log('data', data);
+
+        if (this.editorType === EditorType.DEFAULT) {
+            this.camService.onCamChanged.next(this.cam);
+            this.camService.activity = this.activity;
+            this.noctuaActivityEntityService.initializeForm(this.activity, displayEntity);
+        }
+
         this.inlineEditorService.open(event.target, { data });
     }
 

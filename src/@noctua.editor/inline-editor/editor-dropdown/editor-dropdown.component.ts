@@ -104,11 +104,11 @@ export class NoctuaEditorDropdownComponent implements OnInit, OnDestroy {
   save() {
     const self = this;
     switch (self.category) {
-      case EditorCategory.term:
-      case EditorCategory.evidence:
-      case EditorCategory.reference:
-      case EditorCategory.with:
-      case EditorCategory.relationship:
+      case EditorCategory.TERM:
+      case EditorCategory.EVIDENCE:
+      case EditorCategory.REFERENCE:
+      case EditorCategory.WITH:
+      case EditorCategory.RELATIONSHIP:
         this.close();
         self.noctuaActivityEntityService.saveActivityReplace(self.cam).pipe(
           take(1),
@@ -131,13 +131,13 @@ export class NoctuaEditorDropdownComponent implements OnInit, OnDestroy {
 
           });
         break;
-      case EditorCategory.evidenceAll:
+      case EditorCategory.EVIDENCE_ALL:
         self.noctuaActivityEntityService.addEvidence().then(() => {
           this.close();
           self.noctuaFormDialogService.openInfoToast('Evidence successfully updated.', 'OK');
         });
         break;
-      case EditorCategory.all:
+      case EditorCategory.ALL:
         self.noctuaActivityEntityService.addIndividual().then(() => {
           this.close();
           self.noctuaFormDialogService.openInfoToast('Activity successfully updated.', 'OK');
@@ -242,27 +242,27 @@ export class NoctuaEditorDropdownComponent implements OnInit, OnDestroy {
 
   private _displaySection(category: EditorCategory) {
     switch (category) {
-      case EditorCategory.relationship:
+      case EditorCategory.RELATIONSHIP:
         this.displaySection.relationship = true;
         break;
-      case EditorCategory.term:
+      case EditorCategory.TERM:
         this.displaySection.term = true;
         break;
-      case EditorCategory.evidence:
+      case EditorCategory.EVIDENCE:
         this.displaySection.evidence = true;
         break;
-      case EditorCategory.reference:
+      case EditorCategory.REFERENCE:
         this.displaySection.reference = true;
         break;
-      case EditorCategory.with:
+      case EditorCategory.WITH:
         this.displaySection.with = true;
         break;
-      case EditorCategory.evidenceAll:
+      case EditorCategory.EVIDENCE_ALL:
         this.displaySection.evidence = true;
         this.displaySection.reference = true;
         this.displaySection.with = true;
         break;
-      case EditorCategory.all:
+      case EditorCategory.ALL:
         this.displaySection.term = true;
         this.displaySection.evidence = true;
         this.displaySection.reference = true;

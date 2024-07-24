@@ -19,27 +19,15 @@ import {
     NoctuaActivityFormService
 } from '@geneontology/noctua-form-base';
 import { NoctuaEditorStandardDropdownComponent } from './standard-dropdown/standard-dropdown.component';
+import { EditorDropdownDialogConfig, EditorType } from './../models/editor-category';
 
-export interface SearchCriiteria {
-    gp: string;
-    url: string;
-}
-
-export interface EditorDropdownDialogConfig {
-    panelClass?: string;
-    hasBackdrop?: boolean;
-    backdropClass?: string;
-    positionStrategy?: PositionStrategy;
-    width?: string;
-    data?: any;
-    useStandardDropdown?: boolean;
-}
 
 const DEFAULT_CONFIG: EditorDropdownDialogConfig = {
     hasBackdrop: true,
     backdropClass: 'dark-backdrop',
     panelClass: 'tm-file-preview-dialog-panel',
     // width: '600px',
+    editorType: EditorType.DEFAULT,
     data: null
 };
 
@@ -71,7 +59,10 @@ export class InlineEditorService {
         } */
 
     open(elementToConnectTo: ElementRef, config: EditorDropdownDialogConfig = {}): EditorDropdownOverlayRef {
-        const dialogConfig = { ...DEFAULT_CONFIG, ...config };
+        //const dialogConfig = { ...DEFAULT_CONFIG, ...config };
+        ////dialogConfig.editorType = config.data?.editorType ? config.data?.editorType : EditorType.DEFAULT;
+
+        const dialogConfig = { ...DEFAULT_CONFIG, ...config, editorType: config.data?.editorType ?? EditorType.DEFAULT };
 
         dialogConfig['positionStrategy'] = this._getPosition(elementToConnectTo);
         const overlayRef = this.createOverlay(dialogConfig);
@@ -100,10 +91,14 @@ export class InlineEditorService {
         const injector = this.createInjector(config, dialogRef);
 
         let containerPortal;
-        if (config.useStandardDropdown) {
-            containerPortal = new ComponentPortal(NoctuaEditorStandardDropdownComponent, null, injector);
-        } else {
-            containerPortal = new ComponentPortal(NoctuaEditorDropdownComponent, null, injector);
+
+        switch (config.editorType) {
+            case EditorType.STANDARD:
+                containerPortal = new ComponentPortal(NoctuaEditorStandardDropdownComponent, null, injector);
+                break;
+            default:
+                containerPortal = new ComponentPortal(NoctuaEditorDropdownComponent, null, injector);
+                break;
         }
 
         const containerRef: ComponentRef<any> = overlayRef.attach(containerPortal);

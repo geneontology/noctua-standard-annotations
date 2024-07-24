@@ -198,7 +198,7 @@
                   {{node.data.node?.predicate?.edge?.label}}
                   @if (noctuaUserService.user && node.data.node.relationEditable && options.editableRelation) {
                   <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="node.data.node"
-                    [category]="EditorCategory.relationship" class="noc-edit-button ml-12">
+                    [category]="EditorCategory.RELATIONSHIP" class="noc-edit-button ml-12">
                   </noctua-inline-editor>
                   }
                 </div>

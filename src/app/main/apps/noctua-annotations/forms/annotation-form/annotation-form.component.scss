@@ -44,20 +44,59 @@ $accent: map-get($theme, accent);
   }
 
   .noc-activity-form-container {
-    padding: 20px 10px;
-    background: linear-gradient(
-      to right,
-      lighten(map-get($primary, default), 20%),
-      lighten(map-get($primary, default), 2%)
-    );
+    padding: 30px 10px;
+    background-image: linear-gradient(
+        to right,
+        lighten(map-get($primary, default), 20%),
+        lighten(map-get($accent, default), 10%),
+        darken(map-get($primary, default), 1%)
+      ),
+      url("~assets/images/gene.jpeg");
   }
 
+  @keyframes gradientAnimation {
+    0% {
+      background: linear-gradient(
+        to right,
+        darken(map-get($accent, default), 15%),
+        #b4fbc8,
+        #fec8a6,
+        darken(map-get($primary, default), 15%)
+      );
+    }
+    50% {
+      background: linear-gradient(
+        to right,
+        darken(map-get($accent, default), 10%),
+        #a6e9fe,
+        #f6c8fa,
+        darken(map-get($primary, default), 10%)
+      );
+    }
+    100% {
+      background: linear-gradient(
+        to right,
+        darken(map-get($accent, default), 15%),
+        #b4fbc8,
+        #fec8a6,
+        darken(map-get($primary, default), 15%)
+      );
+    }
+  }
   .noc-activity-form {
     @include deep-width(800px);
     position: relative;
     padding: 5px;
-    background: linear-gradient(to right, #5b8cff, #a6e9fe, #f6c8fa);
+    //background: linear-gradient(to right, #5b8cff, #a6e9fe, #f6c8fa);
+    background: linear-gradient(
+      to right,
+      darken(map-get($accent, default), 15%),
+      #b4fbc8,
+      #fec8a6,
+      darken(map-get($primary, default), 15%)
+    );
     border-radius: 12px;
+    // animation: gradientAnimation 13s ease infinite;
     &:before {
       content: "";
       position: absolute;
@@ -75,7 +114,7 @@ $accent: map-get($theme, accent);
     }
 
     .noc-form-section {
-      background-color: #e8f1fc;
+      background-color: lighten(map-get($primary, default), 25%);
       border-radius: 12px;
 
       .noc-section-header {

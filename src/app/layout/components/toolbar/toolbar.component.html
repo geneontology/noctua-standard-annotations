@@ -31,7 +31,7 @@
     @if (showLoadingBar) {
     <mat-progress-bar class="loading-bar" color="accent" mode="indeterminate"></mat-progress-bar>
     }
-    <div class="noc-br h-full" fxLayout="row" fxLayoutAlign="start center" fxFlex="200px">
+    <div class="noc-br h-full" fxLayout="row" fxLayoutAlign="start center" fxFlex="180px">
       <div class="noc-logo pl-8" fxLayout="row" fxLayoutAlign="start">
         <a href="http://geneontology.org/" target="_blank">
           <img src="assets/images/logos/go-logo.large.png">
@@ -43,42 +43,30 @@
         [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
         <mat-icon class="">apps</mat-icon>
       </button>
-      @if (!isBeta && !isDev) {
-      <a class="noc-main-logo" href="{{noctuaConfigService.noctuaUrl}}" target="_blank">
+      <a class="noc-main-logo mr-1" href="{{noctuaConfigService.noctuaUrl}}" target="_blank">
         Noctua
       </a>
-      <a class="noc-sub-logo" href="{{noctuaConfigService.homeUrl}}" target=" _blank">
+      <a class="noc-sub-logo mr-1" href="{{noctuaConfigService.homeUrl}}" target=" _blank">
         Standard Annotations
       </a>
-      }
       @if (isDev || isBeta) {
-      <div class="noc-beta-logo" fxLayout="column" fxLayoutAlign="center start ">
-        <div class="noc-title">
-          <a class="" href="{{noctuaConfigService.noctuaUrl}}" target="_blank">
-            Noctua
-          </a>
-          <a class="" href="{{noctuaConfigService.homeUrl}}" target="_blank">
-            Standard Annotations
-          </a>
-          ({{betaText}})
-        </div>
-      </div>
+      <small class="text-[12px]">({{betaText}})</small>
       }
     </div>
     <div fxLayout="row" fxLayoutAlign="end center" fxFlex="">
       <div class="noc-br pr-12" fxLayout="row" fxLayoutAlign="start center">
-        <a mat-icon-button href="https://github.com/geneontology" target="blank">
+        <a mat-button href="https://github.com/geneontology" target="blank">
           <fa-icon [icon]="['fab', 'github']"></fa-icon>
         </a>
-        <a mat-icon-button href="https://twitter.com/news4go" target="blank">
+        <a mat-button href="https://twitter.com/news4go" target="blank">
           <fa-icon [icon]="['fab', 'twitter']"></fa-icon>
         </a>
-        <a mat-icon-button href="https://www.facebook.com/pages/Gene-Ontology/305908656519" target="blank">
+        <a mat-button href="https://www.facebook.com/pages/Gene-Ontology/305908656519" target="blank">
           <fa-icon [icon]="['fab', 'facebook']"></fa-icon>
         </a>
       </div>
       <div class="noc-br pl-12 pr-12" fxLayout="row" fxLayoutAlign="start center">
-        <a mat-button class="" [matMenuTriggerFor]="aboutMenu">
+        <a mat-button class="text-size-" [matMenuTriggerFor]="aboutMenu">
           About
         </a>
         <mat-menu #aboutMenu="matMenu">
@@ -97,14 +85,14 @@
             Noctua User's Guide
           </a>
         </mat-menu>
-        <button mat-icon-button (click)="openAnnouncements()" class="noc-announcement-button">
+        <!--         <button mat-icon-button (click)="openAnnouncements()" class="noc-announcement-button">
           <fa-icon [icon]="['far', 'bell']"></fa-icon>
           @if (announcements?.length > 0) {
           <div class="noc-badge">
             {{announcements.length}}
           </div>
           }
-        </button>
+        </button> -->
       </div>
       <div class="noc-br pr-12" fxLayout="row" fxLayoutAlign="start center">
         @if (noctuaUserService.user) {
