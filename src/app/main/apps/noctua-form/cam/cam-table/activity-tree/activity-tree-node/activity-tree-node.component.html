@@ -13,7 +13,7 @@
         }
       </span>
       @if (noctuaUserService.user && entity.relationEditable) {
-      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.relationship"
+      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.RELATIONSHIP"
         class="noc-edit-button">
       </noctua-inline-editor>
       }
@@ -44,7 +44,7 @@
       </span>
       @if (!termNotEditable) {
       @if (noctuaUserService.user && entity.term && options.editableTerms) {
-      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.term"
+      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.TERM"
         class="noc-edit-button">
       </noctua-inline-editor>
       }

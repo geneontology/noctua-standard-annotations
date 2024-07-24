@@ -22,6 +22,7 @@ export class TermAutocompleteComponent implements OnInit, OnDestroy, ControlValu
   @Input() label: string;
   @Input() category: GoCategory[] = [];
   @Input() autocompleteType: AutocompleteType = AutocompleteType.TERM;
+  @Input() appearance: 'legacy' | 'standard' | 'fill' | 'outline' = 'fill';
 
   control = new FormControl();
   options: string[] = [];

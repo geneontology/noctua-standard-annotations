@@ -1,4 +1,4 @@
-<div [formGroup]="dynamicForm" fxLayout="row" fxLayoutAlign="start center" class="w-full">
+<div name="dynamicForm" [formGroup]="dynamicForm" fxLayout="row" fxLayoutAlign="start center" class="w-full">
   @if (displaySection.relationship) {
   <div class="noc-edit-field p-4" fxFlex="300px" fxLayout="row" fxLayoutAlign="start stretch">
     <div class="p-4 w-full">
@@ -16,29 +16,9 @@
   </div>
   }
   @if (displaySection.term) {
-  <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="term" [autocompleteType]="autocompleteType"
-    [label]="label" [category]="category"></noc-term-autocomplete>
+  <noc-term-autocomplete class="p-1 w-250px" [formControlName]="formControlName" [autocompleteType]="autocompleteType"
+    [label]="label" [category]="autocompleteCategory" appearance="outline"></noc-term-autocomplete>
   }
-  @if (true) {
-  <button mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-  }
-  <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu">
-    <!-- <button mat-menu-item *ngIf="entity.aspect" class="" (click)="openSearchDatabaseDialog(entity)">
-    Search Annotations
-  </button>
-
-  <button mat-menu-item [matMenuTriggerFor]="evidenceMenu">Evidence</button> -->
-    @if (entity.aspect) {
-    <button mat-menu-item class="" (click)="addRootTerm()">
-      Add Root Term
-    </button>
-    }
-  </mat-menu>
-  <mat-menu #evidenceMenu="matMenu">
-
-  </mat-menu>
   <button mat-icon-button (click)="close()">
     <mat-icon>cancel</mat-icon>
   </button>

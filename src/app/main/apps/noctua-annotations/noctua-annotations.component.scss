@@ -30,17 +30,18 @@
     @include deep-width(60px);
     // @include mat-elevation(2);
     border-right: #999 solid 1px;
+    border-right: 2px solid $noc-primary-color;
 
     button {
       @include deep-width(60px);
       @include deep-height(60px);
 
       font-size: 20px;
-      color: rgba(map-get($primary, default), 0.5);
+      color: rgba(map-get($primary, default), 0.9);
 
       &.noc-active {
         font-size: 28px;
-        color: map-get($primary, default);
+        color: darken(map-get($primary, default), 10%);
       }
     }
   }

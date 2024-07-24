@@ -167,7 +167,7 @@ mat-chip {
     font-size: 10px !important;
     //color: #0F0; // map-get($primary, default);
     font-weight: bold;
-    color: map-get($primary, default);
+    color: darken(map-get($primary, default), 10%);
     text-transform: uppercase;
     font-weight: bold;
   }

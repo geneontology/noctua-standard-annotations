@@ -23,7 +23,7 @@
       </span>
       @if (termEditable) {
       @if (noctuaUserService.user && entity.term && options.editableTerms) {
-      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.term"
+      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.TERM"
         class="noc-edit-button">
       </noctua-inline-editor>
       }

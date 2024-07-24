@@ -221,7 +221,7 @@ export class ActivityFormTableComponent implements OnInit, OnDestroy, OnChanges,
       cam: this.cam,
       activity: this.activity,
       entity: entity,
-      category: EditorCategory.evidenceAll,
+      category: EditorCategory.EVIDENCE_ALL,
       evidenceIndex: entity.predicate.evidence.length - 1
     };
 

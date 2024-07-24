@@ -37,7 +37,7 @@
             {{ gpNode.term?.id }}
           </a>
           @if (noctuaUserService.user && gpNode.term && options.editableTerms) {
-          <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="gpNode" [category]="EditorCategory.term"
+          <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="gpNode" [category]="EditorCategory.TERM"
             class="noc-edit-button">
           </noctua-inline-editor>
           }

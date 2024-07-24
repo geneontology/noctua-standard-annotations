@@ -123,8 +123,7 @@
           </div>
           <noc-term-autocomplete fxFlex="" class="p-1" formControlName="extensionTerm"
             [label]="annotationActivity?.extensions[i]?.extensionTerm.label"
-            [category]="annotationActivity?.extensions[i]?.extensionTerm?.category"
-            solrField="extensionTerm"></noc-term-autocomplete>
+            [category]="annotationActivity?.extensions[i]?.extensionTerm?.category"></noc-term-autocomplete>
           <button mat-icon-button (click)="deleteExtension(i)" class="text-warn">
             <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
           </button>
@@ -136,9 +135,6 @@
           Add @if(annotationActivity?.extensions.length>1) {<span>Another</span>} Extension
         </button>
       </div>
-
-
-
 
       <div class="noc-section-header pr-4" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
@@ -166,7 +162,7 @@
       <div class="pl-4 py-4">
         <button mat-stroked-button (click)="addComment() " class="noc-xs px-2 w-[170px] noc-rounded-button "
           color="primary">
-          Add Comment(s)
+          Add @if(annotationComments?.controls.length>1) {<span>Another</span>} Comment
         </button>
       </div>
 

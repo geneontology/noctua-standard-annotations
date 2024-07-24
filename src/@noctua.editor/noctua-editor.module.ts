@@ -9,6 +9,7 @@ import { NoctuaReferenceDropdownComponent } from './inline-reference/reference-d
 import { NoctuaWithDropdownComponent } from './inline-with/with-dropdown/with-dropdown.component';
 import { NoctuaDetailDropdownComponent } from './inline-detail/detail-dropdown/detail-dropdown.component';
 import { NoctuaEditorStandardDropdownComponent } from './inline-editor/standard-dropdown/standard-dropdown.component';
+import { NoctuaAutocompleteModule } from '@noctua.autocomplete/noctua-autocomplete.module';
 
 @NgModule({
     declarations: [
@@ -24,7 +25,8 @@ import { NoctuaEditorStandardDropdownComponent } from './inline-editor/standard-
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
-        NoctuaSharedModule
+        NoctuaSharedModule,
+        NoctuaAutocompleteModule,
     ],
     exports: [
         NoctuaDetailDropdownComponent,

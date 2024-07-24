@@ -63,7 +63,7 @@
             [hidden]="noctuaCommonMenuService.selectedLeftPanel !== LeftPanel.camTermsSummary"></noc-cam-terms>
         </div>
       </mat-drawer>
-      <mat-drawer-content class="w-full h-full" fxLayout="column" fxLayoutAlign="start stretch">
+      <mat-drawer-content class="w-full h-full pb-96" fxLayout="column" fxLayoutAlign="start stretch">
         <div *ngIf="cam" [ngSwitch]="noctuaCommonMenuService.selectedMiddlePanel">
           <noc-annotation-form> </noc-annotation-form>
           <noc-annotations-table *ngSwitchCase="MiddlePanel.camTable" [cam]="cam"

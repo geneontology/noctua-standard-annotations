@@ -19,7 +19,7 @@
         </a>
       </span>
       @if (noctuaUserService.user && options.editableEvidence) {
-      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.evidence"
+      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.EVIDENCE"
         [evidenceIndex]="i" class="noc-edit-button">
       </noctua-inline-editor>
       }
@@ -48,7 +48,7 @@
       </span>
       }
       @if (noctuaUserService.user && options.editableReference) {
-      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.reference"
+      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.REFERENCE"
         [evidenceIndex]="i" class="noc-edit-button">
       </noctua-inline-editor>
       }
@@ -75,7 +75,7 @@
       </span>
       }
       @if (noctuaUserService.user && options.editableWith) {
-      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.with"
+      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.WITH"
         [evidenceIndex]="i" class="noc-edit-button">
       </noctua-inline-editor>
       }

@@ -12,6 +12,8 @@ import {
   ErrorType,
   ErrorLevel,
   AnnotationActivity,
+  AutocompleteType,
+  NoctuaAnnotationFormService,
 } from '@geneontology/noctua-form-base';
 
 import { Cam } from '@geneontology/noctua-form-base';
@@ -19,13 +21,13 @@ import { Activity } from '@geneontology/noctua-form-base';
 import { ActivityNode } from '@geneontology/noctua-form-base';
 import { Evidence } from '@geneontology/noctua-form-base';
 
-import { standardDropdownData } from './standard-dropdown.tokens';
-import { EditorDropdownOverlayRef } from './standard-dropdown-ref';
 import { EditorCategory } from './../../models/editor-category';
 import { concatMap, finalize, take, takeUntil } from 'rxjs/operators';
 import { find } from 'lodash';
 import { InlineReferenceService } from './../../inline-reference/inline-reference.service';
 import { NoctuaFormDialogService } from 'app/main/apps/noctua-form/services/dialog.service';
+import { EditorDropdownOverlayRef } from '../editor-dropdown/editor-dropdown-ref';
+import { editorDropdownData } from '../editor-dropdown/editor-dropdown.tokens';
 
 @Component({
   selector: 'noc-standard-dropdown',
@@ -35,7 +37,8 @@ import { NoctuaFormDialogService } from 'app/main/apps/noctua-form/services/dial
 
 export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy {
   EditorCategory = EditorCategory;
-  activity: Activity;
+  annotationActivity: AnnotationActivity;
+  //activity: Activity;
   cam: Cam;
   insertEntity = false;
   entity: ActivityNode;
@@ -47,9 +50,9 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
 
   descriptionSectionTitle = 'Function Description';
   annotatedSectionTitle = 'Gene Product';
+  autocompleteCategory;
 
   private _unsubscribeAll: Subject<any>;
-  annotationActivity: AnnotationActivity;
 
   dynamicForm: FormGroup;
 
@@ -61,15 +64,18 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
     reference: false,
     with: false,
   };
+  label: string;
+  autocompleteType: AutocompleteType;
+  formControlName: string
 
   constructor(
     private zone: NgZone,
     private fb: FormBuilder,
     public dialogRef: EditorDropdownOverlayRef,
-    @Inject(standardDropdownData) public data: any,
+    @Inject(editorDropdownData) public data: any,
     private noctuaFormDialogService: NoctuaFormDialogService,
     private camService: CamService,
-    private noctuaActivityEntityService: NoctuaActivityEntityService,
+    private annotationFormService: NoctuaAnnotationFormService,
     private inlineReferenceService: InlineReferenceService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaActivityFormService: NoctuaActivityFormService,
@@ -77,7 +83,7 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
     this._unsubscribeAll = new Subject();
 
     this.cam = data.cam;
-    this.activity = data.activity;
+    this.annotationActivity = data.annotationActivity;
     this.entity = data.entity;
     this.category = data.category;
     this.insertEntity = data.insertEntity;
@@ -85,8 +91,8 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
   }
 
   ngOnInit(): void {
-    this._displaySection(this.category);
     this.dynamicForm = this.fb.group(this.getInitialFormStructure());
+    this._displaySection(this.category);
   }
 
 
@@ -114,124 +120,83 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
   }
 
   save() {
-    const self = this;
-    switch (self.category) {
-      case EditorCategory.term:
-      case EditorCategory.evidence:
-      case EditorCategory.reference:
-      case EditorCategory.with:
-      case EditorCategory.relationship:
-        this.close();
-        self.noctuaActivityEntityService.saveActivityReplace(self.cam).pipe(
-          take(1),
-          concatMap((result) => {
-            return EMPTY;
-            //return self.camService.getStoredModel(self.cam)
-          }),
-          finalize(() => {
-            self.zone.run(() => {
-              self.cam.loading.status = false;
-              self.cam.reviewCamChanges()
-              //self.camService.reviewChangesCams();
-            })
-          }))
+    switch (this.category) {
+      case EditorCategory.TERM:
+      case EditorCategory.EVIDENCE_CODE:
+      case EditorCategory.WITH:
+      case EditorCategory.REFERENCE:
+        let value = this.dynamicForm.value[this.category]?.id ?? this.dynamicForm.value[this.category];
+        this.annotationFormService.editAnnotation(this.category, this.cam, this.annotationActivity, value)
+          .pipe(takeUntil(this._unsubscribeAll))
           .subscribe(() => {
-            self.zone.run(() => {
-
-            })
-            // self.noctuaFormDialogService.openInfoToast('Activity successfully updated.', 'OK');
-
+            this.zone.run(() => {
+              this.noctuaFormDialogService.openInfoToast(`${this.label} successfully updated.`, 'OK');
+              this.camService.getCam(this.cam.id);
+            });
+            this.close();
           });
+
+        break
+
+      case EditorCategory.RELATIONSHIP:
+        this.close();
+        /*   this.noctuaActivityEntityService.saveActivityReplace(this.cam).pipe(
+            take(1),
+            concatMap((result) => {
+              return EMPTY;
+              //return this.camService.getStoredModel(this.cam)
+            }),
+            finalize(() => {
+              this.zone.run(() => {
+                this.cam.loading.status = false;
+                this.cam.reviewCamChanges()
+                //this.camService.reviewChangesCams();
+              })
+            }))
+            .subscribe(() => {
+              this.zone.run(() => {
+  
+              })
+              // this.noctuaFormDialogService.openInfoToast('Activity successfully updated.', 'OK');
+  
+            }); */
         break;
     }
-  }
-
-  addRootTerm() {
-    const self = this;
-
-    const term = find(noctuaFormConfig.rootNode, (rootNode) => {
-      return rootNode.aspect === self.entity.aspect;
-    });
-
-    if (term) {
-
-      const evidence = new Evidence();
-      evidence.setEvidence(new Entity(
-        noctuaFormConfig.evidenceAutoPopulate.nd.evidence.id,
-        noctuaFormConfig.evidenceAutoPopulate.nd.evidence.label));
-      evidence.reference = noctuaFormConfig.evidenceAutoPopulate.nd.reference;
-      self.noctuaActivityEntityService.reinitializeForm(new Entity(term.id, term.label), [evidence]);
-    }
-  }
-
-  clearValues() {
-    const self = this;
-
-    self.entity.clearValues();
-    self.noctuaActivityFormService.initializeForm();
-  }
-
-  updateTermList() {
-    const self = this;
-    this.camService.updateTermList(self.noctuaActivityFormService.activity);
-  }
-
-  updateEvidenceList() {
-    const self = this;
-    this.camService.updateEvidenceList(self.noctuaActivityFormService.activity, this.entity);
-  }
-
-  updateReferenceList() {
-    const self = this;
-    this.camService.updateReferenceList(self.noctuaActivityFormService.activity, this.entity);
-  }
-
-  updateWithList() {
-    const self = this;
-    this.camService.updateWithList(self.noctuaActivityFormService.activity, this.entity);
-  }
-
-
-  termDisplayFn(term): string | undefined {
-    return term && term.id ? `${term.label} (${term.id})` : undefined;
-  }
-
-  evidenceDisplayFn(evidence): string | undefined {
-    return evidence && evidence.id ? `${evidence.label} (${evidence.id})` : undefined;
-  }
-
-  compareEntity(a: any, b: any) {
-    return (a.id === b.id);
   }
 
   private _displaySection(category: EditorCategory) {
     switch (category) {
-      case EditorCategory.relationship:
+      case EditorCategory.RELATIONSHIP:
         this.displaySection.relationship = true;
         break;
-      case EditorCategory.term:
+      case EditorCategory.TERM:
         this.displaySection.term = true;
         break;
-      case EditorCategory.evidence:
-        this.displaySection.evidence = true;
-        break;
-      case EditorCategory.reference:
-        this.displaySection.reference = true;
-        break;
-      case EditorCategory.with:
-        this.displaySection.with = true;
-        break;
-      case EditorCategory.evidenceAll:
-        this.displaySection.evidence = true;
-        this.displaySection.reference = true;
-        this.displaySection.with = true;
-        break;
-      case EditorCategory.all:
+      case EditorCategory.EVIDENCE_CODE:
         this.displaySection.term = true;
-        this.displaySection.evidence = true;
-        this.displaySection.reference = true;
-        this.displaySection.with = true;
+        this.label = 'Evidence';
+        this.formControlName = this.category;
+        this.autocompleteType = AutocompleteType.EVIDENCE_CODE
+        this.dynamicForm.get(this.formControlName).setValue(this.annotationActivity.evidenceCode.term.label);
+        this.autocompleteCategory = this.annotationActivity?.evidenceCode.category;
         break;
+      case EditorCategory.REFERENCE:
+        this.displaySection.term = true;
+        this.label = 'Reference';
+        this.formControlName = this.category;
+        this.autocompleteType = AutocompleteType.REFERENCE
+        this.dynamicForm.get(this.formControlName).setValue(this.annotationActivity.reference.term.id);
+        this.autocompleteCategory = null;
+        break;
+      case EditorCategory.WITH:
+        this.displaySection.term = true;
+        this.label = 'With';
+        this.formControlName = this.category;
+        this.autocompleteType = AutocompleteType.WITH
+        this.dynamicForm.get(this.formControlName).setValue(this.annotationActivity.with.term.id);
+        this.autocompleteCategory = null;
+        break;
+
     }
   }
 

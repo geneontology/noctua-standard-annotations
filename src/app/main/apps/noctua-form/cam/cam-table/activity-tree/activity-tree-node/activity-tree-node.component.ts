@@ -98,7 +98,7 @@ export class ActivityTreeNodeComponent implements OnInit, OnDestroy {
       cam: this.cam,
       activity: this.activity,
       entity: entity,
-      category: EditorCategory.all,
+      category: EditorCategory.ALL,
       evidenceIndex: 0,
       insertEntity: true
     };
@@ -132,7 +132,7 @@ export class ActivityTreeNodeComponent implements OnInit, OnDestroy {
       cam: this.cam,
       activity: this.activity,
       entity: entity,
-      category: EditorCategory.evidenceAll,
+      category: EditorCategory.EVIDENCE_ALL,
       evidenceIndex: entity.predicate.evidence.length - 1
     };
 
@@ -222,7 +222,7 @@ export class ActivityTreeNodeComponent implements OnInit, OnDestroy {
       cam: this.cam,
       activity: this.activity,
       entity: insertedNode,
-      category: EditorCategory.all,
+      category: EditorCategory.ALL,
       evidenceIndex: 0,
       insertEntity: true
     };
