@@ -7,7 +7,7 @@ import { BbopGraphService } from './bbop-graph.service';
 import { CamService } from './cam.service';
 import { Entity } from '../models/activity/entity';
 import { Cam } from '../models/activity/cam';
-import { AnnotationActivity } from '../models/standard-annotation/annotation-activity';
+import { AnnotationActivity, AnnotationExtension } from '../models/standard-annotation/annotation-activity';
 import * as EntityDefinition from './../data/config/entity-definition';
 import { noctuaFormConfig } from './../noctua-form-config';
 import { AnnotationExtensionForm, StandardAnnotationForm } from './../models/standard-annotation/form';
@@ -20,6 +20,7 @@ import { Evidence } from 'public-api';
   providedIn: 'root'
 })
 export class NoctuaAnnotationFormService {
+
   public errors = [];
   public activity: Activity;
   public annotationActivity: AnnotationActivity;
@@ -74,13 +75,12 @@ export class NoctuaAnnotationFormService {
     this._updateFormState(annotationData);
   }
 
-  private _setExtensionObjects(gotermRootTypes: Entity[]): void {
-    const extensionObjects = this.noctuaFormConfigService.getObjectRange(gotermRootTypes);
-    if (extensionObjects.length > 0) {
-      this.annotationActivity.extensions.forEach(extension => {
-        extension.extensionTerm.category = extensionObjects;
-      });
-    }
+  getEdgesRange(subjectRootTypes: Entity[], extRootTypes: Entity[] = [], predicateId: string = null) {
+    const edges = this.noctuaFormConfigService.getTermRelations(subjectRootTypes, extRootTypes);
+    const range = this.noctuaFormConfigService.getObjectRange(subjectRootTypes, predicateId);
+
+    return { edges, range };
+
   }
 
   private _updateExtensions(annotationExtensions: AnnotationExtensionForm[], gotermRootTypes: Entity[]): void {
@@ -201,6 +201,127 @@ export class NoctuaAnnotationFormService {
   }
 
 
+
+  editAnnotation(
+    editorCategory: EditorCategory,
+    cam: Cam,
+    annotationActivity: AnnotationActivity,
+    newAnnotation: string
+  ): Observable<any> {
+    const evidence = annotationActivity.getEvidenceNodes();
+    const oldAnnotations = this.getOldAnnotations(editorCategory, evidence);
+
+    console.log('Edit evidence:', oldAnnotations, newAnnotation);
+
+    return this.performEditAction(editorCategory, cam, oldAnnotations, newAnnotation).pipe(
+      finalize(() => {
+        this.cam.loading.status = false;
+      }),
+      catchError((error) => {
+        console.error('Error editing annotation:', error);
+        return of(null);
+      })
+    )
+  }
+
+  editRelation(
+    editorCategory: EditorCategory,
+    cam: Cam,
+    annotationActivity: AnnotationActivity,
+    newAnnotation: string
+  ): Observable<any> {
+
+    const { a: oldTriple, b: newTriple } = annotationActivity.getTriplePair(annotationActivity.gpToTermEdge.id, annotationActivity.goterm, newAnnotation);
+
+    console.log('Edit relation:', oldTriple, newTriple);
+
+    console.log('Edit relation:', newTriple.subject.term.label, newTriple.object.term.label, newTriple.predicate.edge.id);
+
+    if (!oldTriple || !newTriple) {
+      return throwError(() => new Error('Invalid editor category'));
+    }
+
+    return from(this.bbopGraphService.editConnection(cam, [oldTriple], [newTriple])).pipe(
+      finalize(() => {
+        this.cam.loading.status = false;
+        this.cam.reviewCamChanges();
+      }),
+      catchError((error) => {
+        console.error('Error editing annotation:', error);
+        return of(null);
+      })
+    )
+  }
+
+  addExtension(
+    editorCategory: EditorCategory,
+    cam: Cam,
+    annotationActivity: AnnotationActivity,
+    newAnnotation: { relationId: string, termId: string }
+  ): Observable<any> {
+
+    const triple = annotationActivity.genExtensionTriple(newAnnotation.relationId, newAnnotation.termId);
+
+    console.log('Edit relation:', triple);
+
+    return from(this.bbopGraphService.addExtension(cam, triple)).pipe(
+      finalize(() => {
+        this.cam.loading.status = false;
+      }),
+      catchError((error) => {
+        console.error('Error editing annotation:', error);
+        return of(null);
+      })
+    )
+  }
+
+  updateComment(
+    editorCategory: EditorCategory,
+    cam: Cam,
+    annotationActivity: AnnotationActivity,
+    newAnnotation: string
+  ): Observable<any> {
+    const predicates = annotationActivity.getPredicates();
+
+    const newAnnotations = Array.from(new Set([...annotationActivity.comments, newAnnotation]));
+
+    console.log('Edit evidence:', newAnnotations);
+
+    return from(this.bbopGraphService.updateAnnotationComments(cam, predicates, newAnnotations)).pipe(
+      finalize(() => {
+        this.cam.loading.status = false;
+      }),
+      catchError((error) => {
+        console.error('Error editing annotation:', error);
+        return of(null);
+      })
+    )
+  }
+
+  deleteExtension(annotationActivity: AnnotationActivity, extension: AnnotationExtension): Observable<any> {
+    const cam = this.cam;
+    const triple = annotationActivity.getExtensionTriple(extension.extensionEdge.id, extension.extensionTerm);
+    const uuids = [extension.extensionTerm.uuid];
+    if (!triple) {
+      return throwError(() => new Error('Invalid extension'));
+    }
+    console.log('Delete extension:', triple);
+
+    return from(this.bbopGraphService.deleteAnnotation(cam, uuids, [triple])).pipe(
+      finalize(() => {
+        this.cam.loading.status = false;
+      }),
+      catchError((error) => {
+        console.error('Error deleting extension:', error);
+        return of(null);
+      })
+    )
+  }
+
+  clearForm() {
+    this.initializeForm();
+  }
+
   private getOldAnnotations(editorCategory: EditorCategory, evidence: Evidence[]): Entity[] {
     return evidence.map((ev) => {
       const id = (() => {
@@ -239,32 +360,5 @@ export class NoctuaAnnotationFormService {
     }
 
     return from(actionPromise);
-  }
-
-  editAnnotation(
-    editorCategory: EditorCategory,
-    cam: Cam,
-    annotationActivity: AnnotationActivity,
-    newAnnotation: string
-  ): Observable<any> {
-    const evidence = annotationActivity.getEvidenceNodes();
-    const oldAnnotations = this.getOldAnnotations(editorCategory, evidence);
-
-    console.log('Edit evidence:', oldAnnotations, newAnnotation);
-
-    return this.performEditAction(editorCategory, cam, oldAnnotations, newAnnotation).pipe(
-      finalize(() => {
-        this.cam.loading.status = false;
-        this.cam.reviewCamChanges();
-      }),
-      catchError((error) => {
-        console.error('Error editing annotation:', error);
-        return of(null);
-      })
-    )
-  }
-
-  clearForm() {
-    this.initializeForm();
   }
 }

@@ -40,7 +40,7 @@ export {
     _compareEntityWeight
 } from './entity';
 export { Predicate } from './predicate';
-export { Triple } from './triple';
+export { Triple, TriplePair } from './triple';
 export { ConnectorRule } from './connector-rule';
 export { PendingChange } from './pending-change';
 export { CamSummary, TermsSummary } from './summary';

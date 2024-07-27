@@ -101,6 +101,11 @@ mat-chip {
   }
 }
 
+.noc-confirm-dialog {
+  @include deep-height(200px);
+  @include deep-width(600px);
+}
+
 .noc-link-to-existing-dialog {
   @include deep-width(1100px);
 

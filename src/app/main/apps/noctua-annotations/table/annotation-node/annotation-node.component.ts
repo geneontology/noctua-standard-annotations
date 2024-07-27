@@ -1,5 +1,5 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 
 
 import {
@@ -14,7 +14,9 @@ import {
   ActivityType,
   Predicate,
   BbopGraphService,
-  AnnotationActivity
+  AnnotationActivity,
+  AnnotationExtension,
+  NoctuaAnnotationFormService
 } from '@geneontology/noctua-form-base';
 
 import {
@@ -24,7 +26,7 @@ import {
   ShapeDefinition
 } from '@geneontology/noctua-form-base';
 
-import { EditorCategory, EditorType } from '@noctua.editor/models/editor-category';
+import { EditorCategory, EditorConfig, EditorType } from '@noctua.editor/models/editor-category';
 import { find } from 'lodash';
 import { InlineEditorService } from '@noctua.editor/inline-editor/inline-editor.service';
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
@@ -61,11 +63,13 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
 
   evidenceSettings: SettingsOptions = new SettingsOptions();
 
-  private unsubscribeAll: Subject<any>;
+  private _unsubscribeAll: Subject<any>;
 
   constructor(
+    private zone: NgZone,
     public camService: CamService,
     private bbopGraphService: BbopGraphService,
+    public annotationFormService: NoctuaAnnotationFormService,
     private confirmDialogService: NoctuaConfirmDialogService,
     public noctuaUserService: NoctuaUserService,
     public noctuaFormConfigService: NoctuaFormConfigService,
@@ -73,7 +77,7 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
     public noctuaActivityEntityService: NoctuaActivityEntityService,
     public noctuaActivityFormService: NoctuaActivityFormService,
     private inlineEditorService: InlineEditorService) {
-    this.unsubscribeAll = new Subject();
+    this._unsubscribeAll = new Subject();
   }
 
   ngOnInit(): void {
@@ -126,6 +130,27 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
     }
   }
 
+  addExtension() {
+    const data: EditorConfig = {
+      cam: this.cam,
+      annotationActivity: this.annotationActivity,
+      category: EditorCategory.ADD_EXTENSION,
+      editorType: EditorType.STANDARD
+    };
+
+    this.inlineEditorService.open(this.currentMenuEvent.target, { data });
+  }
+
+  addComment() {
+    const data: EditorConfig = {
+      cam: this.cam,
+      annotationActivity: this.annotationActivity,
+      category: EditorCategory.ADD_COMMENT,
+      editorType: EditorType.STANDARD
+    };
+
+    this.inlineEditorService.open(this.currentMenuEvent.target, { data });
+  }
 
   openSelectEvidenceDialog(entity: ActivityNode) {
     const self = this;
@@ -178,9 +203,29 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
     }
   }
 
+  deleteExtension(extension: AnnotationExtension) {
+    const self = this;
+
+    console.log('deleteExtension', extension);
+    const success = () => {
+      this.annotationFormService.deleteExtension(self.annotationActivity, extension)
+        .pipe(takeUntil(self._unsubscribeAll))
+        .subscribe(() => {
+          self.zone.run(() => {
+            self.noctuaFormDialogService.openInfoToast('Annotation Extension successfully deleted.', 'OK');
+            self.camService.getCam(this.cam.id);
+          });
+        });
+    };
+    this.confirmDialogService.openConfirmDialog('Confirm Delete?',
+      'You are about to delete an extension.',
+      success);
+
+  }
+
   ngOnDestroy(): void {
-    this.unsubscribeAll.next(null);
-    this.unsubscribeAll.complete();
+    this._unsubscribeAll.next(null);
+    this._unsubscribeAll.complete();
   }
 
   cleanId(dirtyId: string) {

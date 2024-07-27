@@ -10,6 +10,15 @@ $accent: map-get($theme, accent);
   background-color: white;
   @include mat.elevation(4);
 
+  .noc-primary-button {
+    background-color: map-get($accent, default);
+    color: white;
+    border: 1px solid map-get($accent, default);
+    &:hover {
+      background-color: darken(map-get($accent, default), 5%);
+    }
+  }
+
   .noc-drawer {
     padding-right: 8px;
   }
