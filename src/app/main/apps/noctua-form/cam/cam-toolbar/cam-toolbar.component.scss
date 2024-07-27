@@ -54,9 +54,9 @@ $accent: map-get($theme, accent);
 
     background: linear-gradient(
       to right,
-      darken(map-get($primary, default), 2%),
-      lighten(map-get($accent, default), 20%),
-      darken(map-get($primary, default), 10%)
+      lighten(map-get($primary, default), 20%),
+      lighten(map-get($accent, default), 25%),
+      darken(map-get($primary, default), 2%)
     );
     font-size: 12px;
 
@@ -161,19 +161,25 @@ $accent: map-get($theme, accent);
       @include noc-chip-color(#ddd);
 
       &.noc-user-chip {
-        @include noc-chip-color(lighten(map-get($accent, default), 10%));
+        @include noc-chip-color(darken(map-get($accent, default), 1%));
 
         .noc-icon {
-          color: #555;
+          color: #222;
         }
       }
 
       &.noc-date-chip {
-        @include noc-chip-color(lighten(map-get($accent, default), 10%));
+        @include noc-chip-color(darken(map-get($accent, default), 1%));
+        .noc-icon {
+          color: #222;
+        }
       }
 
       &.noc-state-chip {
-        @include noc-chip-color(lighten(map-get($accent, default), 10%));
+        @include noc-chip-color(darken(map-get($accent, default), 1%));
+        .noc-icon {
+          color: #222;
+        }
         /*         &.noc-development {
           @include noc-chip-color(#f4c89c);
           // border: #d59f80 solid 1px;/

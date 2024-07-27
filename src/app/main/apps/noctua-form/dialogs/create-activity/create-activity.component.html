@@ -6,7 +6,7 @@
     <span fxFlex></span>
     <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
       aria-label="Close dialog">
-      <mat-icon>close</mat-icon> Close
+      Close
     </button>
   </mat-toolbar-row>
 </mat-toolbar>
@@ -20,9 +20,9 @@
 </div> -->
 
 @if (formType===FormType.ACTIVITY) {
-  <noc-activity-form [closeDialog]="closeDialog"> </noc-activity-form>
+<noc-activity-form [closeDialog]="closeDialog"> </noc-activity-form>
 }
 @if (formType===FormType.ACTIVITY_CONNECTOR) {
-  <noc-activity-connector [closeDialog]="closeDialog">
-  </noc-activity-connector>
+<noc-activity-connector [closeDialog]="closeDialog">
+</noc-activity-connector>
 }

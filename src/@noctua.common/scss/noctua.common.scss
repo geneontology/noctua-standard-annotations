@@ -92,7 +92,12 @@ $accent: map-get($theme, accent);
 
   .noc-dialog-header {
     padding: 0 12px;
-    background-color: rgba(map-get($primary, default), 0.7);
+    background: linear-gradient(
+      to right,
+      darken(map-get($primary, default), 10%),
+      lighten(map-get($accent, default), 10%),
+      darken(map-get($primary, default), 5%)
+    );
     color: #eee;
     @include deep-height(40px);
     @include mat.elevation(2);

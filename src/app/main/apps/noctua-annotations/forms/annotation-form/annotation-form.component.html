@@ -16,7 +16,7 @@
             <mat-label>GP to Term Relation</mat-label>
             <mat-select class="" panelClass="noc-term-autocomplete" placeholder="" formControlName="gpToTermEdge"
               [compareWith]="compareFn">
-              <mat-option [value]="null">None</mat-option>
+              <mat-option [value]="null">Clear</mat-option>
               @for (item of annotationActivity?.gpToTermEdges; track item) {
               <mat-option [value]="item">
                 <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
@@ -176,7 +176,7 @@
         <button mat-stroked-button (click)='clearForm()' color="primary"
           class="mr-[8px!important] noc-rounded-button">Clear</button>
         <button mat-stroked-button [disabled]="hasErrors()" (click)="save()" type="submit"
-          class="noc-rounded-button noc-primary" color="accent" [attr.data-cy]="'save-annotation-button'">Save</button>
+          class="noc-rounded-button noc-primary-button" [attr.data-cy]="'save-annotation-button'">Save</button>
       </div>
     </div>
   </div>

@@ -3,4 +3,5 @@ export enum AutocompleteType {
   REFERENCE = 'reference',
   EVIDENCE_CODE = 'evidence_code',
   WITH = 'with',
+  COMMENT = 'comment'
 }

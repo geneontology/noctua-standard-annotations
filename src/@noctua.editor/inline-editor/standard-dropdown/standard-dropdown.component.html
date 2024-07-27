@@ -1,22 +1,39 @@
 <div name="dynamicForm" [formGroup]="dynamicForm" fxLayout="row" fxLayoutAlign="start center" class="w-full">
   @if (displaySection.relationship) {
-  <div class="noc-edit-field p-4" fxFlex="300px" fxLayout="row" fxLayoutAlign="start stretch">
-    <div class="p-4 w-full">
-      <mat-form-field appearance="outline" class="noc-sm w-full">
-        <mat-label>Choose GP to Term Relation</mat-label>
-        <mat-select placeholder="" [compareWith]="compareEntity" formControlName="relationship">
-          @for (relationshipChoice of relationshipChoices; track relationshipChoice) {
-          <mat-option [value]="relationshipChoice">
-            {{relationshipChoice.label}}
-          </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
+  <div class="p-1 w-[250px]">
+    <mat-form-field appearance="outline" class="noc-sm w-full" [attr.data-cy]="'form-input-relation'">
+      <mat-label>{{relationLabel}}</mat-label>
+      <mat-select class="" panelClass="noc-term-autocomplete" placeholder="" formControlName="relation"
+        [compareWith]="compareFn">
+        <mat-option [value]="null">Clear</mat-option>
+        @for (relationshipChoice of relationshipChoices; track relationshipChoice) {
+        <mat-option [value]="relationshipChoice">
+          <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
+            <div class="noc-term-label">
+              {{ relationshipChoice.label }}
+            </div>
+            <span fxFlex></span>
+            <div class="noc-term-id">
+              @if (relationshipChoice.link) {
+              <a (click)="$event.stopPropagation()" href="{{relationshipChoice.link}}" target="_blank">
+                {{ relationshipChoice.id }}
+              </a>
+              }
+              @if (!relationshipChoice.link) {
+              <span>
+                {{ relationshipChoice.id }}
+              </span>
+              }
+            </div>
+          </div>
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
   </div>
   }
   @if (displaySection.term) {
-  <noc-term-autocomplete class="p-1 w-250px" [formControlName]="formControlName" [autocompleteType]="autocompleteType"
+  <noc-term-autocomplete class="p-1 w-[250px]" formControlName="term" [autocompleteType]="autocompleteType"
     [label]="label" [category]="autocompleteCategory" appearance="outline"></noc-term-autocomplete>
   }
   <button mat-icon-button (click)="close()">

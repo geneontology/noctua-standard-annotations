@@ -9,9 +9,11 @@ export enum EditorCategory {
   REFERENCE = 'reference',
   WITH = 'withFrom',
   EVIDENCE_ALL = 'EVIDENCE_ALL',
-  ALL = 'ALL'
+  ALL = 'ALL',
+  GP_TO_TERM_EDGE = 'gpToTermEdge',
+  ADD_EXTENSION = 'add_extension',
+  ADD_COMMENT = 'add_comment'
 }
-
 
 export enum EditorType {
   DEFAULT = 'DEFAULT',
@@ -33,8 +35,8 @@ export interface EditorConfig extends EditorDropdownDialogConfig {
   cam: Cam;
   activity?: Activity;
   annotationActivity?: AnnotationActivity;
-  entity: ActivityNode;
+  entity?: ActivityNode;
   category: EditorCategory;
   evidenceIndex?: any;
-  relationshipChoices: any;
+  relationshipChoices?: any;
 }
