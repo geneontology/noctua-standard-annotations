@@ -86,12 +86,12 @@
       </mat-drawer>
       <mat-drawer-content class="w-full h-full" fxLayout="column" fxLayoutAlign="start stretch">
         <div *ngIf="cam" [ngSwitch]="noctuaCommonMenuService.selectedMiddlePanel" class="w-full h-full">
-          <noc-cam-table *ngSwitchCase="MiddlePanel.camTable" [cam]="cam" [options]="tableOptions"></noc-cam-table>
+          <noc-cam-table *ngSwitchCase="MiddlePanel.CAM_TABLE" [cam]="cam" [options]="tableOptions"></noc-cam-table>
         </div>
       </mat-drawer-content>
       <mat-drawer #rightDrawer class="noc-right-drawer" mode="side" position="end">
         <div [ngSwitch]="noctuaCommonMenuService.selectedRightPanel" class="h-full">
-          <noc-term-detail [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.termDetail">
+          <noc-term-detail [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.TERM_DETAIL">
           </noc-term-detail>
         </div>
       </mat-drawer>

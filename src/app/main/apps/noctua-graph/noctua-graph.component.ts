@@ -139,7 +139,7 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.noctuaCommonMenuService.selectedMiddlePanel = MiddlePanel.camGraph;
+    this.noctuaCommonMenuService.selectedMiddlePanel = MiddlePanel.CAM_GRAPH;
     this.noctuaCommonMenuService.setLeftDrawer(this.leftDrawer);
     this.noctuaCommonMenuService.setRightDrawer(this.rightDrawer);
 
@@ -165,17 +165,17 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   openGraph() {
     this.noctuaCommonMenuService.closeLeftDrawer();
     this.noctuaCommonMenuService.closeRightDrawer();
-    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.camGraph)
+    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.CAM_GRAPH)
   }
 
   openTable() {
     //this.noctuaCommonMenuService.closeLeftDrawer();
     this.noctuaCommonMenuService.closeRightDrawer();
-    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.camTable)
+    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.CAM_TABLE)
   }
 
   openPreview() {
-    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.camPreview)
+    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.CAM_PREVIEW)
   }
 
   openLeftDrawer(panel) {
@@ -203,7 +203,7 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openSettings() {
-    this.openRightDrawer(RightPanel.graphSettings)
+    this.openRightDrawer(RightPanel.GRAPH_SETTINGS)
   }
 
   getTableWidth(settings: SettingsOptions) {

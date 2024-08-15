@@ -17,11 +17,10 @@
       <span class='mr-4'>
         <strong>Sort By</strong> :
       </span>
-      <button mat-stroked-button class="noc-rounded-button noc-action-button noc-half-button noc-r noc-xs"
-        color="primary" [matMenuTriggerFor]="sortByOptionMenu">
-        {{cam.sortBy.label}} @if (cam.expanded) {
+      <button mat-stroked-button class="noc-rounded-button noc-action-button noc-half-button noc-r noc-xs" color=""
+        [matMenuTriggerFor]="sortByOptionMenu">
+        {{cam.sortBy.label}}
         <fa-icon [icon]="['fas', 'caret-down']"></fa-icon>
-        }
       </button>
       <button mat-stroked-button (click)="toggleSortDirection()"
         class="noc-rounded-button noc-action-button noc-icon noc-half-button noc-l noc-xs" color="primary">
@@ -33,7 +32,7 @@
         }
       </button>
       <mat-menu #sortByOptionMenu="matMenu" class="noc-dropdown-menu">
-        @for (sortByOption of noctuaFormConfigService.activitySortField.options; track sortByOption) {
+        @for (sortByOption of noctuaFormConfigService.annotationActivitySortField.options; track sortByOption) {
         <button mat-menu-item class="" (click)="sortBy(sortByOption)">
           {{sortByOption.label}}
         </button>
@@ -73,7 +72,7 @@
   <div class="noc-table-body w-full">
     @for (annotationActivity of cam.annotationActivities; track annotationActivity) {
     <div [attr.id]="annotationActivity.activity.displayId" class="w-full">
-      <noc-annotation-node [options]="options" [cam]="cam" [annotationActivity]="annotationActivity" class="w-full">
+      <noc-annotation-node [cam]="cam" [annotationActivity]="annotationActivity" class="w-full">
       </noc-annotation-node>
     </div>
     }

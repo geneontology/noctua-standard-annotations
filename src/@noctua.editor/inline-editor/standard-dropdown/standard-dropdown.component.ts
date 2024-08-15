@@ -10,6 +10,7 @@ import {
   AnnotationActivity,
   AutocompleteType,
   NoctuaAnnotationFormService,
+  noctuaFormConfig,
 } from '@geneontology/noctua-form-base';
 
 import { Cam } from '@geneontology/noctua-form-base';
@@ -27,6 +28,11 @@ enum FormStructureKeys {
   TERM = 'term'
 }
 
+
+const RELATION_NOT_EDITABLE = [
+  noctuaFormConfig.edge.isActiveIn.id,
+  noctuaFormConfig.edge.locatedIn.id,
+]
 
 @Component({
   selector: 'noc-standard-dropdown',
@@ -146,9 +152,19 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
         break;
 
       case EditorCategory.GP_TO_TERM_EDGE:
-        this.annotationFormService.editRelation(this.category, this.cam, this.annotationActivity, relationId)
-          .pipe(takeUntil(this._unsubscribeAll))
-          .subscribe(handleResponse);
+
+        if (RELATION_NOT_EDITABLE.includes(relationId)) {
+          const relationLabel = this.noctuaFormConfigService.findEdge(relationId)?.label;
+          this.noctuaFormDialogService.openInfoToast(`Editing "${relationLabel}" is not currently supported. Please delete the annotation and add the new relation instead.`, 'OK');
+
+          this.close();
+        } else if (relationId !== this.annotationActivity.gpToTermEdge.inverseEntity.id) {
+          this.annotationFormService.editRelation(this.category, this.cam, this.annotationActivity, relationId)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(handleResponse);
+        } else {
+          this.close();
+        }
         break;
 
       case EditorCategory.ADD_EXTENSION:
@@ -159,7 +175,7 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
         break;
 
       case EditorCategory.ADD_COMMENT:
-        this.annotationFormService.updateComment(this.category, this.cam, this.annotationActivity, termString)
+        this.annotationFormService.updateComment(this.cam, this.annotationActivity, termString)
           .pipe(takeUntil(this._unsubscribeAll))
           .subscribe(handleResponse);
         break;

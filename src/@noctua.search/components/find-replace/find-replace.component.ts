@@ -18,8 +18,7 @@ import { MatDrawer } from '@angular/material/sidenav';
 export class FindReplaceComponent implements OnInit, OnDestroy {
   MiddlePanel = MiddlePanel;
 
-  @Input('panelDrawer')
-  panelDrawer: MatDrawer;
+  @Input('panelDrawer') panelDrawer: MatDrawer;
   cam: Cam;
   summary;
   stats

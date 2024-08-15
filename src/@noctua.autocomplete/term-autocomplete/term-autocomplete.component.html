@@ -1,12 +1,13 @@
-<mat-form-field class="noc-sm w-full" [appearance]="appearance" [attr.data-cy]="'form-input-' + control">
+<mat-form-field class="noc-sm w-full noc-white-mat-field" [appearance]="appearance"
+  [attr.data-cy]="'form-input-' + control">
   <mat-label>{{label}}</mat-label>
   <textarea type="text" matInput [formControl]="control" [matAutocomplete]="termAuto" row="2" (focus)="onFocus()">
   </textarea>
-  <!--   @if (autocompleteType === AutocompleteType.REFERENCE) {
-  <button mat-icon-button matSuffix (click)="openAddReference($event)" class="noc-evidence-db-trigger">
-    <mat-icon>playlist_add</mat-icon>
+  @if (autocompleteType === AutocompleteType.REFERENCE) {
+  <button mat-button matSuffix (click)="openAddReference($event)" class="noc-evidence-db-trigger">
+    <fa-icon [icon]="['fas', 'file-medical']"></fa-icon>
   </button>
-  } -->
+  }
   <mat-autocomplete #termAuto="matAutocomplete" [displayWith]="termDisplayFn"
     (optionSelected)="selectTerm($event.option.value)" class="noc-term-autocomplete" fxLayout="row"
     fxLayoutAlign="start start">

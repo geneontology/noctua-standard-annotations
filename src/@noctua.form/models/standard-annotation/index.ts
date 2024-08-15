@@ -1,3 +1,11 @@
-export { AnnotationActivity, AnnotationExtension } from './annotation-activity';
+export { AnnotationActivitySortBy, AnnotationActivitySortField } from './annotation-activity-sortby';
 
-export { StandardAnnotationForm, AnnotationExtensionForm } from './form';
+export {
+  AnnotationActivity,
+  AnnotationExtension,
+} from './annotation-activity';
+
+export {
+  StandardAnnotationForm,
+  AnnotationExtensionForm
+} from './form';

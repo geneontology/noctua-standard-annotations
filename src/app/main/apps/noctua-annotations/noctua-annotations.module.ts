@@ -32,6 +32,7 @@ import { AnnotationFormComponent } from './forms/annotation-form/annotation-form
 import { AnnotationsTableComponent } from './table/annotations-table.component';
 import { AnnotationNodeComponent } from './table/annotation-node/annotation-node.component';
 import { NoctuaAutocompleteModule } from '@noctua.autocomplete/noctua-autocomplete.module';
+import { CommentsSidenavComponent } from './comments/comments.component';
 
 const routes = [
   {
@@ -85,6 +86,7 @@ const routes = [
     AnnotationFormComponent,
     AnnotationsTableComponent,
     AnnotationNodeComponent,
+    CommentsSidenavComponent
   ],
 })
 

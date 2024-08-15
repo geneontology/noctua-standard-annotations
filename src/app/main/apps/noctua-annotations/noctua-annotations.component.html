@@ -66,14 +66,16 @@
       <mat-drawer-content class="w-full h-full pb-96" fxLayout="column" fxLayoutAlign="start stretch">
         <div *ngIf="cam" [ngSwitch]="noctuaCommonMenuService.selectedMiddlePanel">
           <noc-annotation-form> </noc-annotation-form>
-          <noc-annotations-table *ngSwitchCase="MiddlePanel.camTable" [cam]="cam"
+          <noc-annotations-table *ngSwitchCase="MiddlePanel.CAM_TABLE" [cam]="cam"
             [options]="tableOptions"></noc-annotations-table>
         </div>
       </mat-drawer-content>
       <mat-drawer #rightDrawer class="noc-right-drawer" mode="side" position="end">
         <div [ngSwitch]="noctuaCommonMenuService.selectedRightPanel" class="h-full">
-          <noc-term-detail [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.termDetail">
+          <noc-term-detail [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.TERM_DETAIL">
           </noc-term-detail>
+          <noc-sidenav-comments [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.COMMENTS" [cam]="cam">
+          </noc-sidenav-comments>
         </div>
       </mat-drawer>
     </mat-drawer-container>
