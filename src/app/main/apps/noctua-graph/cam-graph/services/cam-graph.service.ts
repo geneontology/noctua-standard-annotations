@@ -169,7 +169,7 @@ export class CamGraphService {
     this.selectedElement = element;
     this._camService.onSelectedActivityChanged.next(activity);
     // activity.type = element.get('type');
-    this.noctuaCommonMenuService.selectRightPanel(RightPanel.activityTable);
+    this.noctuaCommonMenuService.selectRightPanel(RightPanel.ACTIVITY_TABLE);
     this.noctuaCommonMenuService.closeLeftDrawer();
     this.noctuaCommonMenuService.openRightDrawer();
 
@@ -191,7 +191,7 @@ export class CamGraphService {
     if (!source || !target) return;
 
     self._activityConnectorService.initializeForm(source.id, target.id);
-    self.noctuaCommonMenuService.selectRightPanel(RightPanel.activityConnectorTable);
+    self.noctuaCommonMenuService.selectRightPanel(RightPanel.ACTIVITY_CONNECTOR_TABLE);
     self.noctuaCommonMenuService.closeLeftDrawer();
     self.noctuaCommonMenuService.openRightDrawer();
 

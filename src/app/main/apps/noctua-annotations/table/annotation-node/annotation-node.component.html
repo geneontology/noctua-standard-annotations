@@ -23,7 +23,7 @@
           {{ annotationActivity.gp.term?.id }}
         </a>
       </span>
-      @if (noctuaUserService.user && annotationActivity.gp.term && options.editableTerms) {
+      @if (noctuaUserService.user && annotationActivity.gp.term) {
       <noctua-inline-editor [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.gp"
         [category]="EditorCategory.TERM" class="noc-edit-button">
       </noctua-inline-editor>
@@ -36,11 +36,11 @@
         }
         <span>{{annotationActivity.gpToTermEdge.inverseEntity?.label}}</span>
       </span>
-      <!--    @if (noctuaUserService.user && annotationActivity?.gpToTermEdges.length > 0) {
+      @if (noctuaUserService.user && annotationActivity?.gpToTermEdges.length > 0) {
       <noctua-inline-editor [cam]="cam" [annotationActivity]='annotationActivity'
         [category]="EditorCategory.GP_TO_TERM_EDGE" [editorType]="EditorType.STANDARD" class="noc-edit-button">
       </noctua-inline-editor>
-      } -->
+      }
     </div>
     <div class="noc-term-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch" fxFlex=""
       [attr.id]="annotationActivity.goterm.term?.displayId"
@@ -63,7 +63,7 @@
           {{ annotationActivity.goterm.term?.id }}
         </a>
       </span>
-      @if (noctuaUserService.user && annotationActivity.goterm.term && options.editableTerms) {
+      @if (noctuaUserService.user && annotationActivity.goterm.term) {
       <noctua-inline-editor [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.goterm"
         [category]="EditorCategory.TERM" class="noc-edit-button">
       </noctua-inline-editor>
@@ -188,7 +188,7 @@
     </div>
     <div class="noc-comments-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch">
       @if (annotationActivity.comments.length>0) {
-      <button mat-icon-button class="noc-toolbar-button noc-rounded-button " (click)="openCommentsForm(entity)"
+      <button mat-icon-button class="noc-toolbar-button noc-rounded-button " (click)="openComments(annotationActivity)"
         matTooltip="{{annotationActivity.comments}}" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
         <fa-icon [icon]="['fas', 'comment']"></fa-icon>
         <div class="noc-comments-badge">
@@ -210,6 +210,9 @@
         </button>
         <button mat-menu-item (click)="addComment()" class="">
           Add Comment
+        </button>
+        <button mat-menu-item (click)="copyToForm()" class="">
+          Add Values to Form
         </button>
         <button mat-menu-item (click)="deleteAnnotation()" class="">
           <fa-icon [icon]="['far', 'trash-alt']"></fa-icon> Delete Annotation

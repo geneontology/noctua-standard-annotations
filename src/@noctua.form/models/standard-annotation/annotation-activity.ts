@@ -8,6 +8,9 @@ import * as ShapeUtils from './../../data/config/shape-utils';
 import * as EntityDefinition from './../../data/config/entity-definition';
 import { Evidence } from './../activity/evidence';
 import { StandardAnnotationForm } from './form';
+import { cloneDeep } from 'lodash';
+import { Contributor } from '../contributor';
+import { AnnotationActivitySortBy, AnnotationActivitySortField } from './annotation-activity-sortby';
 
 
 export interface AnnotationEdgeConfig {
@@ -36,6 +39,7 @@ export class AnnotationExtension {
 
 
 export class AnnotationActivity {
+  id: string;
   gp: ActivityNode;
   goterm: ActivityNode;
   gpToTermEdge: Entity;
@@ -45,10 +49,13 @@ export class AnnotationActivity {
   reference = ShapeUtils.generateBaseTerm([]);
   with = ShapeUtils.generateBaseTerm([]);
   comments: string[] = [];
+  evidenceDate: string;
+  evidenceContributors: Contributor[] = [];
 
   extensions: AnnotationExtension[] = [];
   gpToTermEdges: Entity[] = [];
   activity: Activity;
+  date: string;
 
 
   constructor(activity?: Activity) {
@@ -147,22 +154,37 @@ export class AnnotationActivity {
   }
 
   getTriplePair(predicateId: string, goterm: ActivityNode, newPredicateId: string): TriplePair<ActivityNode> {
-    const oldTriple = this.activity.edges.find(edge => edge.object.uuid === goterm.uuid && edge.predicate.edge.id === predicateId);
+    const oldTriple = this.activity.edges.find(edge =>
+      (predicateId === noctuaFormConfig.edge.enabledBy.id ? edge.subject.uuid : edge.object.uuid) === goterm.uuid &&
+      edge.predicate.edge.id === predicateId
+    );
 
-    let newTriple: Triple<ActivityNode> | undefined;
-    if (oldTriple) {
-      newTriple = oldTriple
 
-      const edgeType = newPredicateId
-      const config = noctuaFormConfig.simpleAnnotationEdgeConfig[edgeType]
-
-      if (!config) {
-        newTriple = undefined;
-      }
-      newTriple.predicate.edge = new Entity(config.mfToTermPredicate, '');
-    } else {
-      newTriple = undefined;
+    if (!oldTriple) {
+      return { a: undefined, b: undefined };
     }
+
+    const config = noctuaFormConfig.simpleAnnotationEdgeConfig[newPredicateId];
+    if (!config) {
+      return { a: oldTriple, b: undefined };
+    }
+
+    const newTriple = cloneDeep(oldTriple);
+
+    const shouldSwapSubjectAndObject =
+      predicateId === noctuaFormConfig.edge.enabledBy.id ||
+      predicateId === noctuaFormConfig.inverseEdge.enables.id ||
+      newPredicateId === noctuaFormConfig.edge.enabledBy.id ||
+      newPredicateId === noctuaFormConfig.inverseEdge.enables.id;
+
+    if (shouldSwapSubjectAndObject) {
+      [newTriple.subject, newTriple.object] = [newTriple.object, newTriple.subject];
+    }
+
+    newTriple.predicate.edge = new Entity(
+      config.mfNodeRequired ? config.mfToTermPredicate : config.gpToTermPredicate,
+      ''
+    );
 
     return { a: oldTriple, b: newTriple };
   }
@@ -271,6 +293,56 @@ export class AnnotationActivity {
     }
 
     return aspect;
+  }
+
+  public static getSortByKey(annotationActivity: AnnotationActivity) {
+    return annotationActivity.gp?.term.label;
+  }
+
+  private static getSafeLabel(obj: any): string {
+    return obj?.term?.label ?? '';
+  }
+
+  public static sortBy(activities: AnnotationActivity[], sortBy: AnnotationActivitySortBy): AnnotationActivity[] {
+    return activities.sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortBy.field) {
+        case AnnotationActivitySortField.GP:
+          comparison = this.getSafeLabel(a.gp).localeCompare(this.getSafeLabel(b.gp));
+          break;
+        case AnnotationActivitySortField.GOTERM:
+          comparison = this.getSafeLabel(a.goterm).localeCompare(this.getSafeLabel(b.goterm));
+          break;
+        case AnnotationActivitySortField.GP_TO_TERM_EDGE:
+          comparison = (a.gpToTermEdge?.label ?? '').localeCompare(b.gpToTermEdge?.label ?? '');
+          break;
+        case AnnotationActivitySortField.GO_TERM_ASPECT:
+          comparison = (a.gotermAspect ?? '').localeCompare(b.gotermAspect ?? '');
+          break;
+        case AnnotationActivitySortField.EVIDENCE_CODE:
+          comparison = this.getSafeLabel(a.evidenceCode).localeCompare(this.getSafeLabel(b.evidenceCode));
+          break;
+        case AnnotationActivitySortField.REFERENCE:
+          comparison = this.getSafeLabel(a.reference).localeCompare(this.getSafeLabel(b.reference));
+          break;
+        case AnnotationActivitySortField.WITH:
+          comparison = this.getSafeLabel(a.with).localeCompare(this.getSafeLabel(b.with));
+          break;
+        case AnnotationActivitySortField.DATE:
+          comparison = (a.date ?? '').localeCompare(b.date ?? '');
+          break;
+        default:
+          comparison = this.getSafeLabel(a.gp).localeCompare(this.getSafeLabel(b.gp));
+      }
+
+      // If the primary sort yields equality, sort by id as secondary criterion
+      if (comparison === 0) {
+        comparison = (a.id ?? '').localeCompare(b.id ?? '');
+      }
+
+      return sortBy.ascending ? comparison : -comparison;
+    });
   }
 
 }

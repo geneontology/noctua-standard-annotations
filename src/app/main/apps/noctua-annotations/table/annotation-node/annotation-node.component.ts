@@ -34,6 +34,8 @@ import { NoctuaConfirmDialogService } from '@noctua/components/confirm-dialog/co
 import { noctuaAnimations } from '@noctua/animations';
 import { NoctuaFormDialogService } from 'app/main/apps/noctua-form/services/dialog.service';
 import { SettingsOptions } from '@noctua.common/models/graph-settings';
+import { RightPanel } from '@noctua.common/models/menu-panels';
+import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 
 @Component({
   selector: 'noc-annotation-node',
@@ -76,6 +78,8 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
     private noctuaFormDialogService: NoctuaFormDialogService,
     public noctuaActivityEntityService: NoctuaActivityEntityService,
     public noctuaActivityFormService: NoctuaActivityFormService,
+    public noctuaCommonMenuService: NoctuaCommonMenuService,
+
     private inlineEditorService: InlineEditorService) {
     this._unsubscribeAll = new Subject();
   }
@@ -152,30 +156,6 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
     this.inlineEditorService.open(this.currentMenuEvent.target, { data });
   }
 
-  openSelectEvidenceDialog(entity: ActivityNode) {
-    const self = this;
-    const evidences: Evidence[] = this.camService.getUniqueEvidence(self.noctuaActivityFormService.activity);
-    const success = (selected) => {
-      if (selected.evidences && selected.evidences.length > 0) {
-        entity.predicate.setEvidence(selected.evidences);
-        self.noctuaActivityFormService.initializeForm();
-      }
-    };
-
-    self.noctuaFormDialogService.openSelectEvidenceDialog(evidences, success);
-  }
-
-  openCommentsForm(entity: ActivityNode) {
-    const self = this;
-
-    const success = (comments) => {
-      if (comments) {
-        this.bbopGraphService.savePredicateComments(self.cam, entity.predicate, comments);
-      }
-    };
-    self.noctuaFormDialogService.openCommentsDialog(entity.predicate?.comments, success)
-  }
-
   updateCurrentMenuEvent(event) {
     this.currentMenuEvent = event;
   }
@@ -206,7 +186,6 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
   deleteExtension(extension: AnnotationExtension) {
     const self = this;
 
-    console.log('deleteExtension', extension);
     const success = () => {
       this.annotationFormService.deleteExtension(self.annotationActivity, extension)
         .pipe(takeUntil(self._unsubscribeAll))
@@ -221,6 +200,17 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
       'You are about to delete an extension.',
       success);
 
+  }
+
+  copyToForm() {
+    this.annotationFormService.onFormAnnotationActivityChanged.next(this.annotationActivity);
+  }
+
+  openComments(annotationActivity: AnnotationActivity) {
+    this.annotationFormService.onCommentIdChanged.next(annotationActivity.id);
+    this.noctuaCommonMenuService.selectRightPanel(RightPanel.COMMENTS);
+    this.noctuaCommonMenuService.openRightDrawer();
+    this.noctuaCommonMenuService.closeLeftDrawer();
   }
 
   ngOnDestroy(): void {

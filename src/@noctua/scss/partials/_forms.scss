@@ -49,3 +49,13 @@ textarea {
 .mat-form-field.mat-form-field-invalid .mat-form-field-label {
   color: red !important;
 }
+
+.noc-white-mat-field {
+  .mat-form-field-flex {
+    background-color: #ffffff;
+
+    &:hover {
+      background-color: #f9f9f9;
+    }
+  }
+}

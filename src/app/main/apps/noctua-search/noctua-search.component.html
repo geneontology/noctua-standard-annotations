@@ -163,9 +163,9 @@
     </mat-drawer-content>
     <mat-drawer #rightDrawer class="noc-right-drawer" mode="over" position="end">
       <div [ngSwitch]="noctuaSearchMenuService.selectedRightPanel" class="h-full">
-        <noc-cam-form [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.camForm">
+        <noc-cam-form [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.CAM_FORM">
         </noc-cam-form>
-        <noc-copy-model [panelDrawer]="rightDrawer" [panelSide]="'right'" *ngSwitchCase="RightPanel.copyModel">
+        <noc-copy-model [panelDrawer]="rightDrawer" [panelSide]="'right'" *ngSwitchCase="RightPanel.COPY_MODEL">
         </noc-copy-model>
       </div>
     </mat-drawer>

@@ -275,7 +275,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
     this.camService.initializeForm(cam);
     this.camService.onCamChanged.next(cam);
 
-    this.openRightDrawer(RightPanel.camForm)
+    this.openRightDrawer(RightPanel.CAM_FORM)
   }
 
   openCopyModel(cam: Cam) {
@@ -284,7 +284,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
 
     this.camService.onCamChanged.next(cam);
 
-    this.openRightDrawer(RightPanel.copyModel)
+    this.openRightDrawer(RightPanel.COPY_MODEL)
   }
 
   openLeftDrawer(panel: LeftPanel) {

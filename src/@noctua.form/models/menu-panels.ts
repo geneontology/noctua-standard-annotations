@@ -8,12 +8,13 @@ export enum LeftPanel {
 };
 
 export enum MiddlePanel {
-    camPreview = 'camPreview',
-    camTable = 'camTable'
+    CAM_PREVIEW = 'CAM_PREVIEW',
+    CAM_TABLE = 'CAM_TABLE'
 };
 
 export enum RightPanel {
-    activityForm = 'activityForm',
-    camForm = 'camForm',
-    termDetail = 'termDetail'
+    ACTIVITY_FORM = 'ACTIVITY_FORM',
+    CAM_FORM = 'CAM_FORM',
+    TERM_DETAIL = 'TERM_DETAIL',
+    COMMENTS = "COMMENTS"
 }

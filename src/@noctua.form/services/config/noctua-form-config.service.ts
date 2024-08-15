@@ -119,6 +119,24 @@ export class NoctuaFormConfigService {
     };
   }
 
+  get annotationActivitySortField() {
+    const options = [
+      noctuaFormConfig.annotationActivitySortField.options.gp,
+      noctuaFormConfig.annotationActivitySortField.options.goterm,
+      noctuaFormConfig.annotationActivitySortField.options.gpToTermEdge,
+      noctuaFormConfig.annotationActivitySortField.options.gotermAspect,
+      noctuaFormConfig.annotationActivitySortField.options.evidenceCode,
+      noctuaFormConfig.annotationActivitySortField.options.reference,
+      noctuaFormConfig.annotationActivitySortField.options.with,
+      noctuaFormConfig.annotationActivitySortField.options.date
+    ];
+
+    return {
+      options: options,
+      selected: options[0]
+    };
+  }
+
   get bpOnlyEdges() {
     const options = [
       noctuaFormConfig.edge.causallyUpstreamOfOrWithin,
@@ -340,6 +358,9 @@ export class NoctuaFormConfigService {
     const comments = new Set<string>();
     let gpToTermEdgeId;
 
+    annotationActivity.id = activity.id;
+    annotationActivity.date = activity.date.toString();
+
     activity.edges.forEach(edge => {
       edge.predicate.comments.forEach(comment => comments.add(comment));
     });
@@ -356,7 +377,6 @@ export class NoctuaFormConfigService {
           annotationActivity.gp.predicate = edge.predicate;
           evidence = edge.predicate.evidence?.[0] ?? null;
         }
-
       });
     } else {
       gpToTermEdgeId = noctuaFormConfig.edge.enabledBy.id;
@@ -366,9 +386,9 @@ export class NoctuaFormConfigService {
       evidence = activity.mfNode.predicate.evidence?.[0] ?? null;
 
       if (activity.mfNode?.term.id === noctuaFormConfig.rootNode.mf.id) {
-        criteria.mfNodeRequired = true;
         activity.getEdges(activity.mfNode.id).forEach((edge) => {
           if (noctuaFormConfig.mfToTermEdges.includes(edge.predicate.edge.id)) {
+            criteria.mfNodeRequired = true;
             gpToTermEdgeId = edge.predicate.edge.id;
             criteria.mfToTermPredicate = edge.predicate.edge.id;
             annotationActivity.gpToTermEdge = edge.predicate.edge
@@ -382,7 +402,6 @@ export class NoctuaFormConfigService {
     const inverseEdgeId = annotationActivity.findEdgeByCriteria(criteria);
     const inverseEdge = this.findEdge(inverseEdgeId);
 
-    console.log('inverseEdge', edgeId)
     if (edgeId && inverseEdge) {
       annotationActivity.gpToTermEdge = Entity.createEntity(edgeId);
       annotationActivity.gpToTermEdge.inverseEntity = inverseEdge
@@ -399,6 +418,8 @@ export class NoctuaFormConfigService {
     annotationActivity.evidenceCode.term = evidence?.evidence;
     annotationActivity.reference.term = new Entity(evidence?.reference, evidence?.reference);
     annotationActivity.with.term = evidence?.withEntity;
+    annotationActivity.evidenceDate = evidence?.formattedDate;
+    annotationActivity.evidenceContributors = evidence?.contributors;
 
     return annotationActivity
   }

@@ -12,7 +12,8 @@
           [category]="annotationActivity?.gp.category"></noc-term-autocomplete>
         <div class="p-1 " fxFlex="30" fxLayout="column" fxLayoutAlign="start stretch">
           <mat-checkbox class="noc-qualifier-cbx" formControlName="isComplement">NOT</mat-checkbox>
-          <mat-form-field appearance="fill" class="noc-sm w-full" [attr.data-cy]="'form-input-gpterm-relation'">
+          <mat-form-field appearance="fill" class="noc-sm w-full noc-white-mat-field"
+            [attr.data-cy]="'form-input-gpterm-relation'">
             <mat-label>GP to Term Relation</mat-label>
             <mat-select class="" panelClass="noc-term-autocomplete" placeholder="" formControlName="gpToTermEdge"
               [compareWith]="compareFn">
@@ -91,7 +92,8 @@
       <div formArrayName="annotationExtensions" class="px-3 pt-1" fxLayout="column" fxLayoutAlign="start center">
         <div *ngFor="let item of annotationExtensions.controls; let i=index" [formGroupName]="i" class="w-full">
           <div class="p-1" fxFlex="35" fxLayout="column" fxLayoutAlign="start stretch">
-            <mat-form-field appearance="fill" class="noc-sm w-full" [attr.data-cy]="'form-input-extension-relation'">
+            <mat-form-field appearance="fill" class="noc-sm w-full noc-white-mat-field"
+              [attr.data-cy]="'form-input-extension-relation'">
               <mat-label>Extension Relation</mat-label>
               <mat-select class="" panelClass="noc-term-autocomplete" placeholder="" formControlName="extensionEdge"
                 [compareWith]="compareFn">
@@ -160,7 +162,7 @@
 
 
       <div class="pl-4 py-4">
-        <button mat-stroked-button (click)="addComment() " class="noc-xs px-2 w-[170px] noc-rounded-button "
+        <button mat-stroked-button (click)="addComment() " class="noc-xs px-2 w-[200px] noc-rounded-button "
           color="primary">
           Add @if(annotationComments?.controls.length>1) {<span>Another</span>} Comment
         </button>

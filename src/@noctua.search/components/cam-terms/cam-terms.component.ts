@@ -1,6 +1,19 @@
 import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ActivityNode, Article, Cam, CamService, EntityType, Evidence, LeftPanel, NoctuaFormConfigService, BbopGraphService, NoctuaLookupService, NoctuaUserService, RightPanel, TermsSummary } from '@geneontology/noctua-form-base';
+import {
+  ActivityNode,
+  Article,
+  Cam,
+  CamService,
+  EntityType,
+  Evidence,
+  LeftPanel,
+  NoctuaFormConfigService,
+  BbopGraphService,
+  NoctuaLookupService,
+  NoctuaUserService,
+  TermsSummary
+} from '@geneontology/noctua-form-base';
 import { NoctuaSearchService } from './../..//services/noctua-search.service';
 import { NoctuaSearchMenuService } from '../../services/search-menu.service';
 import { takeUntil } from 'rxjs/operators';
@@ -11,6 +24,7 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { SearchCriteria } from '@noctua.search/models/search-criteria';
 import { environment } from 'environments/environment';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
+import { RightPanel } from '@noctua.common/models/menu-panels';
 
 @Component({
   selector: 'noc-cam-terms',
@@ -129,7 +143,7 @@ export class CamTermsComponent implements OnInit, OnDestroy {
 
   openTermDetail(term) {
     this.noctuaSearchService.onDetailTermChanged.next(term)
-    this.noctuaCommonMenuService.selectRightPanel(RightPanel.termDetail);
+    this.noctuaCommonMenuService.selectRightPanel(RightPanel.TERM_DETAIL);
     this.noctuaCommonMenuService.openRightDrawer();
   }
 

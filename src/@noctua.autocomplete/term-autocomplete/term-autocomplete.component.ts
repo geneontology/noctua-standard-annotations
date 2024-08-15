@@ -57,8 +57,6 @@ export class TermAutocompleteComponent implements OnInit, OnDestroy, ControlValu
   }
 
   subscribeToValueChanges(): void {
-    // console.log('Subscribing to value changes with category:', this.category);
-
     if (this.valueChangesSubscription) {
       this.valueChangesSubscription.unsubscribe();
       this.filteredOptions = [];

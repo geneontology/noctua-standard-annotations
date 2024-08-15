@@ -17,7 +17,7 @@ export enum MiddlePanel {
 };
 
 export enum RightPanel {
-    camForm = 'camForm',
-    copyModel = 'copyModel',
-    announcement = 'announcement',
+    CAM_FORM = 'CAM_FORM',
+    COPY_MODEL = 'COPY_MODEL',
+    ANNOUNCEMENT = 'ANNOUNCEMENT',
 }

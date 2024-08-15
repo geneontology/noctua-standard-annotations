@@ -45,8 +45,6 @@ export class AnnotationsTableComponent implements OnInit, OnDestroy {
   @Input('options')
   options: any = {};
 
-  optionsDisplay: any = {}
-
   gpNode: ActivityNode;
   nodes: ActivityNode[] = [];
   editableTerms = false;
@@ -68,14 +66,7 @@ export class AnnotationsTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const self = this;
 
-    if (this.options?.editableTerms) {
-      this.editableTerms = this.options.editableTerms
-    }
-
-    this.optionsDisplay = { ...this.options, hideHeader: true };
-    // this.nodes = this.activity.nodes
   }
 
 
@@ -92,8 +83,6 @@ export class AnnotationsTableComponent implements OnInit, OnDestroy {
     const errors = activity.getViolationDisplayErrors();
     this.noctuaFormDialogService.openCamErrorsDialog(errors);
   }
-
-
 
   clearValues(entity: ActivityNode) {
     const self = this;
@@ -121,7 +110,8 @@ export class AnnotationsTableComponent implements OnInit, OnDestroy {
 
 
   sortBy(sortCriteria: { id, label }) {
-    this.cam.updateSortBy(sortCriteria.id, sortCriteria.label);
+    console.log('sortCriteria', sortCriteria);
+    this.cam.updateAnnotationActivitySortBy(sortCriteria.id, sortCriteria.label);
   }
 
   toggleSortDirection() {
