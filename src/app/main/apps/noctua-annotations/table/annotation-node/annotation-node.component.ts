@@ -207,7 +207,7 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
   }
 
   openComments(annotationActivity: AnnotationActivity) {
-    this.annotationFormService.onCommentIdChanged.next(annotationActivity.id);
+    this.annotationFormService.selectCommentActivityId(annotationActivity.id);
     this.noctuaCommonMenuService.selectRightPanel(RightPanel.COMMENTS);
     this.noctuaCommonMenuService.openRightDrawer();
     this.noctuaCommonMenuService.closeLeftDrawer();

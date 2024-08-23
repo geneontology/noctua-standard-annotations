@@ -130,8 +130,16 @@ $noc-breakpoints: (
     max-width: 300px !important;
   }
 
+  .noc-date-cell {
+    @include deep-width(100px);
+  }
+
   .noc-comments-cell {
     @include deep-width(50px);
+    //border: transparent solid 2px;
+    &.noc-selected {
+      // border: rgba(map-get($primary, default), 0.6) solid 2px;
+    }
   }
 
   .noc-evidence-code-cell {

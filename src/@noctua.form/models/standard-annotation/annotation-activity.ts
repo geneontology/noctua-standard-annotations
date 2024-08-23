@@ -56,6 +56,7 @@ export class AnnotationActivity {
   gpToTermEdges: Entity[] = [];
   activity: Activity;
   date: string;
+  formattedDate: string;
 
 
   constructor(activity?: Activity) {
