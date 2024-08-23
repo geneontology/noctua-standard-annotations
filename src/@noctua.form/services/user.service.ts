@@ -64,7 +64,6 @@ export class NoctuaUserService {
             // remove the token on the url
             const url = new URL(window.location.href);
 
-            console.log(url);
             url.searchParams.delete('barista_token');
             const newUrl = decodeURIComponent(url.href);
             window.history.replaceState(null, null, newUrl);

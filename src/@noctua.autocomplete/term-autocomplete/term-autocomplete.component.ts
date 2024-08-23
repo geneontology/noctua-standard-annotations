@@ -50,7 +50,6 @@ export class TermAutocompleteComponent implements OnInit, OnDestroy, ControlValu
       const currentCategory = changes['category'].currentValue;
 
       if (!NoctuaFormUtils.areArraysEqualByKey(previousCategory, currentCategory, 'id')) {
-        console.log(`Category changed from ${previousCategory} to ${currentCategory}`);
         this.subscribeToValueChanges();
       }
     }

@@ -7,7 +7,7 @@
       Close
     </button>
   </div>
-  <div class="noc-dialog-body pt-3">
+  <div class="noc-dialog-body pt-3  overflow-y-auto">
     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="noc-section-header pr-8" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
@@ -30,11 +30,11 @@
           <div formArrayName="commentsFormArray">
             <div fxLayout="row" fxLayoutAlign="start center" class="w-full">
               <div class="noc-form-field-container" fxFlex>
-                <mat-form-field appearance="outline" class="noc-sm w-full">
+                <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Comment</mat-label>
-                  <textarea type="text" matInput [formControlName]="i" rows="2"></textarea>
+                  <textarea type="text" matInput [formControlName]="i" rows="4"></textarea>
                 </mat-form-field>
-                <button mat-icon-button (click)="deleteComment(i)" class="noc-delete-float-button">
+                <button mat-button (click)="deleteComment(i)" class="noc-delete-float-button">
                   <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
                 </button>
               </div>

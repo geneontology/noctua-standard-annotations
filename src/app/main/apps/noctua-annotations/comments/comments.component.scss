@@ -10,6 +10,6 @@ $accent: map-get($theme, accent);
   }
 
   .noc-selected {
-    border-left: #548260 solid 5px;
+    background-color: rgba(map-get($primary, default), 0.6);
   }
 }

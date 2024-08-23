@@ -5,6 +5,9 @@ $primary: map-get($theme, primary);
 $accent: map-get($theme, accent);
 
 :host {
+  textarea {
+    resize: vertical !important;
+  }
   .noc-no-info {
     font-size: 16px;
   }

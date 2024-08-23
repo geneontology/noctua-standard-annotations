@@ -11,7 +11,8 @@
   }
 
   noc-sidenav-comments {
-    @include deep-width(300px);
+    display: block;
+    @include deep-width(500px);
   }
 
   .noc-drawer-container {
