@@ -193,6 +193,7 @@ export class ActivityNode implements ActivityNodeDisplay {
 
   hasRootTypes(inRootTypes: GoCategory[]) {
     let found = false;
+
     for (let i = 0; i < this.rootTypes.length; i++) {
       for (let j = 0; j < inRootTypes.length; j++) {
         if (this.rootTypes[i].id === inRootTypes[j].category) {
@@ -206,18 +207,16 @@ export class ActivityNode implements ActivityNodeDisplay {
   }
 
   clearValues() {
-    const self = this;
-    self.term.id = null;
-    self.term.label = null;
-    self.predicate.resetEvidence();
+    this.term.id = null;
+    this.term.label = null;
+    this.predicate.resetEvidence();
   }
 
   copyValues(node: ActivityNode) {
-    const self = this;
-    self.uuid = node.uuid;
-    self.term = node.term;
-    self.assignedBy = node.assignedBy;
-    self.isComplement = node.isComplement;
+    this.uuid = node.uuid;
+    this.term = node.term;
+    this.assignedBy = node.assignedBy;
+    this.isComplement = node.isComplement;
   }
 
   setTermLookup(value) {
@@ -232,10 +231,9 @@ export class ActivityNode implements ActivityNodeDisplay {
   }
 
   enableRow() {
-    const self = this;
     let result = true;
-    if (self.nodeGroup) {
-      if (self.nodeGroup.isComplement && self.treeLevel > 0) {
+    if (this.nodeGroup) {
+      if (this.nodeGroup.isComplement && this.treeLevel > 0) {
         result = false;
       }
     }

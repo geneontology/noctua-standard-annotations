@@ -147,9 +147,10 @@
       <div formArrayName="annotationComments" class="px-3 pt-1" fxLayout="column" fxLayoutAlign="start center">
         <div *ngFor="let item of annotationComments.controls; let i=index" [formGroupName]="i" class="w-full">
           <div class="p-1" fxFlex="60" fxLayout="column" fxLayoutAlign="start stretch">
-            <mat-form-field appearance="fill" class="noc-sm w-full">
+            <mat-form-field appearance="fill" class="w-full">
               <mat-label>Comment</mat-label>
-              <textarea type="text" matInput formControlName="comment" rows="2"></textarea>
+              <textarea type="text" matInput formControlName="comment" rows="2"
+                class="noc-comment-box !resize-y"></textarea>
             </mat-form-field>
           </div>
           <button mat-icon-button (click)="deleteExtension(i)" class="text-warn">

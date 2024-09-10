@@ -1268,7 +1268,7 @@ export class BbopGraphService {
 
         each(triple.predicate.evidence, function (evidence: Evidence) {
           const evidenceReference = Evidence.formatReference(evidence.reference);
-          const evidenceWith = evidence.with;
+          const evidenceWith = Evidence.formatWithFrom(evidence.with);
 
           reqs.add_evidence(evidence.evidence.id, evidenceReference, evidenceWith, triple.predicate.uuid);
         });
@@ -1497,11 +1497,14 @@ export class BbopGraphService {
   }
 
   editReference(cam: Cam, oldReferences: Entity[], newReference: string) {
-    return this._editEvidenceAnnotation(cam, oldReferences, newReference, 'source');
+    const formattedReference = Evidence.formatReference(newReference);
+    return this._editEvidenceAnnotation(cam, oldReferences, formattedReference, 'source');
   }
 
   editWith(cam: Cam, oldWiths: Entity[], newWith: string) {
-    return this._editEvidenceAnnotation(cam, oldWiths, newWith, 'with');
+    const formattedWith = Evidence.formatWithFrom(newWith);
+
+    return this._editEvidenceAnnotation(cam, oldWiths, formattedWith, 'with');
   }
 
   updateAnnotationComments(cam: Cam, predicates: Predicate[], comments: string[]) {

@@ -118,6 +118,10 @@ $accent: map-get($theme, accent);
       border-radius: 12px;
     }
 
+    textarea.noc-comment-box {
+      resize: vertical !important;
+    }
+
     .noc-term-margin {
       margin-top: 10px;
     }
