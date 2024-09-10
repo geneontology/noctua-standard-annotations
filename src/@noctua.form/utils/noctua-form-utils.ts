@@ -7,17 +7,6 @@ export class NoctuaFormUtils {
         return dirtyId;
     }
 
-
-    public static generateGUID() {
-        function S4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-
-        return S4() + S4();
-    }
-
     public static pad(pad: string, count: number) {
         let counter = 0;
         let result = ''

@@ -28,7 +28,6 @@ enum FormStructureKeys {
   TERM = 'term'
 }
 
-
 const RELATION_NOT_EDITABLE = [
   noctuaFormConfig.edge.isActiveIn.id,
   noctuaFormConfig.edge.locatedIn.id,
