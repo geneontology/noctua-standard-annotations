@@ -5,24 +5,26 @@
         Choose from Exisiting Node</span>
       <span fxFlex></span>
       <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" aria-label="Close dialog">
-        <mat-icon>close</mat-icon> Close
+        Close
       </button>
     </mat-toolbar-row>
   </mat-toolbar>
   <div class="noc-dialog-body noc-right-panel noc-form-section">
-    <div class="noc-section-header  w-100-p" fxLayout="row" fxLayoutAlign="start center">
+    <div class="noc-section-header  w-full" fxLayout="row" fxLayoutAlign="start center">
       <div class="noc-section-heading">
         Select Node
       </div>
     </div>
-    <div class="noc-section-body w-100-p" noctuaPerfectScrollbar>
-      <mat-radio-group fxLayout="column" fxLayoutAlign="start stretch" class="w-100-p"
+    <div class="noc-section-body w-full">
+      <mat-radio-group fxLayout="column" fxLayoutAlign="start stretch" class="w-full"
         [(ngModel)]="selectedActivityNode">
-        <div *ngFor="let node of nodes" class="noc-radio-group-section" fxLayout="column" fxLayoutAlign="start stretch">
+        @for (node of nodes; track node) {
+        <div class="noc-radio-group-section" fxLayout="column" fxLayoutAlign="start stretch">
           <div class="noc-title">
             {{node.title}}
           </div>
-          <mat-radio-button class="mb-8" *ngFor="let activityNode of node.activityNodes" [value]="activityNode">
+          @for (activityNode of node.activityNodes; track activityNode) {
+          <mat-radio-button class="mb-8" [value]="activityNode">
             <div class="h4">
               {{activityNode.term?.label}}
             </div>
@@ -30,7 +32,9 @@
               <small>{{activityNode.term?.id}}</small>
             </div>
           </mat-radio-button>
+          }
         </div>
+        }
       </mat-radio-group>
     </div>
   </div>

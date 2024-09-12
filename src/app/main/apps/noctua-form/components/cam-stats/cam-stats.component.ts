@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone, Input } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ActivityNode, Cam, CamService, EntityType, LeftPanel, NoctuaFormConfigService, BbopGraphService, NoctuaLookupService, NoctuaUserService, RightPanel, TermsSummary } from '@geneontology/noctua-form-base';
+import { ActivityNode, Cam, CamService, EntityType, LeftPanel, NoctuaFormConfigService, BbopGraphService, NoctuaLookupService, NoctuaUserService, TermsSummary } from '@geneontology/noctua-form-base';
 import { takeUntil } from 'rxjs/operators';
 import { MatDrawer } from '@angular/material/sidenav';
 import { SearchCriteria } from '@noctua.search/models/search-criteria';
@@ -8,6 +8,7 @@ import { environment } from 'environments/environment';
 import { NoctuaReviewSearchService } from '@noctua.search/services/noctua-review-search.service';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
+import { RightPanel } from '@noctua.common/models/menu-panels';
 
 enum StatsType {
   GENERAL = 'general',
@@ -140,7 +141,7 @@ export class CamStatsComponent implements OnInit, OnDestroy {
 
   openTermDetail(term) {
     this.noctuaSearchService.onDetailTermChanged.next(term)
-    this.noctuaCommonMenuService.selectRightPanel(RightPanel.termDetail);
+    this.noctuaCommonMenuService.selectRightPanel(RightPanel.TERM_DETAIL);
     this.noctuaCommonMenuService.openRightDrawer();
   }
 

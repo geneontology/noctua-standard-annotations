@@ -1,6 +1,6 @@
-@use '@angular/material' as mat;
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
+@use "@angular/material" as mat;
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
 
 :host {
   width: 100%; // display: block;
@@ -13,8 +13,8 @@
 
   .noc-header {
     @include deep-height(30px);
-    background-color: #EEE;
-    border-bottom: #CCC solid 1px;
+    background-color: #eee;
+    border-bottom: #ccc solid 1px;
 
     mat-icon-button {
       @include deep-height(30px);
@@ -35,7 +35,7 @@
   .noc-search-form {
     .noc-form-section {
       width: 100%;
-      background-color: #FFF;
+      background-color: #fff;
 
       .noc-section-header {
         height: 30px;
@@ -63,7 +63,7 @@
       // padding-bottom: 20px;
       margin-bottom: 3px;
       //  border-bottom: #CCC solid 1px;
-      background-color: #FFF;
+      background-color: #fff;
 
       .noc-group-heading {
         margin-bottom: 20px;
@@ -85,13 +85,13 @@
 
       .noc-action-button {
         margin: 8px 0 0 0;
-        background-color: #FAFAFA;
+        background-color: #fafafa;
         width: 35px;
         height: 35px;
 
         mat-icon {
           @include noc-icon-size(14px);
-          color: #AAA;
+          color: #aaa;
           line-height: 18px;
         }
 
@@ -105,7 +105,6 @@
       }
     }
 
-
     .noc-tree-input {
       $border-color: rgba(#000, 0.12);
       @include deep-width(20px);
@@ -117,7 +116,7 @@
     }
 
     md-input-container {
-      margin: 0; //border-bottom: #555 solid 1px; 
+      margin: 0; //border-bottom: #555 solid 1px;
       padding-top: 20px;
       padding-bottom: 8px;
 
@@ -137,11 +136,10 @@
       }
     }
 
-
     .noc-submit-row {
       margin: 10px 0;
       padding: 10px 0;
-      background-color: #FFF;
+      background-color: #fff;
     }
   }
 }

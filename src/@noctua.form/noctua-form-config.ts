@@ -1,6 +1,18 @@
 import { environment } from './../environments/environment';
-import { Entity } from './models/activity/entity';
+import { Entity, RootTypes } from './models/activity/entity';
 import vpeJson from './data/vpe-decision.json'
+import { AnnotationActivitySortField } from './models/standard-annotation/annotation-activity-sortby';
+
+export interface SAEdgeDefinition {
+  gpToTermPredicate: string;
+  mfToTermPredicate?: string;
+  mfNodeRequired: boolean;
+  gpToTermReverse?: boolean;
+}
+
+export type SAConfigEdgeMap = {
+  [key: string]: SAEdgeDefinition;
+};
 
 const edge = {
   placeholder: {
@@ -79,7 +91,10 @@ const edge = {
     id: 'RO:0012009',
     label: 'constitutively upstream of',
   },
-
+  contributesTo: {
+    "id": "RO:0002326",
+    "label": "contributes to",
+  },
   directlyProvidesInput: {
     id: 'RO:0002413',
     label: 'directly provides input for'
@@ -155,6 +170,16 @@ const inverseEdge = {
     "id": "RO:0002326",
     "label": "contributes to",
   },
+
+  actsUpstreamOf: {
+    "id": "RO:0002263",
+    "label": "acts upstream of",
+  },
+  actsUpstreamOfOrWithin: {
+    "id": "RO:0002264",
+    "label": "acts upstream of or within",
+  },
+
   actsUpstreamOfOrWithinPositive: {
     "id": "RO:0004032",
     "label": "acts upstream of or within, positive effect",
@@ -196,7 +221,7 @@ const rootNode = {
   }
 }
 
-const simpleAnnotationEdgeConfig = {
+const simpleAnnotationEdgeConfig: SAConfigEdgeMap = {
   [inverseEdge.enables.id]: {
     gpToTermPredicate: edge.enabledBy.id,
     gpToTermReverse: true,
@@ -210,6 +235,16 @@ const simpleAnnotationEdgeConfig = {
   [inverseEdge.isActiveIn.id]: {
     gpToTermPredicate: edge.enabledBy.id,
     mfToTermPredicate: edge.occursIn.id,
+    mfNodeRequired: true
+  },
+  [inverseEdge.actsUpstreamOf.id]: {
+    gpToTermPredicate: edge.enabledBy.id,
+    mfToTermPredicate: edge.causallyUpstreamOf.id,
+    mfNodeRequired: true
+  },
+  [inverseEdge.actsUpstreamOfOrWithin.id]: {
+    gpToTermPredicate: edge.enabledBy.id,
+    mfToTermPredicate: edge.causallyUpstreamOfOrWithin.id,
     mfNodeRequired: true
   },
   [inverseEdge.actsUpstreamOfOrWithinPositive.id]: {
@@ -233,12 +268,9 @@ const simpleAnnotationEdgeConfig = {
     mfNodeRequired: true
   },
   [inverseEdge.contributesTo.id]: {
-    gpToTermPredicate: edge.hasPart.id,
-    mfToTermPredicate: edge.enabledBy.id,
-    mfNodeRequired: true,
-    root: rootNode.complex,
-    gpToTermReverse: false,
-    mfToTermReverse: true
+    gpToTermPredicate: edge.contributesTo.id,
+    mfNodeRequired: false,
+    gpToTermReverse: false
   },
   [inverseEdge.locatedIn.id]: {
     gpToTermPredicate: edge.locatedIn.id,
@@ -246,9 +278,9 @@ const simpleAnnotationEdgeConfig = {
     gpToTermReverse: false
   },
   [edge.partOf.id]: {
-    gpToTermPredicate: edge.hasPart.id,
+    gpToTermPredicate: edge.partOf.id,
     mfNodeRequired: false,
-    gpToTermReverse: true
+    gpToTermReverse: false
   }
 };
 
@@ -260,21 +292,45 @@ export const noctuaFormConfig = {
         'id': 'gp',
         'label': 'Gene Product (default)'
       },
-      'mf': {
-        'id': 'mf',
-        'label': 'Molecular Function'
-      },
-      'bp': {
-        'id': 'bp',
-        'label': 'Biological Process'
-      },
-      'cc': {
-        'id': 'cc',
-        'label': 'Cellular Component'
-      },
       'date': {
         'id': 'date',
-        'label': 'Activity Date'
+        'label': 'Annotation Date'
+      }
+    }
+  },
+  annotationActivitySortField: {
+    options: {
+      [AnnotationActivitySortField.GP]: {
+        id: AnnotationActivitySortField.GP,
+        label: 'Gene Product (default)'
+      },
+      [AnnotationActivitySortField.GOTERM]: {
+        id: AnnotationActivitySortField.GOTERM,
+        label: 'GO Term'
+      },
+      [AnnotationActivitySortField.GP_TO_TERM_EDGE]: {
+        id: AnnotationActivitySortField.GP_TO_TERM_EDGE,
+        label: 'GP to Term Edge'
+      },
+      [AnnotationActivitySortField.GO_TERM_ASPECT]: {
+        id: AnnotationActivitySortField.GO_TERM_ASPECT,
+        label: 'GO Term Aspect'
+      },
+      [AnnotationActivitySortField.EVIDENCE_CODE]: {
+        id: AnnotationActivitySortField.EVIDENCE_CODE,
+        label: 'Evidence Code'
+      },
+      [AnnotationActivitySortField.REFERENCE]: {
+        id: AnnotationActivitySortField.REFERENCE,
+        label: 'Reference'
+      },
+      [AnnotationActivitySortField.WITH]: {
+        id: AnnotationActivitySortField.WITH,
+        label: 'With'
+      },
+      [AnnotationActivitySortField.DATE]: {
+        id: AnnotationActivitySortField.DATE,
+        label: 'Date'
       }
     }
   },
@@ -480,6 +536,23 @@ export const noctuaFormConfig = {
     Entity.createEntity(edge.hasInput),
     Entity.createEntity(edge.partOf),
     Entity.createEntity(edge.occursIn),
+  ],
+
+  mfToTermEdges: [
+    edge.partOf.id,
+    edge.occursIn.id,
+    edge.causallyUpstreamOf.id,
+    edge.causallyUpstreamOfOrWithin.id,
+    edge.causallyUpstreamOfOrWithinPositiveEffect.id,
+    edge.causallyUpstreamOfOrWithinNegativeEffect.id,
+    edge.causallyUpstreamOfPositiveEffect.id,
+    edge.causallyUpstreamOfNegativeEffect.id,
+  ],
+
+  ccOnlyEdges: [
+    edge.locatedIn.id,
+    edge.partOf.id,
+    edge.contributesTo.id,
   ],
 
   edgePriority: [

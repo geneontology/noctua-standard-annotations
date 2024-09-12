@@ -1,22 +1,25 @@
-<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-100-p">
+<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-full">
   <div class="noc-drawer-header" fxLayout="column" fxLayoutAlign="start stretch">
-    <div class="noc-header w-100-p" fxLayout="row" fxLayoutAlign="start center">
+    <div class="noc-header w-full" fxLayout="row" fxLayoutAlign="start center">
       <span class="noc-drawer-header-title">
         Term Details</span>
       <span fxFlex></span>
       <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
         aria-label="Close dialog">
-        <mat-icon>close</mat-icon> CLOSE
+        Close
       </button>
     </div>
   </div>
-  <div class="noc-drawer-body noc-item-details" noctuaPerfectScrollbar>
-    <div *ngIf="termDetail.isObsolete" class="noc-section-row alert alert-danger">
+  <div class="noc-drawer-body noc-item-details">
+    @if (termDetail.isObsolete) {
+    <div class="noc-section-row alert alert-danger">
       <div class="noc-title">
         Term Is Obsolete
       </div>
-      <div *ngIf="termDetail.replacedBy" class="noc-description">
-        <div *ngFor="let replacedBy of termDetail.replacedBy" fxLayout="column" fxLayoutAlign="start start">
+      @if (termDetail.replacedBy) {
+      <div class="noc-description">
+        @for (replacedBy of termDetail.replacedBy; track replacedBy) {
+        <div fxLayout="column" fxLayoutAlign="start start">
           <div class="noc-term-row" fxFlex="" fxLayout="row" fxLayoutAlign="start center">
             <div class="">
               Replaced By {{replacedBy}}
@@ -41,8 +44,11 @@
             </mat-menu>
           </div>
         </div>
+        }
       </div>
+      }
     </div>
+    }
     <div class="noc-section-row">
       <div class="noc-title">
         Term
@@ -64,12 +70,14 @@
         Is A Type Of
       </div>
       <div class="noc-description">
-        <div *ngFor="let rootType of termDetail.rootTypes">
+        @for (rootType of termDetail.rootTypes; track rootType) {
+        <div>
           {{rootType.label}}<small>({{rootType.id}})</small>
           <a (click)="loadTerm(rootType.id)">
             View
           </a>
         </div>
+        }
       </div>
     </div>
   </div>

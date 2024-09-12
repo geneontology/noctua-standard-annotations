@@ -5,19 +5,19 @@
         Clone Evidence</span>
       <span fxFlex></span>
       <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" aria-label="Close dialog">
-        <mat-icon>close</mat-icon> Close
+        Close
       </button>
     </mat-toolbar-row>
   </mat-toolbar>
   <div class="noc-dialog-body noc-right-panel noc-form-section">
-    <div class="noc-section-header  w-100-p" fxLayout="row" fxLayoutAlign="start center">
+    <div class="noc-section-header  w-full" fxLayout="row" fxLayoutAlign="start center">
       <div class="noc-section-heading">
         Select Evidence
       </div>
     </div>
-    <div class="noc-section-body w-100-p" noctuaPerfectScrollbar>
-      <mat-table class="noc-evidence-table w-100-p" #table [dataSource]="dataSource" matSort
-        [@animateStagger]="{value:'50'}" noctuaPerfectScrollbar>
+    <div class="noc-section-body w-full">
+      <mat-table class="noc-evidence-table w-full" #table [dataSource]="dataSource" matSort
+        [@animateStagger]="{value:'50'}">
         <ng-container matColumnDef="select" class="">
           <mat-header-cell *matHeaderCellDef fxFlex="30px">
             <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"

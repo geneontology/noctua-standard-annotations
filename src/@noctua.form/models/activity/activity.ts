@@ -151,10 +151,6 @@ export class Activity extends SaeGraph<ActivityNode> {
     }
   }
 
-  get activityConnections() {
-    throw new Error('Method not implemented');
-  }
-
   get rootNode(): ActivityNode {
     return this.sourceNodes()[0]
   }
@@ -188,6 +184,7 @@ export class Activity extends SaeGraph<ActivityNode> {
       }
 
     }
+
   }
 
   getActivityTypeDetail() {

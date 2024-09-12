@@ -6,13 +6,14 @@
       <span fxFlex></span>
       <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
         aria-label="Close dialog">
-        <mat-icon>close</mat-icon> Close
+        Close
       </button>
     </mat-toolbar-row>
   </mat-toolbar>
-  <div mat-dialog-content class="noc-dialog-body" noctuaPerfectScrollbar>
+  <div mat-dialog-content class="noc-dialog-body">
     <div class="" fxLayout="column" fxLayoutAlign="start stretch">
-      <div *ngFor="let error of errors; let i =index" class="noc-error-row" fxLayout="row">
+      @for (error of errors; track error; let i = $index) {
+      <div class="noc-error-row" fxLayout="row">
         <div class="noc-number">
           {{i+1}}
         </div>
@@ -20,7 +21,8 @@
           <div class="noc-heading">
             <strong>{{error.meta?.aspect}}</strong>: {{error.message}}
           </div>
-          <div *ngIf="error.type===ErrorType.relation" class="pb-10" fxLayout="row">
+          @if (error.type===ErrorType.relation) {
+          <div class="pb-3" fxLayout="row">
             <div class="noc-node-card" fxLayout="column" fxLayoutAlign="center center">
               <div> {{error.meta?.subjectNode?.label}}</div>
             </div>
@@ -33,7 +35,9 @@
               <div>{{error.meta?.objectNode?.label}}</div>
             </div>
           </div>
-          <div *ngIf="error.type===ErrorType.cardinality" class="pb-10" fxLayout="row" fxLayoutAlign="center center">
+          }
+          @if (error.type===ErrorType.cardinality) {
+          <div class="pb-3" fxLayout="row" fxLayoutAlign="center center">
             <div class="noc-node-card" fxLayout="column" fxLayoutAlign="center center">
               {{error.meta?.subjectNode?.label}}
             </div>
@@ -43,8 +47,10 @@
               </div>
             </div>
           </div>
+          }
         </div>
       </div>
+      }
     </div>
   </div>
   <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center">

@@ -1,0 +1,64 @@
+<mat-form-field class="noc-sm w-full noc-white-mat-field" [appearance]="appearance"
+  [attr.data-cy]="'form-input-' + control">
+  <mat-label>{{label}}</mat-label>
+  <textarea type="text" matInput [formControl]="control" [matAutocomplete]="termAuto" row="2" (focus)="onFocus()">
+  </textarea>
+  @if (autocompleteType === AutocompleteType.REFERENCE) {
+  <button mat-button matSuffix (click)="openAddReference($event)" class="noc-evidence-db-trigger">
+    <fa-icon [icon]="['fas', 'file-medical']"></fa-icon>
+  </button>
+  }
+  <mat-autocomplete #termAuto="matAutocomplete" [displayWith]="termDisplayFn"
+    (optionSelected)="selectTerm($event.option.value)" class="noc-term-autocomplete" fxLayout="row"
+    fxLayoutAlign="start start">
+    <div class="" fxFlex="400px">
+      @for ( item of filteredOptions; track item) {
+      @if (autocompleteType === AutocompleteType.TERM || autocompleteType === AutocompleteType.EVIDENCE_CODE) {
+      <mat-option [disabled]="!item.notAnnotatable" [value]="item">
+        <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
+          <div class="noc-term-label">
+            {{ item.label }}
+          </div>
+          <span fxFlex></span>
+          @if (autocompleteType === AutocompleteType.EVIDENCE_CODE) {
+          <div class="noc-term-id mr-8">
+            <strong>
+              {{ item.xref }}
+            </strong>
+          </div>
+          }
+          <div class="noc-term-id">
+            @if (item.link) {
+            <a (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
+              {{ item.id }}
+            </a>
+            }
+            @if (!item.link) {
+            <span>
+              {{ item.id }}
+            </span>
+            }
+          </div>
+          <button mat-stroked-button (click)="openTermDetails($event, item)"
+            class="noc-term-detail-trigger noc-rounded-button noc-sm ml-8">
+            <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
+          </button>
+        </div>
+      </mat-option>
+      } @else {
+      <mat-option [value]="item">
+        <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
+          <div class="noc-term-label">
+            {{ item }}
+          </div>
+          <span fxFlex></span>
+        </div>
+      </mat-option>
+      }
+      }
+    </div>
+    <!-- <div fxFlex="" class="scard-more-info">
+      <noc-term-detail *ngIf="termData" [termData]="termData"></noc-term-detail>
+    </div> -->
+  </mat-autocomplete>
+</mat-form-field>

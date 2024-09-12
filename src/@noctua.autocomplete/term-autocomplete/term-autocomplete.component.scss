@@ -1,0 +1,10 @@
+@use "@angular/material" as mat;
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
+
+.noc-evidence-db-trigger {
+  @include deep-height(30px);
+  @include deep-width(30px);
+
+  @include noc-icon-size(18px);
+}

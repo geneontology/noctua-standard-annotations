@@ -1,18 +1,21 @@
 <form name="camFormGroup" [formGroup]="camFormGroup" fxLayout="column" fxLayoutAlign="start stretch"
-  class="noc-cam-form noc-drawer h-100-p">
+  class="noc-cam-form noc-drawer h-full">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
       Model Details</span>
     <span fxFlex></span>
     <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
       aria-label="Close dialog">
-      <mat-icon>close</mat-icon> Close
+      Close
     </button>
   </div>
-  <div *ngIf="camFormGroup" class="noc-drawer-body w-100-p" noctuaPerfectScrollbar>
-    <div *ngIf="!noctuaUserService.user" class="noc-draw-body-disabled" fxLayoutAlign="center center">
+  @if (camFormGroup) {
+  <div class="noc-drawer-body w-full">
+    @if (!noctuaUserService.user) {
+    <div class="noc-draw-body-disabled" fxLayoutAlign="center center">
       Log in to Continue
     </div>
+    }
     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
@@ -31,9 +34,11 @@
           <mat-form-field appearance="outline" class="noc-sm">
             <mat-label>State</mat-label>
             <mat-select placeholder="" formControlName="state" required>
-              <mat-option *ngFor="let modelState of noctuaFormConfigService.modelState.options" [value]="modelState">
+              @for (modelState of noctuaFormConfigService.modelState.options; track modelState) {
+              <mat-option [value]="modelState">
                 {{modelState.label}}
               </mat-option>
+              }
             </mat-select>
           </mat-form-field>
         </div>
@@ -41,9 +46,11 @@
           <mat-form-field appearance="outline" class="noc-sm">
             <mat-label>Group</mat-label>
             <mat-select placeholder="" formControlName="group" required>
-              <mat-option *ngFor="let modelGroup of noctuaUserService.user?.groups" [value]="modelGroup">
+              @for (modelGroup of noctuaUserService.user?.groups; track modelGroup) {
+              <mat-option [value]="modelGroup">
                 {{modelGroup.label}}
               </mat-option>
+              }
             </mat-select>
           </mat-form-field>
         </div>
@@ -61,14 +68,17 @@
         </button>
       </div>
       <div class="noc-section-body p-8" fxLayout="column" fxLayoutAlign="start stretch">
-        <div *ngIf="cam?.comments.length===0" class="noc-no-info">
+        @if (cam?.comments.length===0) {
+        <div class="noc-no-info">
           No comments yet
         </div>
+        }
         <div class="p-4" fxLayout="column">
-          <div formArrayName="commentFormArray" *ngFor="let comment of commentFormArray?.controls; let i = index;">
-            <div fxLayout="row" fxLayoutAlign="start center" class="w-100-p">
+          @for (comment of commentFormArray?.controls; track comment; let i = $index) {
+          <div formArrayName="commentFormArray">
+            <div fxLayout="row" fxLayoutAlign="start center" class="w-full">
               <div class="noc-form-field-container" fxFlex>
-                <mat-form-field appearance="outline" class="noc-sm w-100-p">
+                <mat-form-field appearance="outline" class="noc-sm w-full">
                   <mat-label>Comment</mat-label>
                   <textarea type="text" matInput [formControlName]="i" rows="2"></textarea>
                 </mat-form-field>
@@ -78,6 +88,7 @@
               </div>
             </div>
           </div>
+          }
         </div>
       </div>
     </div>
@@ -89,30 +100,33 @@
         <span fxFlex></span>
       </div>
       <div class="noc-section-body p-8" fxLayout="column" fxLayoutAlign="start stretch">
-        <div class="noc-item-body w-100-p" fxLayout="row" fxLayoutAlign="start center">
-          <div class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start start">
+        <div class="noc-item-body w-full" fxLayout="row" fxLayoutAlign="start center">
+          <div class="w-full h-full" fxLayout="column" fxLayoutAlign="start start">
             <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
               <div class="noc-title">Title:</div> {{cam.title}}
             </div>
             <div class="noc-item" fxLayout="row" fxLayoutAlign="start center">
               <div class="noc-title">State:</div> {{cam.state?.label}}
             </div>
-            <div class="w-100-p">
+            <div class="w-full">
               <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
                 <div class="noc-title">Contributors:</div>
-                <div class="mr-8" *ngFor="let contributor of cam.contributors" matTooltip="{{contributor.name}}"
-                  [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
+                @for (contributor of cam.contributors; track contributor) {
+                <div class="mr-8" matTooltip="{{contributor.name}}" [matTooltipPosition]="'below'"
+                  [matTooltipShowDelay]="1000">
                   {{contributor.name ? contributor.name :contributor.orcid}};
                 </div>
+                }
               </div>
               <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
                 <div class="noc-title">Groups:</div>
-                <span class="" *ngFor="let group of cam.groups" matTooltip="{{group.name}}"
-                  [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
+                @for (group of cam.groups; track group) {
+                <span class="" matTooltip="{{group.name}}" [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
                   <div class="noc-chip-label">
                     {{group.name ? group.name :group.url}}
                   </div>
                 </span>
+                }
               </div>
               <div class="noc-item" fxLayout="row" fxLayoutAlign="start center">
                 <div class="noc-title">Open In:</div>
@@ -134,9 +148,12 @@
       </div>
     </div>
   </div>
-  <div *ngIf="camFormGroup" fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
+  }
+  @if (camFormGroup) {
+  <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
     <span fxFlex></span>
     <button [disabled]="!camFormGroup.valid" (click)="save()" type="submit" class="noc-rounded-button" mat-raised-button
       color="primary">Save</button>
   </div>
+  }
 </form>

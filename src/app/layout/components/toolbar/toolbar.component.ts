@@ -125,9 +125,9 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
             });
 
         if (this.isDev && this.isBeta) {
-            this.betaText = 'beta dev'
+            this.betaText = 'beta dev test'
         } else if (this.isDev) {
-            this.betaText = 'dev'
+            this.betaText = 'dev test only'
         } else if (this.isBeta) {
             this.betaText = 'beta'
         }

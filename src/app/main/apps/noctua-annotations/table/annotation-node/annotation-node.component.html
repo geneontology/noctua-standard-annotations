@@ -1,0 +1,236 @@
+<div class="w-full">
+  @if (annotationActivity.gp) {
+  <div class="noc-activity-node w-full"
+    [ngClass]="{'noc-selected': annotationActivity.activity.displayId===camService.currentMatch?.activityDisplayId}"
+    fxLayout="row" fxLayoutAlign="start stretch">
+    <div class="noc-gp-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch" fxFlex=""
+      [attr.id]="annotationActivity.gp.term?.displayId"
+      [ngClass]="{'noc-highlight-match': annotationActivity.gp.term?.highlight,
+          'noc-highlight-modified': annotationActivity.gp.term?.modified,
+          'noc-highlight-match-current': camService.currentMatch?.uuid && annotationActivity.gp.term?.uuid===camService.currentMatch?.uuid}">
+      @if (annotationActivity.gp.term?.modified && annotationActivity.gp.term?.termHistory?.length>0) {
+      <span class="noc-old-term">
+        {{annotationActivity.gp.term?.termHistory[0]?.label}}
+        <a (click)="$event.stopPropagation()" href="{{annotationActivity.gp.term?.termHistory[0]?.url}}"
+          target="_blank">
+          {{ annotationActivity.gp.term?.termHistory[0]?.id }}
+        </a>
+      </span>
+      }
+      <span class="">
+        {{annotationActivity.gp.term?.label}} <br>
+        <a (click)="$event.stopPropagation()" href="{{annotationActivity.gp.term?.url}}" target="_blank">
+          {{ annotationActivity.gp.term?.id }}
+        </a>
+      </span>
+      @if (noctuaUserService.user && annotationActivity.gp.term) {
+      <noctua-inline-editor [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.gp"
+        [category]="EditorCategory.TERM" class="noc-edit-button">
+      </noctua-inline-editor>
+      }
+    </div>
+    <div class="noc-relation-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch">
+      <span class="">
+        @if (annotationActivity.isComplement) {
+        <strong> NOT </strong>
+        }
+        <span>{{annotationActivity.gpToTermEdge.inverseEntity?.label}}</span>
+      </span>
+      @if (noctuaUserService.user && annotationActivity?.gpToTermEdges.length > 0) {
+      <noctua-inline-editor [cam]="cam" [annotationActivity]='annotationActivity'
+        [category]="EditorCategory.GP_TO_TERM_EDGE" [editorType]="EditorType.STANDARD" class="noc-edit-button">
+      </noctua-inline-editor>
+      }
+    </div>
+    <div class="noc-term-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch" fxFlex=""
+      [attr.id]="annotationActivity.goterm.term?.displayId"
+      [ngClass]="{'noc-highlight-match': annotationActivity.goterm.term?.highlight,
+            'noc-highlight-modified': annotationActivity.goterm.term?.modified,
+            'noc-highlight-match-current': camService.currentMatch?.uuid && annotationActivity.goterm.term?.uuid===camService.currentMatch?.uuid}">
+
+      @if (annotationActivity.goterm.term?.modified && annotationActivity.goterm.term?.termHistory?.length>0) {
+      <span class="noc-old-term">
+        {{annotationActivity.goterm.term?.termHistory[0]?.label}}
+        <a (click)="$event.stopPropagation()" href="{{annotationActivity.goterm.term?.termHistory[0]?.url}}"
+          target="_blank">
+          {{ annotationActivity.goterm.term?.termHistory[0]?.id }}
+        </a>
+      </span>
+      }
+      <span class="">
+        {{annotationActivity.goterm.term?.label}} <br>
+        <a (click)="$event.stopPropagation()" href="{{annotationActivity.goterm.term?.url}}" target="_blank">
+          {{ annotationActivity.goterm.term?.id }}
+        </a>
+      </span>
+      @if (noctuaUserService.user && annotationActivity.goterm.term) {
+      <noctua-inline-editor [cam]="cam" [activity]='annotationActivity.activity' [entity]="annotationActivity.goterm"
+        [category]="EditorCategory.TERM" class="noc-edit-button">
+      </noctua-inline-editor>
+      }
+    </div>
+    <div class="noc-evidence-code-cell noc-entity-cell" fxFlex fxLayout="column" fxLayoutAlign="start stretch"
+      [ngClass]="{'noc-highlight-modified': annotationActivity.evidenceCode.term?.modified}">
+      @if (annotationActivity.evidenceCode.term?.modified &&
+      annotationActivity.evidenceCode.term?.termHistory?.length>0) {
+      <span class="noc-old-term">
+        {{annotationActivity.evidenceCode.term?.termHistory[0]?.label}}
+        <a (click)="$event.stopPropagation()" href="{{annotationActivity.evidenceCode.term?.termHistory[0]?.url}}"
+          target="_blank">
+          {{ annotationActivity.evidenceCode.term?.termHistory[0]?.id }}
+        </a>
+      </span>
+      }
+      <span class="">{{annotationActivity.evidenceCode.term?.label}}<br>
+        <a (click)="$event.stopPropagation()" href="{{annotationActivity.evidenceCode.term?.url}}" target="_blank">
+          {{ annotationActivity.evidenceCode.term?.id }}
+        </a>
+      </span>
+
+      @if (noctuaUserService.user ) {
+      <noctua-inline-editor [cam]="cam" [annotationActivity]='annotationActivity'
+        [category]="EditorCategory.EVIDENCE_CODE" [editorType]="EditorType.STANDARD" class="noc-edit-button">
+      </noctua-inline-editor>
+      }
+    </div>
+    <div class="noc-reference-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch"
+      [ngClass]="{'noc-highlight-match': annotationActivity.reference.term?.highlight,
+                'noc-highlight-modified': annotationActivity.reference.term?.modified,
+                'noc-highlight-match-current': camService.currentMatch?.uuid && annotationActivity.reference.term?.uuid===camService.currentMatch?.uuid}">
+      @if (annotationActivity.reference.term?.modified && annotationActivity.reference.term?.termHistory?.length>0) {
+      <span class="noc-old-term">
+        <a (click)="$event.stopPropagation()" href="{{annotationActivity.reference.term?.termHistory[0]?.url}}"
+          target="_blank">
+          {{ annotationActivity.reference.term?.termHistory[0]?.id }}
+        </a>
+      </span>
+      }
+      @if (!annotationActivity.reference.term?.url) {
+      <span class="">{{annotationActivity.reference.term?.id}}</span>
+      }
+      @if (annotationActivity.reference.term?.url) {
+      <span class="">
+        <a (click)="$event.stopPropagation()" href="{{annotationActivity.reference.term?.url}}" target="_blank">
+          {{annotationActivity.reference.term?.id}}
+        </a>
+      </span>
+      }
+      @if (noctuaUserService.user ) {
+      <noctua-inline-editor [cam]="cam" [annotationActivity]='annotationActivity' [category]="EditorCategory.REFERENCE"
+        [editorType]="EditorType.STANDARD" class="noc-edit-button">
+      </noctua-inline-editor>
+      }
+
+    </div>
+    <div class="noc-with-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch"
+      [ngClass]="{'noc-highlight-modified': annotationActivity.with.term?.modified}">
+      @if (annotationActivity.with.term?.modified && annotationActivity.with.term?.termHistory?.length>0) {
+      <span class="noc-old-term">
+        <a (click)="$event.stopPropagation()" href="{{annotationActivity.with.term?.termHistory[0]?.url}}"
+          target="_blank">
+          {{ annotationActivity.with.term?.termHistory[0]?.id }}
+        </a>
+      </span>
+      }
+      @if (!annotationActivity.with.term?.url) {
+      <span class="">{{annotationActivity.with.term?.label}}</span>
+      }
+      @if (annotationActivity.with.term?.url) {
+      <span class="">
+        <a (click)="$event.stopPropagation()" href="{{annotationActivity.with.term?.url}}" target="_blank">
+          {{annotationActivity.with.term?.label}}
+        </a>
+      </span>
+      }
+
+      @if (noctuaUserService.user ) {
+      <noctua-inline-editor [cam]="cam" [annotationActivity]='annotationActivity' [category]="EditorCategory.WITH"
+        [editorType]="EditorType.STANDARD" class="noc-edit-button">
+      </noctua-inline-editor>
+      }
+
+    </div>
+
+    <div class="noc-extensions-cell noc-entity-cell" fxFlex="" fxLayout="column" fxLayoutAlign="start stretch">
+      <div class="w-full" fxLayout="column" fxLayoutAlign="start stretch">
+
+        @for(extension of annotationActivity.extensions; track extension) {
+        <div class="w-full py-2 relative noc-extension-entity" fxLayout="column" fxLayoutAlign="start stretch" fxFlex=""
+          [attr.id]="extension.extensionTerm?.term?.displayId"
+          [ngClass]="{'noc-highlight-match': extension.extensionTerm?.term?.highlight,
+        'noc-highlight-modified': extension.extensionTerm?.term?.modified,
+        'noc-highlight-match-current': camService.currentMatch?.uuid && extension.extensionTerm?.term?.uuid===camService.currentMatch?.uuid}">
+          <span class="italic text-[10px] text-gray-700">{{extension.extensionEdge?.label}}</span>
+          @if (extension.extensionTerm?.term?.modified && extension.extensionTerm?.term?.termHistory?.length>0)
+          {
+          <span class="noc-old-term">
+            {{extension.extensionTerm?.term?.termHistory[0]?.label}}
+            <a (click)="$event.stopPropagation()" href="{{extension.extensionTerm?.term?.termHistory[0]?.url}}"
+              target="_blank">
+              {{ extension.extensionTerm?.term?.termHistory[0]?.id }}
+            </a>
+          </span>
+          }
+          <span class="">
+            {{extension.extensionTerm?.term?.label}}
+            <a (click)="$event.stopPropagation()" href="{{extension.extensionTerm?.term?.url}}" target="_blank">
+              {{ extension.extensionTerm?.term?.id }}
+            </a>
+          </span>
+          @if (noctuaUserService.user ) {
+          <button mat-button (click)="deleteExtension(extension)" class="noc-delete-button">
+            <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
+          </button>
+          }
+        </div>
+        }
+      </div>
+    </div>
+    <div class="noc-entity-cell noc-date-cell" fxLayout="column" fxLayoutAlign="start center">
+      <mat-chip class="noc-date-chip" fxLayout="row" fxLayoutAlign="start center">
+        <div class="noc-icon">
+          <fa-icon [icon]="['fas', 'calendar-day']"></fa-icon>
+        </div>
+        <div fxFlex="" class="noc-chip-label">
+          {{annotationActivity.formattedDate }}
+        </div>
+      </mat-chip>
+    </div>
+    <div class="noc-comments-cell noc-entity-cell "
+      [ngClass]="{'noc-selected': annotationActivity.id === annotationFormService.selectedCommentActivityId}"
+      fxLayout="column" fxLayoutAlign="start stretch">
+      @if (annotationActivity.comments.length>0) {
+      <button mat-icon-button class="noc-toolbar-button noc-rounded-button " (click)="openComments(annotationActivity)"
+        matTooltip="{{annotationActivity.comments}}" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
+        <fa-icon [icon]="['fas', 'comment']"></fa-icon>
+        <div class="noc-comments-badge">
+          {{annotationActivity.comments.length}}
+        </div>
+      </button>
+      }
+    </div>
+    <div class="noc-cell noc-action-cell" fxLayout="column" fxLayoutAlign="start center">
+      @if (noctuaUserService.user) {
+      <button mat-icon-button (click)="updateCurrentMenuEvent($event)" class="noc-action-button" fxFlex="40px"
+        [matMenuTriggerFor]="entityMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      }
+      <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu">
+        <button mat-menu-item (click)="addExtension()" class="">
+          Add Extension
+        </button>
+        <button mat-menu-item (click)="addComment()" class="">
+          Add Comment
+        </button>
+        <!--       <button mat-menu-item (click)="copyToForm()" class="">
+          Add Values to Form
+        </button> -->
+        <button mat-menu-item (click)="deleteAnnotation()" class="text-red-900">
+          <fa-icon [icon]="['far', 'trash-alt']"></fa-icon> Delete Annotation
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+  }
+</div>

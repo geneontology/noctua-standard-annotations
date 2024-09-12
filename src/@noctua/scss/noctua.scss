@@ -13,10 +13,13 @@ $noc-primary-color-light: rgba(#798fb8, 0.3);
 $noc-primary-color-text: #4a8bfc;
 $noc-tree-line-color: rgba(#798fb8, 0.3);
 
+$annotation-primary-color: #754d42;
 //aspect
 $noc-mf: #7cd488;
 $noc-bp: #f4c89c;
 $noc-cc: #d3b5f5;
+
+$primary: map-get($theme, primary);
 
 .ps__rail-x {
   top: 3px;
@@ -98,6 +101,11 @@ mat-chip {
   }
 }
 
+.noc-confirm-dialog {
+  @include deep-height(200px);
+  @include deep-width(600px);
+}
+
 .noc-link-to-existing-dialog {
   @include deep-width(1100px);
 
@@ -174,6 +182,20 @@ mat-chip {
   }
 }
 
+.noc-evidence-db-trigger {
+  @include deep-height(20px);
+  @include deep-width(20px);
+
+  @include noc-icon-size(12px);
+}
+
+.mat-mdc-raised-button {
+  &.noc-primary {
+    color: #eee;
+    background-color: map-get($primary, default);
+  }
+}
+
 .noc-display-number {
   display: flex;
   align-items: center;
@@ -196,8 +218,17 @@ textarea {
   resize: none !important;
   overflow: hidden;
 }
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: $noc-primary-color !important;
+}
 
+// mat-label focused style
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: $noc-primary-color !important;
+}
 .mat-form-field {
+  //mat-input focused color
+
   .mat-form-field-wrapper {
     padding-bottom: 0;
   }
@@ -209,6 +240,18 @@ textarea {
   &.noc-sm {
     .mat-form-field-wrapper {
       font-size: 12px;
+    }
+
+    .mat-select {
+      height: 26px;
+      line-height: 14px;
+
+      .mat-select-value-text {
+        white-space: normal;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
 
     textarea {

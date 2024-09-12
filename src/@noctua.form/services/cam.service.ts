@@ -18,6 +18,7 @@ import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { finalize, map, mergeMap } from 'rxjs/operators';
 import { noctuaFormConfig } from './../noctua-form-config';
+import { DataGeneratorUtils } from './../data/data-generator-utils';
 
 declare const require: any;
 
@@ -187,6 +188,22 @@ export class CamService {
     return treeNodes
   }
 
+
+  addCamAnnotationActivities(cam: Cam) {
+
+    cam.annotationActivities = cam.activities.map((activity: Activity) => {
+      const annotationActivity = this.noctuaFormConfigService.activityToAnnotation(activity);
+
+      annotationActivity.activity = activity;
+      return annotationActivity
+    });
+
+    // For data generation purposes e2e testing
+
+    // const data = DataGeneratorUtils.getCreateAnnotationsData(cam.annotationActivities);
+    // DataGeneratorUtils.getDataJSON(data);
+  }
+
   getStoredModel(cam: Cam): Observable<any> {
     const url = `${this.searchApi}/stored?id=${cam.id}`;
 
@@ -209,24 +226,34 @@ export class CamService {
     return self._bbopGraphService.deleteActivity(self.cam, deleteData.uuids, deleteData.triples);
   }
 
-  updateTermList(formActivity: Activity, entity: ActivityNode) {
+  updateTermList(formActivity?: Activity, entity?: ActivityNode) {
     this.noctuaLookupService.termList = this.getUniqueTerms(formActivity);
-    entity.termLookup.results = this.noctuaLookupService.termPreLookup(entity.type);
+
+    if (entity) {
+      entity.termLookup.results = this.noctuaLookupService.termPreLookup(entity.category);
+    }
   }
 
-  updateEvidenceList(formActivity: Activity, entity: ActivityNode) {
+  updateEvidenceList(formActivity?: Activity, entity?: ActivityNode) {
     this.noctuaLookupService.evidenceList = this.getUniqueEvidence(formActivity);
-    entity.predicate.evidenceLookup.results = this.noctuaLookupService.evidencePreLookup();
+    if (entity) {
+      entity.predicate.evidenceLookup.results = this.noctuaLookupService.evidencePreLookup();
+    }
   }
 
-  updateReferenceList(formActivity: Activity, entity: ActivityNode) {
+  updateReferenceList(formActivity?: Activity, entity?: ActivityNode) {
     this.noctuaLookupService.evidenceList = this.getUniqueEvidence(formActivity);
-    entity.predicate.referenceLookup.results = this.noctuaLookupService.referencePreLookup();
+
+    if (entity) {
+      entity.predicate.referenceLookup.results = this.noctuaLookupService.referencePreLookup();
+    }
   }
 
-  updateWithList(formActivity: Activity, entity: ActivityNode) {
+  updateWithList(formActivity?: Activity, entity?: ActivityNode) {
     this.noctuaLookupService.evidenceList = this.getUniqueEvidence(formActivity);
-    entity.predicate.withLookup.results = this.noctuaLookupService.withPreLookup();
+    if (entity) {
+      entity.predicate.withLookup.results = this.noctuaLookupService.withPreLookup();
+    }
   }
 
   getNodesByType(activityType: ActivityNodeType): any[] {

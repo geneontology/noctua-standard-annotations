@@ -4,14 +4,14 @@
       Edit Title & Confirm Copy</span>
     <span fxFlex></span>
     <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" aria-label="Close dialog">
-      <mat-icon>close</mat-icon> Close
+      Close
     </button>
   </div>
-  <div class="noc-dialog-body pt-20">
-    <div fxLayout="row" fxLayoutAlign="start center" class="noc-form-section w-100-p">
+  <div class="noc-dialog-body pt-3">
+    <div fxLayout="row" fxLayoutAlign="start center" class="noc-form-section w-full">
       <ng-container [formGroup]="camForm">
         <div class="noc-edit-field p-4" fxFlex="">
-          <mat-form-field appearance="outline" class="noc-sm w-100-p">
+          <mat-form-field appearance="outline" class="noc-sm w-full">
             <mat-label>Title</mat-label>
             <textarea type="text" matInput formControlName="title" rows="2"></textarea>
           </mat-form-field>

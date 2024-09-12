@@ -6,7 +6,7 @@ import { Activity } from './activity';
 import { ActivityNode } from './activity-node';
 import { Predicate } from './predicate';
 
-export class Triple<T extends ActivityNode | Activity>  {
+export class Triple<T extends ActivityNode | Activity> {
 
   id
   object: T;
@@ -54,6 +54,11 @@ export class ActivityTriple<T extends Activity> {
     }
   }
 
+}
+
+export interface TriplePair<T extends ActivityNode | Activity> {
+  a: Triple<T> | undefined;
+  b: Triple<T> | undefined;
 }
 
 export function compareTripleWeight(a: Triple<ActivityNode>, b: Triple<ActivityNode>): number {

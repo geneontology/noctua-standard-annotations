@@ -90,4 +90,81 @@ export class NoctuaUtils {
             .replace(new RegExp("/^-+/"), '')             // Trim - from start of text
             .replace(new RegExp("/-+$/"), '');            // Trim - from end of text
     }
+
+    public static formatSolrQueryString(query: string): string {
+        const alphanumericRegex = /^[a-zA-Z0-9 ]+$/;
+        let formattedQuery = query;
+        const minimalQueryLength = 3;
+
+        if (query && query.length > 0) {
+            let hasCursor = query.slice(-1) !== ' ';
+            query = query.trim();
+
+            if (query.length > 0 && alphanumericRegex.test(query) && hasCursor) {
+                let tokens = query.split(/\s+/);
+                let lastToken = tokens[tokens.length - 1];
+
+                if (tokens.length === 1 && lastToken.length >= minimalQueryLength) {
+                    tokens[tokens.length - 1] = lastToken + '*';
+                } else if (tokens.length > 1) {
+                    tokens[tokens.length - 1] = lastToken + '*';
+                }
+
+                formattedQuery = tokens.join(' ');
+            }
+        }
+
+        return formattedQuery;
+    }
+
+    // olde func from bbop_golr
+
+    public static getGOlrQueryQ(new_query) {
+        const alphanum = new RegExp(/^[a-zA-Z0-9 ]+$/);
+
+        let comfy_query = new_query;
+        const minimal_query_length = 3;
+
+        // Check that there is something there.
+        if (new_query && new_query.length && new_query.length > 0) {
+
+            // Check if the last real input has a space after it.
+            var has_cursor_p = true;
+            if (new_query.slice(-1) === ' ') {
+                has_cursor_p = false;
+            }
+
+            // Now chomp it down again to get rid of whitespace.
+            new_query = new_query.trim();
+
+            // Check (again) that there is something there.
+            if (new_query && new_query.length && new_query.length > 0) {
+
+                // That it is alphanum+space-ish and that we actually
+                // might want to add a wildcard (i.e. has cursor).
+                if (alphanum.test(new_query) && has_cursor_p) {
+
+                    // Break it into tokens and get the last.
+                    var tokens = new_query.split(new RegExp('\\s+'));
+                    var last_token = tokens[tokens.length - 1];
+                    //ll('last: ' + last_token);
+
+                    if (tokens.length === 1) {
+
+                        // If it is three or more, add the wildcard.
+                        if (last_token.length >= minimal_query_length) {
+                            tokens[tokens.length - 1] = last_token + '*';
+                        }
+                    } else {
+                        tokens[tokens.length - 1] = last_token + '*';
+                    }
+                    // And join it all back into our comfy query.
+                    comfy_query = tokens.join(' ');
+                }
+            }
+        }
+
+        // Kick it back to the normal set_query.
+        return comfy_query;
+    };
 }

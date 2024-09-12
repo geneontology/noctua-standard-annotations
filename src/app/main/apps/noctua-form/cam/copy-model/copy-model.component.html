@@ -1,17 +1,19 @@
-<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-cam-form noc-drawer h-100-p">
+<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-cam-form noc-drawer h-full">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
       Copy Model</span>
     <span fxFlex></span>
     <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
       aria-label="Close dialog">
-      <mat-icon>close</mat-icon> Close
+      Close
     </button>
   </div>
-  <div class="noc-drawer-body w-100-p" noctuaPerfectScrollbar>
-    <div *ngIf="!noctuaUserService.user" class="noc-draw-body-disabled" fxLayoutAlign="center center">
+  <div class="noc-drawer-body w-full">
+    @if (!noctuaUserService.user) {
+    <div class="noc-draw-body-disabled" fxLayoutAlign="center center">
       Log in to Continue
     </div>
+    }
     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
@@ -22,8 +24,8 @@
     </div>
     <div class="noc-form-section mb-20" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="noc-section-body p-8" fxLayout="column" fxLayoutAlign="start stretch">
-        <div class="noc-item-body w-100-p" fxLayout="row" fxLayoutAlign="start center">
-          <div class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start start">
+        <div class="noc-item-body w-full" fxLayout="row" fxLayoutAlign="start center">
+          <div class="w-full h-full" fxLayout="column" fxLayoutAlign="start start">
             <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
               <div class="noc-title">ID:</div> {{cam.id}}
             </div>
@@ -33,22 +35,25 @@
             <div class="noc-item" fxLayout="row" fxLayoutAlign="start center">
               <div class="noc-title">State:</div> {{cam.state?.label}}
             </div>
-            <div class="w-100-p">
+            <div class="w-full">
               <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
                 <div class="noc-title">Contributors:</div>
-                <div class="mr-8" *ngFor="let contributor of cam.contributors" matTooltip="{{contributor.name}}"
-                  [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
+                @for (contributor of cam.contributors; track contributor) {
+                <div class="mr-8" matTooltip="{{contributor.name}}" [matTooltipPosition]="'below'"
+                  [matTooltipShowDelay]="1000">
                   {{contributor.name ? contributor.name :contributor.orcid}};
                 </div>
+                }
               </div>
               <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
                 <div class="noc-title">Groups:</div>
-                <span class="" *ngFor="let group of cam.groups" matTooltip="{{group.name}}"
-                  [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
+                @for (group of cam.groups; track group) {
+                <span class="" matTooltip="{{group.name}}" [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
                   <div class="noc-chip-label">
                     {{group.name ? group.name :group.url}}
                   </div>
                 </span>
+                }
               </div>
               <div class="noc-item" fxLayout="row" fxLayoutAlign="start center">
                 <div class="noc-title">Open In:</div>
@@ -81,14 +86,19 @@
         <span fxFlex></span>
       </div>
       <div class="noc-section-body p-8" fxLayout="column" fxLayoutAlign="start stretch">
-        <div *ngIf="!duplicatedCam" class="noc-item noc-no-info" fxLayout="row" fxLayoutAlign="start center">
+        @if (!duplicatedCam) {
+        <div class="noc-item noc-no-info" fxLayout="row" fxLayoutAlign="start center">
           No info yet
         </div>
-        <div *ngIf="loading" class="noc-item noc-no-info" fxLayout="row" fxLayoutAlign="start center">
+        }
+        @if (loading) {
+        <div class="noc-item noc-no-info" fxLayout="row" fxLayoutAlign="start center">
           Working on it ...
         </div>
-        <div *ngIf="duplicatedCam" class="noc-item-body w-100-p" fxLayout="row" fxLayoutAlign="start center">
-          <div class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start start">
+        }
+        @if (duplicatedCam) {
+        <div class="noc-item-body w-full" fxLayout="row" fxLayoutAlign="start center">
+          <div class="w-full h-full" fxLayout="column" fxLayoutAlign="start start">
             <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
               <div class="noc-title">ID:</div> {{duplicatedCam.id}}
             </div>
@@ -98,22 +108,25 @@
             <div class="noc-item" fxLayout="row" fxLayoutAlign="start center">
               <div class="noc-title">State:</div> {{duplicatedCam.state?.label}}
             </div>
-            <div class="w-100-p">
+            <div class="w-full">
               <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
                 <div class="noc-title">Contributors:</div>
-                <div class="mr-8" *ngFor="let contributor of duplicatedCam.contributors"
-                  matTooltip="{{contributor.name}}" [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
+                @for (contributor of duplicatedCam.contributors; track contributor) {
+                <div class="mr-8" matTooltip="{{contributor.name}}" [matTooltipPosition]="'below'"
+                  [matTooltipShowDelay]="1000">
                   {{contributor.name ? contributor.name :contributor.orcid}};
                 </div>
+                }
               </div>
               <div class="noc-item" fxLayout="row wrap" fxLayoutAlign="start center">
                 <div class="noc-title">Groups:</div>
-                <span class="" *ngFor="let group of duplicatedCam.groups" matTooltip="{{group.name}}"
-                  [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
+                @for (group of duplicatedCam.groups; track group) {
+                <span class="" matTooltip="{{group.name}}" [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
                   <div class="noc-chip-label">
                     {{group.name ? group.name :group.url}}
                   </div>
                 </span>
+                }
               </div>
               <div class="noc-item" fxLayout="row" fxLayoutAlign="start center">
                 <div class="noc-title">Open In:</div>
@@ -132,6 +145,7 @@
             </div>
           </div>
         </div>
+        }
       </div>
     </div>
   </div>

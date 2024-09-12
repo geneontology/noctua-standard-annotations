@@ -17,12 +17,11 @@ import {
   noctuaFormConfig,
   MiddlePanel,
   LeftPanel,
-  Activity,
   BbopGraphService,
   ActivityDisplayType,
   CamLoadingIndicator,
   ReloadType,
-  RightPanel
+  AnnotationActivity
 } from '@geneontology/noctua-form-base';
 
 import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
@@ -30,9 +29,9 @@ import { NoctuaDataService } from '@noctua.common/services/noctua-data.service';
 import { TableOptions } from '@noctua.common/models/table-options';
 import { NoctuaSearchDialogService } from '@noctua.search/services/dialog.service';
 import { NoctuaReviewSearchService } from '@noctua.search/services/noctua-review-search.service';
-import { ResizeEvent } from 'angular-resizable-element';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 import { CamToolbarOptions } from '@noctua.common/models/cam-toolbar-options';
+import { RightPanel } from '@noctua.common/models/menu-panels';
 
 @Component({
   selector: 'app-noctua-annotations',
@@ -57,6 +56,8 @@ export class NoctuaAnnotationsComponent implements OnInit, OnDestroy {
   camToolbarOptions: CamToolbarOptions = {
     showCreateButton: false
   }
+
+  annotationActivities: AnnotationActivity[] = [];
 
   summary;
   public cam: Cam;
@@ -117,7 +118,7 @@ export class NoctuaAnnotationsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const self = this;
-    this.noctuaCommonMenuService.selectedMiddlePanel = MiddlePanel.camTable;
+    this.noctuaCommonMenuService.selectedMiddlePanel = MiddlePanel.CAM_TABLE;
     self.noctuaCommonMenuService.setLeftDrawer(self.leftDrawer);
     self.noctuaCommonMenuService.setRightDrawer(self.rightDrawer);
 
@@ -131,13 +132,15 @@ export class NoctuaAnnotationsComponent implements OnInit, OnDestroy {
 
         if (cam.activities.length > 0) {
           this.camService.addCamEdit(this.cam)
+          this.camService.addCamAnnotationActivities(this.cam)
+          this.camService.updateTermList();
+          this.camService.updateEvidenceList();
+          this.camService.updateReferenceList();
+          this.camService.updateWithList();
+
           this.camService.cams = [cam]
         }
-        //this.noctuaReviewSearchService.addCamsToReview([this.cam], this.camService.cams);
-
       });
-
-
   }
 
   ngOnDestroy(): void {
@@ -174,17 +177,16 @@ export class NoctuaAnnotationsComponent implements OnInit, OnDestroy {
     this.noctuaCommonMenuService.openLeftDrawer();
   }
 
-  openAnnotationForm(activityType: ActivityType) {
-    this.noctuaAnnotationFormService.setActivityType(activityType);
-    this.noctuaCommonMenuService.selectLeftPanel(LeftPanel.activityForm);
-    this.noctuaCommonMenuService.closeRightDrawer();
-    this.noctuaCommonMenuService.openLeftDrawer();
-  }
-
   openCopyModel() {
     this.noctuaCommonMenuService.selectLeftPanel(LeftPanel.copyModel);
     this.noctuaCommonMenuService.closeRightDrawer();
     this.noctuaCommonMenuService.openLeftDrawer();
+  }
+
+  openComments() {
+    this.noctuaCommonMenuService.selectRightPanel(RightPanel.COMMENTS);
+    this.noctuaCommonMenuService.openRightDrawer();
+    this.noctuaCommonMenuService.closeLeftDrawer();
   }
 
   resetCam(cam: Cam) {

@@ -1,22 +1,24 @@
 import { environment } from '../../../environments/environment';
 import { Injectable } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { noctuaFormConfig } from './../../noctua-form-config';
 import * as ModelDefinition from './../../data/config/model-definition';
 import * as ShapeDescription from './../../data/config/shape-definition';
 
 import { Activity, ActivityType } from './../../models/activity/activity';
 import { find, filter, each } from 'lodash';
-import { HttpParams } from '@angular/common/http';
+
 import * as ShapeUtils from './../../data/config/shape-utils';
 import { NoctuaUserService } from '../user.service';
 import { BehaviorSubject } from 'rxjs';
 import { ActivityNode, GoCategory } from './../../models/activity/activity-node';
-import { Entity } from './../../models/activity/entity';
+import { Entity, RootTypes } from './../../models/activity/entity';
 import { Evidence } from './../../models/activity/evidence';
 import { Predicate } from './../../models/activity/predicate';
-import { DataUtils } from '@noctua.form/data/config/data-utils';
+import { DataUtils } from '../../data/config/data-utils';
 import shexJson from './../../data/shapes.json';
 import gpToTermJson from './../../data/gp-to-term.json';
+import { AnnotationActivity, AnnotationEdgeConfig, AnnotationExtension } from './../../models/standard-annotation/annotation-activity';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +37,7 @@ export class NoctuaFormConfigService {
   constructor(private noctuaUserService: NoctuaUserService) {
     this.onSetupReady = new BehaviorSubject(null);
     this.termLookupTable = DataUtils.genTermLookupTable();
-    this.shapePredicates = DataUtils.getPredicates(shexJson.goshapes);
+    this.shapePredicates = DataUtils.getPredicates(shexJson.goshapes, null, null, false);
   }
 
   get edges() {
@@ -108,10 +110,25 @@ export class NoctuaFormConfigService {
   get activitySortField() {
     const options = [
       noctuaFormConfig.activitySortField.options.gp,
-      noctuaFormConfig.activitySortField.options.date,
-      noctuaFormConfig.activitySortField.options.mf,
-      noctuaFormConfig.activitySortField.options.bp,
-      noctuaFormConfig.activitySortField.options.cc,
+      noctuaFormConfig.activitySortField.options.date
+    ];
+
+    return {
+      options: options,
+      selected: options[0]
+    };
+  }
+
+  get annotationActivitySortField() {
+    const options = [
+      noctuaFormConfig.annotationActivitySortField.options.gp,
+      noctuaFormConfig.annotationActivitySortField.options.goterm,
+      noctuaFormConfig.annotationActivitySortField.options.gpToTermEdge,
+      noctuaFormConfig.annotationActivitySortField.options.gotermAspect,
+      noctuaFormConfig.annotationActivitySortField.options.evidenceCode,
+      noctuaFormConfig.annotationActivitySortField.options.reference,
+      noctuaFormConfig.annotationActivitySortField.options.with,
+      noctuaFormConfig.annotationActivitySortField.options.date
     ];
 
     return {
@@ -334,6 +351,107 @@ export class NoctuaFormConfigService {
     return modelInfo;
   }
 
+  activityToAnnotation(activity: Activity): AnnotationActivity {
+    const annotationActivity = new AnnotationActivity();
+    const criteria = {} as AnnotationEdgeConfig
+    let evidence: Evidence = null;
+    const comments = new Set<string>();
+    let gpToTermEdgeId;
+
+    annotationActivity.id = activity.id;
+    annotationActivity.date = activity.date.toString();
+    annotationActivity.formattedDate = activity.formattedDate;
+
+    activity.edges.forEach(edge => {
+      edge.predicate.comments.forEach(comment => comments.add(comment));
+    });
+    annotationActivity.comments = Array.from(comments);
+
+    if (activity.activityType === ActivityType.ccOnly || activity.activityType === ActivityType.molecule) {
+      annotationActivity.gp = activity.gpNode;
+
+      activity.getEdges(activity.gpNode.id).forEach((edge) => {
+        if (noctuaFormConfig.ccOnlyEdges.includes(edge.predicate.edge.id)) {
+          gpToTermEdgeId = edge.predicate.edge.id;
+          criteria.gpToTermPredicate = edge.predicate.edge.id;
+          annotationActivity.goterm = edge.object;
+          annotationActivity.gp.predicate = edge.predicate;
+          evidence = edge.predicate.evidence?.[0] ?? null;
+        }
+      });
+    } else {
+      gpToTermEdgeId = noctuaFormConfig.edge.enabledBy.id;
+      criteria.gpToTermPredicate = noctuaFormConfig.edge.enabledBy.id;
+      annotationActivity.gp = activity.gpNode;
+      annotationActivity.goterm = activity.mfNode;
+      evidence = activity.mfNode.predicate.evidence?.[0] ?? null;
+
+      if (activity.mfNode?.term.id === noctuaFormConfig.rootNode.mf.id) {
+        activity.getEdges(activity.mfNode.id).forEach((edge) => {
+          if (noctuaFormConfig.mfToTermEdges.includes(edge.predicate.edge.id)) {
+            criteria.mfNodeRequired = true;
+            gpToTermEdgeId = edge.predicate.edge.id;
+            criteria.mfToTermPredicate = edge.predicate.edge.id;
+            annotationActivity.gpToTermEdge = edge.predicate.edge
+            annotationActivity.goterm = edge.object;
+          }
+        });
+      }
+    }
+
+    const edgeId = this.findEdge(gpToTermEdgeId);
+    const inverseEdgeId = annotationActivity.findEdgeByCriteria(criteria);
+    const inverseEdge = this.findEdge(inverseEdgeId);
+
+    if (edgeId && inverseEdge) {
+      annotationActivity.gpToTermEdge = Entity.createEntity(edgeId);
+      annotationActivity.gpToTermEdge.inverseEntity = inverseEdge
+    }
+
+    annotationActivity.gpToTermEdges = this.getTermRelations(
+      annotationActivity.gp.rootTypes,
+      annotationActivity.goterm.rootTypes,
+      true
+    );
+
+    annotationActivity.extensions = this._getAnnotationExtensions(activity, annotationActivity.goterm.id)
+
+    annotationActivity.evidenceCode.term = evidence?.evidence;
+    annotationActivity.reference.term = new Entity(evidence?.reference, evidence?.reference);
+    annotationActivity.with.term = evidence?.withEntity;
+    annotationActivity.evidenceDate = evidence?.formattedDate;
+    annotationActivity.evidenceContributors = evidence?.contributors;
+
+    return annotationActivity
+  }
+
+
+
+  private _getAnnotationExtensions(activity: Activity, id: string): AnnotationExtension[] {
+
+    const extension: AnnotationExtension[] = []
+    const triples = activity.getEdges(id)
+
+    triples.forEach((triple) => {
+
+      const allowedPredicate = this.getTermRelations(triple.subject.rootTypes, triple.object.rootTypes)
+
+      const isAllowedPredicate = allowedPredicate.some((predicate) => {
+        return predicate.id === triple.predicate.edge.id
+      });
+
+      if (isAllowedPredicate) {
+        const annotationExtension = new AnnotationExtension();
+        annotationExtension.extensionEdge = triple.predicate.edge;
+        annotationExtension.extensionTerm = triple.object;
+        extension.push(annotationExtension);
+      }
+    });
+
+    return extension;
+  }
+
+
 
   createPredicate(edge: Entity, evidence?: Evidence[]): Predicate {
     const predicate = new Predicate(edge, evidence);
@@ -389,21 +507,21 @@ export class NoctuaFormConfigService {
     return predicates.map((predicate) => {
       return this.findEdge(predicate);
     });
-
   }
 
   setTermLookup(activityNode: ActivityNode, goCategories: GoCategory[]) {
     ShapeUtils.setTermLookup(activityNode, goCategories);
   }
 
-  getObjectsRelations(subjectRootTypes: Entity[], gpToTerm = false) {
+
+  getObjectRange(subjectRootTypes: Entity[], predicateId?: string, gpToTerm = false) {
     if (!subjectRootTypes) return [];
 
     const subjectIds = subjectRootTypes.map((rootType) => {
       return rootType.id
     });
 
-    const objectIds = DataUtils.getObjects(gpToTerm ? gpToTermJson.goshapes : shexJson.goshapes, subjectIds);
+    const objectIds = DataUtils.getObjects(gpToTerm ? gpToTermJson.goshapes : shexJson.goshapes, subjectIds, predicateId);
 
     return objectIds.reduce((acc, term) => {
       const node = this.termLookupTable[term];
@@ -417,13 +535,13 @@ export class NoctuaFormConfigService {
 
   }
 
+
   addActivityNodeShex(activity: Activity,
     subjectNode: ActivityNode,
     predExpr: ShapeDescription.PredicateExpression,
     objectNode: Partial<ActivityNode>): ActivityNode {
     return ModelDefinition.addNodeShex(activity, subjectNode, predExpr, objectNode);
   }
-
 
   insertActivityNodeShex(activity: Activity,
     subjectNode: ActivityNode,

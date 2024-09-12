@@ -32,7 +32,7 @@ import { takeUntil } from 'rxjs/operators';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 import { SettingsOptions } from '@noctua.common/models/graph-settings';
 import { TableOptions } from '@noctua.common/models/table-options';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 
 @Component({
   selector: 'noc-activity-form-table',
@@ -221,7 +221,7 @@ export class ActivityFormTableComponent implements OnInit, OnDestroy, OnChanges,
       cam: this.cam,
       activity: this.activity,
       entity: entity,
-      category: EditorCategory.evidenceAll,
+      category: EditorCategory.EVIDENCE_ALL,
       evidenceIndex: entity.predicate.evidence.length - 1
     };
 

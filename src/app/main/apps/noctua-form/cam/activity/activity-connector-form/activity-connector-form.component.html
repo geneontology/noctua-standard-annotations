@@ -1,52 +1,57 @@
 <form name="connectorFormGroup" [formGroup]="connectorFormGroup" fxLayout="column" fxLayoutAlign="start stretch"
-  class="noc-drawer w-100-p h-100-p">
+  class="noc-drawer w-full h-full">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
       Causal Relation Form</span>
     <span fxFlex></span>
     <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
       aria-label="Close dialog">
-      <mat-icon>close</mat-icon> Close
+      Close
     </button>
   </div>
-  <div class="noc-drawer-body" fxLayout="column" fxLayoutAlign="start start" noctuaPerfectScrollbar>
-    <div *ngIf="connectorFormGroup" class="noc-connector-form">
-      <div fxLayout="column" fxLayoutAlign="start stretch" class="noc-form-section w-100-p">
-        <div class="noc-section-body w-100-p p-0" fxLayout="column" fxLayoutAlign="start center">
+  <div class="noc-drawer-body" fxLayout="column" fxLayoutAlign="start start">
+    @if (connectorFormGroup) {
+    <div class="noc-connector-form">
+      <div fxLayout="column" fxLayoutAlign="start stretch" class="noc-form-section w-full">
+        <div class="noc-section-body w-full p-0" fxLayout="column" fxLayoutAlign="start center">
           <noc-graph-preview [nodes]="connectorActivity?.graphPreview.nodes"
             [edges]="connectorActivity?.graphPreview.edges" class="noc-graph-preview"></noc-graph-preview>
         </div>
-        <div class="noc-form-section p-0 w-100-p">
+        <div class="noc-form-section p-0 w-full">
           <div class="px-8 noc-group-row" fxLayout="row" fxLayoutAlign="start center">
             <div class="noc-title">
               <p>Relationship</p>
             </div>
             <mat-radio-group fxFlex="" formControlName="relationship" fxLayout="column" fxLayoutAlign="start start">
-              <div *ngFor="let relationship of relationshipOptions" class="noc-radio-row" fxLayout="row"
-                fxLayoutAlign="start center">
+              @for (relationship of relationshipOptions; track relationship) {
+              <div class="noc-radio-row" fxLayout="row" fxLayoutAlign="start center">
                 <mat-radio-button class="noc-radio-button-rounded noc-label"
                   [checked]="relationship.id === connectorActivity?.rule.relationship?.id" [value]="relationship">
                   {{relationship.label}}
                 </mat-radio-button>
-                <div *ngIf="relationship.description" fxFlex="" class="noc-hint">
+                @if (relationship.description) {
+                <div fxFlex="" class="noc-hint">
                   {{relationship.description}}
                 </div>
+                }
               </div>
+              }
             </mat-radio-group>
           </div>
-          <div *ngIf="connectorActivity?.rule.displaySection.effectDirection" class="px-8 noc-group-row" fxLayout="row"
-            fxLayoutAlign="start center">
+          @if (connectorActivity?.rule.displaySection.effectDirection) {
+          <div class="px-8 noc-group-row" fxLayout="row" fxLayoutAlign="start center">
             <div class="noc-title">
               <p>Effect Direction</p>
             </div>
             <mat-radio-group formControlName="effectDirection" fxLayout="column" fxLayoutAlign="start start">
-              <div *ngFor="let effectDirection of noctuaFormConfigService.effectDirection.options" class="noc-radio-row"
-                fxLayout="row" fxLayoutAlign="start center">
+              @for (effectDirection of noctuaFormConfigService.effectDirection.options; track effectDirection) {
+              <div class="noc-radio-row" fxLayout="row" fxLayoutAlign="start center">
                 <mat-radio-button class="noc-radio-button-rounded noc-label" [value]="effectDirection"
                   [checked]="effectDirection.id === connectorActivity?.rule.effectDirection?.id">
                   {{effectDirection.label}}
                 </mat-radio-button>
               </div>
+              }
             </mat-radio-group>
             <div fxFlex="" fxLayout="column" fxLayoutAlign="center start">
               <div class="noc-hint noc-sm">
@@ -55,24 +60,29 @@
               </div>
             </div>
           </div>
-          <div *ngIf="connectorActivity?.rule.displaySection.directness" class="px-8 noc-group-row" fxLayout="row"
-            fxLayoutAlign="start center">
+          }
+          @if (connectorActivity?.rule.displaySection.directness) {
+          <div class="px-8 noc-group-row" fxLayout="row" fxLayoutAlign="start center">
             <div class="noc-title">
               <p>Directness </p>
             </div>
             <mat-radio-group fxFlex="" formControlName="directness" fxLayout="column" fxLayoutAlign="start start">
-              <div *ngFor="let directness of noctuaFormConfigService.directness.options" class="noc-radio-row"
-                fxLayout="row" fxLayoutAlign="start center">
+              @for (directness of noctuaFormConfigService.directness.options; track directness) {
+              <div class="noc-radio-row" fxLayout="row" fxLayoutAlign="start center">
                 <mat-radio-button class="noc-radio-button-rounded noc-label" [value]="directness"
                   [checked]="directness.id === connectorActivity?.rule.directness?.id">
                   {{directness.label}}
                 </mat-radio-button>
-                <div *ngIf="directness.description" fxFlex="" class="noc-hint">
+                @if (directness.description) {
+                <div fxFlex="" class="noc-hint">
                   {{directness.description}}
                 </div>
+                }
               </div>
+              }
             </mat-radio-group>
           </div>
+          }
         </div>
         <div class="noc-section-header noc-bt" fxLayout="row" fxLayoutAlign="start center">
           <div class="noc-section-heading">
@@ -91,19 +101,19 @@
         </div>
         <div class="noc-section-body p-0" fxLayout="column" fxLayoutAlign="start stretch">
           <div class="px-12 noc-group-row" fxLayout="column">
-            <div formArrayName="evidenceFormArray"
-              *ngFor="let evidence of connectorFormGroup.get('evidenceFormArray')?.controls; let i = index;">
-              <div [formGroupName]="i" fxLayout="row" fxLayoutAlign="start center" class="w-100-p">
+            @for (evidence of connectorFormGroup.get('evidenceFormArray')?.controls; track evidence; let i = $index) {
+            <div formArrayName="evidenceFormArray">
+              <div [formGroupName]="i" fxLayout="row" fxLayoutAlign="start center" class="w-full">
                 <div class="p-4" fxFlex="55">
-                  <mat-form-field appearance="outline" class="noc-sm w-100-p">
+                  <mat-form-field appearance="outline" class="noc-sm w-full">
                     <mat-label>Evidence</mat-label>
                     <textarea type="text" matInput formControlName="evidence" [matAutocomplete]="evidenceAuto"
                       rows="2"></textarea>
                     <mat-autocomplete #evidenceAuto="matAutocomplete" [displayWith]="evidenceDisplayFn"
                       class="noc-term-autocomplete">
-                      <mat-option *ngFor="let item of connectorActivity?.predicate?.evidenceLookup.results"
-                        [value]="item">
-                        <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+                      @for (item of connectorActivity?.predicate?.evidenceLookup.results; track item) {
+                      <mat-option [value]="item">
+                        <div class="w-full" fxLayout="row" fxLayoutAlign="start center">
                           <div class="noc-term-label">
                             {{ item.label }}
                           </div>
@@ -113,17 +123,18 @@
                           </div>
                         </div>
                       </mat-option>
+                      }
                     </mat-autocomplete>
                   </mat-form-field>
                 </div>
                 <div class="p-4" fxFlex="25">
-                  <mat-form-field appearance="outline" class="noc-sm w-100-p">
+                  <mat-form-field appearance="outline" class="noc-sm w-full">
                     <mat-label>Reference</mat-label>
                     <textarea matInput formControlName="reference" rows="2"></textarea>
                   </mat-form-field>
                 </div>
                 <div class="p-4" fxFlex fxFlex="20">
-                  <mat-form-field appearance="outline" class="noc-sm w-100-p">
+                  <mat-form-field appearance="outline" class="noc-sm w-full">
                     <mat-label>With</mat-label>
                     <textarea matInput formControlName="with" rows="2"></textarea>
                   </mat-form-field>
@@ -131,16 +142,19 @@
                 <span fxFlex=""></span>
               </div>
             </div>
+            }
           </div>
         </div>
       </div>
     </div>
+    }
   </div>
   <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
-    <button *ngIf="!connectorFormGroup.valid" (click)='checkErrors()' mat-button color="warn"
-      class="noc-rounded-button noc-sm">
+    @if (!connectorFormGroup.valid) {
+    <button (click)='checkErrors()' mat-button color="warn" class="noc-rounded-button noc-sm">
       Why is the "Save" button disabled?
     </button>
+    }
     <span fxFlex></span>
     <button [disabled]="!connectorActivity?.predicate.edge?.id" (click)="save()" type="submit"
       class="noc-rounded-button" mat-raised-button color="primary">Save</button>

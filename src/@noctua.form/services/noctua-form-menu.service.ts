@@ -14,7 +14,7 @@ export class NoctuaFormMenuService {
   private rightDrawer: MatDrawer;
 
   constructor() {
-    this.selectedMiddlePanel = MiddlePanel.camTable;
+    this.selectedMiddlePanel = MiddlePanel.CAM_TABLE;
   }
 
   selectLeftPanel(panel: LeftPanel) {

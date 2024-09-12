@@ -1,26 +1,31 @@
-<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-100-p">
+<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-full">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
       Search History</span>
     <span fxFlex></span>
     <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
       aria-label="Close dialog">
-      <mat-icon>close</mat-icon> CLOSE
+      Close
     </button>
   </div>
-  <div class="noc-drawer-body" noctuaPerfectScrollbar>
-    <div *ngFor="let item of searchHistory" (click)="selectSearch(item)" class="noc-group-row" fxLayout="row"
-      fxLayoutAlign="start center">
-      <div class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start start">
-        <div *ngFor="let section of item.displaySections" class="noc-history-item">
-          <fa-icon *ngIf="section.icon" [icon]="['fas', section.icon]"></fa-icon> {{section.value}}
+  <div class="noc-drawer-body">
+    @for (item of searchHistory; track item) {
+    <div (click)="selectSearch(item)" class="noc-group-row" fxLayout="row" fxLayoutAlign="start center">
+      <div class="w-full h-full" fxLayout="column" fxLayoutAlign="start start">
+        @for (section of item.displaySections; track section) {
+        <div class="noc-history-item">
+          @if (section.icon) {
+          <fa-icon [icon]="['fas', section.icon]"></fa-icon>
+          } {{section.value}}
         </div>
+        }
       </div>
       <span fxFlex></span>
       <mat-icon class="s-24">
         chevron_right
       </mat-icon>
     </div>
+    }
   </div>
   <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
     <span fxFlex=""></span>

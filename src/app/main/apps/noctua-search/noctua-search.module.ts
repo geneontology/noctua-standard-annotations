@@ -9,7 +9,6 @@ import { NoctuaFooterModule } from 'app/layout/components/footer/footer.module';
 import { CamsReviewComponent } from './cams/cams-review/cams-review.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CamsReviewChangesComponent } from './cams/cams-review-changes/cams-review-changes.component';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { NoctuaFormModule } from '../noctua-form/noctua-form.module';
 const routes = [
   {
@@ -28,7 +27,6 @@ const routes = [
     NoctuaSearchBaseModule,
     NoctuaFooterModule,
     NoctuaFormModule,
-    PerfectScrollbarModule
   ],
   declarations: [
     NoctuaSearchComponent,

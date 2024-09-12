@@ -1,4 +1,4 @@
-<div class="w-100-p h-100-p noc-graph-holder">
+<div class="w-full h-full noc-graph-holder">
   <ngx-graph [links]="edges" [nodes]="nodes" [curve]="curve" [layout]="layout" [nodeWidth]=120 [nodeHeight]=50
     [layoutSettings]="layoutSettings" [curve]="curve" [draggingEnabled]="draggingEnabled"
     [panningEnabled]="panningEnabled" [enableZoom]="zoomEnabled" [zoomSpeed]="zoomSpeed" [minZoomLevel]="minZoomLevel"
@@ -30,10 +30,11 @@
             startOffset="50%"></textPath>
         </svg:text>
       </svg:g>
-      <svg:g class="linkMidpoint" *ngIf="link.midPoint"
-        [attr.transform]="'translate(' + (link.midPoint.x) + ',' + (link.midPoint.y) + ')'">
+      @if (link.midPoint) {
+      <svg:g class="linkMidpoint" [attr.transform]="'translate(' + (link.midPoint.x) + ',' + (link.midPoint.y) + ')'">
         <svg:text alignment-baseline="central">{{ link.label }}</svg:text>
       </svg:g>
+      }
     </ng-template>
   </ngx-graph>
 </div>

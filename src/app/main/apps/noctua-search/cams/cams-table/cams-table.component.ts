@@ -12,7 +12,7 @@ import {
   ActivityDisplayType,
 } from '@geneontology/noctua-form-base';
 
-import { MatPaginatorIntl } from '@angular/material/paginator';
+import { MatLegacyPaginatorIntl as MatPaginatorIntl } from '@angular/material/legacy-paginator';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -275,7 +275,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
     this.camService.initializeForm(cam);
     this.camService.onCamChanged.next(cam);
 
-    this.openRightDrawer(RightPanel.camForm)
+    this.openRightDrawer(RightPanel.CAM_FORM)
   }
 
   openCopyModel(cam: Cam) {
@@ -284,7 +284,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
 
     this.camService.onCamChanged.next(cam);
 
-    this.openRightDrawer(RightPanel.copyModel)
+    this.openRightDrawer(RightPanel.COPY_MODEL)
   }
 
   openLeftDrawer(panel: LeftPanel) {

@@ -110,7 +110,7 @@ export const simpleAnnotonDescription: ActivityDescription = {
         gp: <ActivityNodeDisplay>{
             id: 'gp',
             type: ActivityNodeType.GoMolecularEntity,
-            category: [EntityDefinition.GoMolecularEntity, EntityDefinition.GoProteinContainingComplex],
+            category: [EntityDefinition.GoMolecularEntity, EntityDefinition.GPProteinContainingComplex],
             label: 'Gene Product',
             displaySection: noctuaFormConfig.displaySection.gp,
             displayGroup: noctuaFormConfig.displayGroup.gp,
@@ -132,18 +132,6 @@ export const simpleAnnotonDescription: ActivityDescription = {
             displaySection: noctuaFormConfig.displaySection.gp,
             displayGroup: noctuaFormConfig.displayGroup.gp,
             termRequired: true,
-            canDelete: false,
-            weight: 1
-        },
-        'extension': <ActivityNodeDisplay>{
-            id: 'extension',
-            type: ActivityNodeType.GoCellularComponent,
-            category: [],
-            label: 'Extension',
-            displaySection: noctuaFormConfig.displaySection.gp,
-            displayGroup: noctuaFormConfig.displayGroup.gp,
-            termRequired: false,
-            skipEvidenceCheck: true,
             canDelete: false,
             weight: 1
         },

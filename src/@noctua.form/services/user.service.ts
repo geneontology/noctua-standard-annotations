@@ -63,8 +63,10 @@ export class NoctuaUserService {
             this.onUserChanged.next(this.user);
             // remove the token on the url
             const url = new URL(window.location.href);
+
             url.searchParams.delete('barista_token');
-            window.history.replaceState(null, null, url.href);
+            const newUrl = decodeURIComponent(url.href);
+            window.history.replaceState(null, null, newUrl);
           }
         });
     }

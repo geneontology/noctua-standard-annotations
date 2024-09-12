@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
 import { Subject } from 'rxjs';
 import { NoctuaFormDialogService } from './../../../../services/dialog.service';
 import {
@@ -316,7 +316,7 @@ export class EntityFormComponent implements OnInit, OnDestroy {
 
   updateTermList() {
     const self = this;
-    this.camService.updateTermList(self.noctuaActivityFormService.activity, this.entity);
+    this.camService.updateTermList(self.noctuaActivityFormService.activity);
   }
 
   updateEvidenceList() {

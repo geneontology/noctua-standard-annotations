@@ -1,7 +1,7 @@
 
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { Subject } from 'rxjs';
 import { Cam, NoctuaFormConfigService, Predicate } from '@geneontology/noctua-form-base';
 
@@ -15,7 +15,7 @@ export class CommentsDialogComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any>;
   commentsFormGroup: FormGroup;
   commentsFormArray: FormArray
-  predicate: Predicate
+  comments: string[] = [];
 
   constructor(
     private _matDialogRef: MatDialogRef<CommentsDialogComponent>,
@@ -23,14 +23,14 @@ export class CommentsDialogComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) private _data: any,
   ) {
     this._unsubscribeAll = new Subject();
-    this.predicate = _data.predicate;
+    this.comments = _data.comments;
     this.commentsFormGroup = this.createForm();
     this.commentsFormArray = this.commentsFormGroup.get('commentsFormArray') as FormArray
 
   }
 
   ngOnInit() {
-    this.predicate.comments.forEach((comment: string) => {
+    this.comments.forEach((comment: string) => {
       this.commentsFormArray.push(new FormControl(comment));
     });
   }

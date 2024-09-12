@@ -1,6 +1,6 @@
 @use "@angular/material" as mat;
-@import "src/@noctua/scss/noctua";
-@import "src/@noctua.common/scss/noctua.common";
+@import "@noctua/scss/noctua";
+@import "@noctua.common/scss/noctua.common";
 
 $primary: map-get($theme, primary);
 $accent: map-get($theme, accent);
@@ -37,7 +37,6 @@ $accent: map-get($theme, accent);
   }
 
   .noc-not-loggedin {
-    margin-bottom: 4px;
     padding: 0 10px;
     @include deep-height(40px);
     width: 100%;
@@ -47,15 +46,19 @@ $accent: map-get($theme, accent);
   }
 
   .noc-cam-heading {
-    margin-bottom: 4px;
     padding: 0 10px;
     @include deep-height(40px);
     width: 100%;
     //min-height: 35px;
-    background-color: #fff;
-    font-size: 12px;
+    //background-color: #fff;
 
-    @include mat.elevation(2);
+    background: linear-gradient(
+      to right,
+      lighten(map-get($primary, default), 20%),
+      lighten(map-get($accent, default), 25%),
+      darken(map-get($primary, default), 2%)
+    );
+    font-size: 12px;
 
     .noc-cam-title {
       max-width: 400px !important;
@@ -81,12 +84,12 @@ $accent: map-get($theme, accent);
     }
 
     .noc-toolbar-button {
+      padding: 0;
       font-size: 18px;
-      color: map-get($primary, 400);
+      color: #555;
 
       &:hover {
-        font-size: 20px;
-        color: map-get($primary, default);
+        color: #888;
       }
     }
 
@@ -158,19 +161,26 @@ $accent: map-get($theme, accent);
       @include noc-chip-color(#ddd);
 
       &.noc-user-chip {
-        @include noc-chip-color(#bbc9cc);
+        @include noc-chip-color(darken(map-get($accent, default), 1%));
 
         .noc-icon {
-          color: #59939e;
+          color: #222;
         }
       }
 
       &.noc-date-chip {
-        @include noc-chip-color(#aee9f5);
+        @include noc-chip-color(darken(map-get($accent, default), 1%));
+        .noc-icon {
+          color: #222;
+        }
       }
 
       &.noc-state-chip {
-        &.noc-development {
+        @include noc-chip-color(darken(map-get($accent, default), 1%));
+        .noc-icon {
+          color: #222;
+        }
+        /*         &.noc-development {
           @include noc-chip-color(#f4c89c);
           // border: #d59f80 solid 1px;/
         }
@@ -183,39 +193,9 @@ $accent: map-get($theme, accent);
         &.noc-review {
           @include noc-chip-color(#d8f6a3);
           // border: #d59f80 solid 1px;/
-        }
+        } */
       }
     }
-  }
-
-  .noc-sidemenu {
-    padding: 0;
-    margin-right: 5px;
-    @include deep-height(100%);
-    @include deep-width(60px);
-    @include mat.elevation(2);
-    border-right: #999 solid 1px;
-
-    button {
-      @include deep-width(60px);
-      @include deep-height(60px);
-
-      mat-icon {
-        @include noc-icon-size(28px);
-        color: $noc-primary-color-light;
-      }
-
-      &.noc-active {
-        mat-icon {
-          color: #555;
-        }
-      }
-    }
-  }
-
-  .noc-form-container {
-    background-color: #eee;
-    padding: 20px 10px;
   }
 
   .noc-toolbar {
@@ -231,18 +211,5 @@ $accent: map-get($theme, accent);
       font-size: 14px;
       font-weight: bold;
     }
-  }
-
-  .noc-left-drawer {
-    @include deep-height(100%);
-    background-color: #fff;
-    border-right: #bbb solid 1px;
-    @include mat.elevation(4);
-  }
-
-  .noc-right-drawer {
-    @include deep-height(100%);
-    background-color: #fff;
-    border-left: #bbb solid 1px;
   }
 }

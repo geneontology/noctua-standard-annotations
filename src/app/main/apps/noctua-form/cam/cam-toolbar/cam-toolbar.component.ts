@@ -47,17 +47,17 @@ export class CamToolbarComponent implements OnInit, OnDestroy {
   openGraph() {
     this.noctuaCommonMenuService.closeLeftDrawer();
     this.noctuaCommonMenuService.closeRightDrawer();
-    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.camGraph)
+    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.CAM_GRAPH)
   }
 
   openTable() {
     //this.noctuaCommonMenuService.closeLeftDrawer();
     this.noctuaCommonMenuService.closeRightDrawer();
-    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.camTable)
+    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.CAM_TABLE)
   }
 
   openPreview() {
-    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.camPreview)
+    this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.CAM_PREVIEW)
   }
 
   openLeftDrawer(panel) {
@@ -84,7 +84,7 @@ export class CamToolbarComponent implements OnInit, OnDestroy {
   }
 
   openSettings() {
-    this.openRightDrawer(RightPanel.graphSettings)
+    this.openRightDrawer(RightPanel.GRAPH_SETTINGS)
   }
 
   openCamForm() {

@@ -1,104 +1,124 @@
-<div class="w-100-p">
-  <div class="noc-activity-node noctua-form-table w-100-p"
+<div class="w-full">
+  <div class="noc-activity-node noctua-form-table w-full"
     [ngClass]="{'noc-selected': activity.displayId===camService.currentMatch?.activityDisplayId}" fxLayout="row"
     fxLayoutAlign="start stretch">
-    <div *ngIf="!options.slimViewer" class="noc-relation-cell noc-entity-cell" fxFlex="{{relationWidth}}">
+    @if (!options.slimViewer) {
+    <div class="noc-relation-cell noc-entity-cell" fxFlex="{{relationWidth}}">
       <span class="">
-        <strong *ngIf="entity.predicate?.isComplement"> NOT </strong>
-        <span *ngIf="entity.showEvidence">{{entity.predicate?.edge?.label}}</span>
-
+        @if (entity.predicate?.isComplement) {
+        <strong> NOT </strong>
+        }
+        @if (entity.showEvidence) {
+        <span>{{entity.predicate?.edge?.label}}</span>
+        }
       </span>
-
-      <noctua-inline-editor *ngIf="noctuaUserService.user && entity.relationEditable" [cam]="cam" [activity]='activity'
-        [entity]="entity" [category]="EditorCategory.relationship" class="noc-edit-button">
+      @if (noctuaUserService.user && entity.relationEditable) {
+      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.RELATIONSHIP"
+        class="noc-edit-button">
       </noctua-inline-editor>
+      }
     </div>
+    }
     <div class="noc-term-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch" fxFlex=""
       [attr.id]="entity.term?.displayId"
       [ngClass]="{'noc-highlight-match': entity.term?.highlight,
             'noc-highlight-modified': entity.term?.modified,
             'noc-highlight-match-current': camService.currentMatch?.uuid && entity.term?.uuid===camService.currentMatch?.uuid}">
       <!--   <button mat-icon-button *ngIf="entity.canDelete" (click)="deleteEntity(entity)" class="noc-delete-button">
-        <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
-      </button> -->
+      <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
+    </button> -->
 
-      <span class="noc-old-term" *ngIf="entity.term?.modified && entity.term?.termHistory?.length>0">
+      @if (entity.term?.modified && entity.term?.termHistory?.length>0) {
+      <span class="noc-old-term">
         {{entity.term?.termHistory[0]?.label}}
         <a (click)="$event.stopPropagation()" href="{{entity.term?.termHistory[0]?.url}}" target="_blank">
           {{ entity.term?.termHistory[0]?.id }}
         </a>
       </span>
+      }
       <span class="">
         {{entity.term?.label}} <br>
         <a (click)="$event.stopPropagation()" href="{{entity.term?.url}}" target="_blank">
           {{ entity.term?.id }}
         </a>
       </span>
-      <ng-container *ngIf="!termNotEditable">
-        <noctua-inline-editor *ngIf="noctuaUserService.user && entity.term && options.editableTerms" [cam]="cam"
-          [activity]='activity' [entity]="entity" [category]="EditorCategory.term" class="noc-edit-button">
-        </noctua-inline-editor>
-      </ng-container>
+      @if (!termNotEditable) {
+      @if (noctuaUserService.user && entity.term && options.editableTerms) {
+      <noctua-inline-editor [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.TERM"
+        class="noc-edit-button">
+      </noctua-inline-editor>
+      }
+      }
     </div>
     <div class="noc-aspect-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch">
-      <mat-chip *ngIf="entity.aspect" class="noc-chip-xs noc-aspect {{entity.aspect}}" fxLayout="column"
-        fxLayoutAlign="center center">
+      @if (entity.aspect) {
+      <mat-chip class="noc-chip-xs noc-aspect {{entity.aspect}}" fxLayout="column" fxLayoutAlign="center center">
         <span>{{entity.aspect}}</span>
       </mat-chip>
+      }
     </div>
     <div class="noc-extension-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch">
-      <mat-chip *ngIf="entity.isExtension" class="noc-chip-xs noc-extension" fxLayout="column"
-        fxLayoutAlign="center center">
+      @if (entity.isExtension) {
+      <mat-chip class="noc-chip-xs noc-extension" fxLayout="column" fxLayoutAlign="center center">
         <span>ext.</span>
       </mat-chip>
+      }
     </div>
     <div class="noc-evidence-cell p-0" fxLayout="column" fxLayoutAlign="start stretch">
-      <noc-evidence-table *ngIf="entity.showEvidence" class="w-100-p" [options]="optionsDisplay" [cam]="cam"
-        [entity]="entity">
+      @if (entity.showEvidence) {
+      <noc-evidence-table class="w-full" [options]="optionsDisplay" [cam]="cam" [entity]="entity">
       </noc-evidence-table>
+      }
     </div>
     <div class="noc-comments-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch">
-      <button *ngIf="entity.showEvidence && entity.predicate.comments.length>0" mat-icon-button
-        class="noc-toolbar-button noc-rounded-button" (click)="openCommentsForm(entity)"
+      @if (entity.showEvidence && entity.predicate.comments.length>0) {
+      <button mat-icon-button class="noc-toolbar-button noc-rounded-button" (click)="openCommentsForm(entity)"
         matTooltip="{{entity.predicate?.comments}}" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
         <fa-icon [icon]="['fas', 'comment']"></fa-icon>
         <div class="noc-comments-badge">
           {{entity.predicate?.comments.length}}
         </div>
       </button>
+      }
     </div>
     <div class="noc-cell noc-action-cell" fxLayout="column" fxLayoutAlign="start center">
-      <button mat-icon-button *ngIf="noctuaUserService.user &&  options.showMenu && entity.showEvidence"
-        (click)="updateCurrentMenuEvent($event)" class="noc-action-button" fxFlex="40px"
+      @if (noctuaUserService.user && options.showMenu && entity.showEvidence) {
+      <button mat-icon-button (click)="updateCurrentMenuEvent($event)" class="noc-action-button" fxFlex="40px"
         [matMenuTriggerFor]="entityMenu">
         <mat-icon>more_vert</mat-icon>
       </button>
+      }
       <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu">
         <!--   <button mat-menu-item *ngIf="entity.aspect" class="" (click)="editEntity(entity)">
-          Edit
-        </button> -->
-        <button mat-menu-item *ngIf="entity.treeLevel===0" class="" (click)="toggleIsComplement(entity)">
+      Edit
+    </button> -->
+        @if (entity.treeLevel===0) {
+        <button mat-menu-item class="" (click)="toggleIsComplement(entity)">
           NOT Qualifier
         </button>
-        <button mat-menu-item *ngIf="entity.insertMenuNodes" [matMenuTriggerFor]="addMenu">Add</button>
+        }
+        @if (entity.insertMenuNodes) {
+        <button mat-menu-item [matMenuTriggerFor]="addMenu">Add</button>
+        }
         <button mat-menu-item [matMenuTriggerFor]="evidenceMenu">Evidence</button>
         <button mat-menu-item (click)="openCommentsForm(entity)" class="">
           Add Comment
         </button>
       </mat-menu>
       <mat-menu #addMenu="matMenu">
-        <button mat-menu-item *ngFor="let insertMenuItem of entity.insertMenuNodes" class=""
-          (click)="insertEntity(entity, insertMenuItem)">
+        @for (insertMenuItem of entity.insertMenuNodes; track insertMenuItem) {
+        <button mat-menu-item class="" (click)="insertEntity(entity, insertMenuItem)">
           {{insertMenuItem.label}}
         </button>
+        }
       </mat-menu>
       <mat-menu #evidenceMenu="matMenu">
         <button mat-menu-item (click)="addEvidence(entity)" class="">
           Add Evidence
         </button>
         <!--   <button (click)="removeEvidence(entity,i)" mat-menu-item>
-              Remove Evidence
-            </button> -->
+    Remove Evidence
+  </button> -->
       </mat-menu>
     </div>
   </div>

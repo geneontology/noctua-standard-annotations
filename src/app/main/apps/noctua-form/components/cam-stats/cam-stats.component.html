@@ -1,28 +1,44 @@
-<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-100-p">
+<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-full">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
       Cam Details & Stats</span>
     <span fxFlex></span>
     <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
       aria-label="Close dialog">
-      <mat-icon>close</mat-icon> CLOSE
+      Close
     </button>
   </div>
   <div class="noc-tab-bar" fxLayout="row" fxLayoutAlign="start center">
-    <button mat-button *ngFor="let statsType of statsTypes" color="" class="noc-tab-button"
-      [ngClass]="{'noc-active': selectedStatsType === statsType.name}" (click)="selectStatsType(statsType.name)"
-      matTooltip="{{statsType.tooltip}}" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+    @for (statsType of statsTypes; track statsType) {
+    <button mat-button color="" class="noc-tab-button" [ngClass]="{'noc-active': selectedStatsType === statsType.name}"
+      (click)="selectStatsType(statsType.name)" matTooltip="{{statsType.tooltip}}" [matTooltipPosition]="'after'"
+      [matTooltipShowDelay]="1500">
       {{statsType.label}}
     </button>
+    }
   </div>
-  <div *ngIf="termsSummary" class="noc-drawer-body" noctuaPerfectScrollbar>
-    <div [ngSwitch]="selectedStatsType">
-      <noc-general-stats *ngSwitchCase="StatsType.GENERAL" [termsSummary]="termsSummary"></noc-general-stats>
-      <noc-gp-stats *ngSwitchCase="StatsType.GP" [termsSummary]="termsSummary"></noc-gp-stats>
-      <noc-aspect-stats *ngSwitchCase="StatsType.TERM" [termsSummary]="termsSummary"></noc-aspect-stats>
-      <noc-statement-stats *ngSwitchCase="StatsType.STATEMENT" [termsSummary]="termsSummary"></noc-statement-stats>
-      <noc-contribution-stats *ngSwitchCase="StatsType.CONTRIBUTION" [termsSummary]="termsSummary">
+  @if (termsSummary) {
+  <div class="noc-drawer-body">
+    <div>
+      @switch (selectedStatsType) {
+      @case (StatsType.GENERAL) {
+      <noc-general-stats [termsSummary]="termsSummary"></noc-general-stats>
+      }
+      @case (StatsType.GP) {
+      <noc-gp-stats [termsSummary]="termsSummary"></noc-gp-stats>
+      }
+      @case (StatsType.TERM) {
+      <noc-aspect-stats [termsSummary]="termsSummary"></noc-aspect-stats>
+      }
+      @case (StatsType.STATEMENT) {
+      <noc-statement-stats [termsSummary]="termsSummary"></noc-statement-stats>
+      }
+      @case (StatsType.CONTRIBUTION) {
+      <noc-contribution-stats [termsSummary]="termsSummary">
       </noc-contribution-stats>
+      }
+      }
     </div>
   </div>
+  }
 </div>

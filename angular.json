@@ -40,6 +40,12 @@
               "node_modules/reveal.js/dist/reveal.css",
               "node_modules/reveal.js/dist/theme/black.css"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src",
+                "./node_modules"
+              ]
+            },
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/jqueryui/jquery-ui.min.js",
@@ -54,13 +60,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "10mb",
-                  "maximumError": "15mb"
+                  "maximumWarning": "50mb",
+                  "maximumError": "150mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "20kb",
-                  "maximumError": "30kb"
+                  "maximumWarning": "200kb",
+                  "maximumError": "300kb"
                 }
               ],
               "fileReplacements": [
@@ -115,11 +121,16 @@
             "styles": [
               "src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src",
+                "./node_modules"
+              ]
+            },
             "scripts": []
           }
         }
       }
     }
-  },
-  "defaultProject": "noctua"
+  }
 }

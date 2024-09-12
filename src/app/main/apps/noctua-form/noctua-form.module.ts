@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { TreeModule } from '@circlon/angular-tree-component';
+import { TreeModule } from '@ali-hm/angular-tree-component';
 import { NoctuaFormComponent } from './noctua-form.component';
 import { NoctuaSharedModule } from './../../../../@noctua/shared.module';
 import { NoctuaFormDialogService } from './services/dialog.service';
@@ -24,23 +24,23 @@ import { CamPreviewComponent } from './cam/cam-preview/cam-preview.component';
 import { CamGraphComponent } from './cam/cam-preview/cam-graph/cam-graph.component';
 import { NoctuaEditorModule } from '@noctua.editor/noctua-editor.module';
 import { PreviewActivityDialogComponent } from './dialogs/preview-activity/preview-activity.component';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
+import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatRadioModule } from '@angular/material/radio';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
+import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatRippleModule } from '@angular/material/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { SearchEvidenceDialogComponent } from './dialogs/search-evidence/search-evidence.component';
 import { SelectEvidenceComponent } from './components/select-evidence/select-evidence.component';
@@ -139,6 +139,7 @@ const routes = [
     PreviewActivityComponent,
     GraphPreviewComponent,
     EvidenceFormTableComponent,
+    EvidenceTableComponent,
     ConfirmCopyModelDialogComponent,
     CommentsDialogComponent,
     CamToolbarComponent,
