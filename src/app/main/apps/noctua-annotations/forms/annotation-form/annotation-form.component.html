@@ -132,10 +132,9 @@
         </div>
       </div>
       <div class="pl-4 py-4">
-        <button mat-stroked-button (click)="addExtension()" class="noc-xs px-2 w-[170px] noc-rounded-button "
-          color="primary">
+        <a (click)="addExtension()" class="cursor-pointer" color="primary">
           Add @if(annotationActivity?.extensions.length>1) {<span>Another</span>} Extension
-        </button>
+        </a>
       </div>
 
       <div class="noc-section-header pr-4" fxLayout="row" fxLayoutAlign="start center">
@@ -163,10 +162,9 @@
 
 
       <div class="pl-4 py-4">
-        <button mat-stroked-button (click)="addComment() " class="noc-xs px-2 w-[200px] noc-rounded-button "
-          color="primary">
+        <a (click)="addComment() " class="cursor-pointer" color="primary">
           Add @if(annotationComments?.controls.length>1) {<span>Another</span>} Comment
-        </button>
+        </a>
       </div>
 
       <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer py-6 px-4">
@@ -176,9 +174,9 @@
         </button>
         }
         <span fxFlex></span>
-        <button mat-stroked-button (click)='clearForm()' color="primary"
+        <button mat-raised-button (click)='clearForm()' color=""
           class="mr-[8px!important] noc-rounded-button">Clear</button>
-        <button mat-stroked-button [disabled]="hasErrors()" (click)="save()" type="submit"
+        <button mat-raised-button [disabled]="hasErrors()" (click)="save()" type="submit"
           class="noc-rounded-button noc-primary-button" [attr.data-cy]="'save-annotation-button'">Save</button>
       </div>
     </div>

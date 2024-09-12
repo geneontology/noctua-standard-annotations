@@ -362,8 +362,6 @@ export class NoctuaFormConfigService {
     annotationActivity.date = activity.date.toString();
     annotationActivity.formattedDate = activity.formattedDate;
 
-    console.log('activity', activity)
-
     activity.edges.forEach(edge => {
       edge.predicate.comments.forEach(comment => comments.add(comment));
     });

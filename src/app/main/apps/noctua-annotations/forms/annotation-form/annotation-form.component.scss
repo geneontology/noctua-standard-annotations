@@ -118,6 +118,14 @@ $accent: map-get($theme, accent);
       border-radius: 12px;
     }
 
+    button {
+      &:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+
     textarea.noc-comment-box {
       resize: vertical !important;
     }

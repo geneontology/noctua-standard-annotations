@@ -64,8 +64,6 @@ export class NoctuaInlineEditorComponent implements OnInit, OnDestroy {
             annotationActivity: this.annotationActivity,
         };
 
-        console.log('data', data);
-
         if (this.editorType === EditorType.DEFAULT) {
             this.camService.onCamChanged.next(this.cam);
             this.camService.activity = this.activity;
