@@ -283,6 +283,18 @@ export class Cam {
     localStorage.setItem('annotationActivitySortBy', JSON.stringify(data));
   }
 
+  updateAnnotationActivitySortDirection() {
+
+    this.annotationActivitySortBy.ascending = !this.annotationActivitySortBy.ascending;
+
+    const data = {
+      field: this.annotationActivitySortBy.field,
+      label: this.annotationActivitySortBy.label,
+      ascending: this.annotationActivitySortBy.ascending
+    };
+    localStorage.setItem('annotationActivitySortBy', JSON.stringify(data));
+  }
+
   toggleExpand() {
     this.expanded = !this.expanded;
   }

@@ -19,15 +19,15 @@
       </span>
       <button mat-stroked-button class="noc-rounded-button noc-action-button noc-half-button noc-r noc-xs" color=""
         [matMenuTriggerFor]="sortByOptionMenu">
-        {{cam.sortBy.label}}
+        {{cam.annotationActivitySortBy.label }}
         <fa-icon [icon]="['fas', 'caret-down']"></fa-icon>
       </button>
       <button mat-stroked-button (click)="toggleSortDirection()"
         class="noc-rounded-button noc-action-button noc-icon noc-half-button noc-l noc-xs" color="primary">
-        @if (cam.sortBy.ascending) {
+        @if (cam.annotationActivitySortBy.ascending) {
         <fa-icon [icon]="['fas', 'sort-alpha-down']"></fa-icon>
         }
-        @if (!cam.sortBy.ascending) {
+        @if (!cam.annotationActivitySortBy.ascending) {
         <fa-icon [icon]="['fas', 'sort-alpha-down-alt']"></fa-icon>
         }
       </button>

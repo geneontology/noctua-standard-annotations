@@ -331,7 +331,9 @@ export class AnnotationActivity {
           comparison = this.getSafeLabel(a.with).localeCompare(this.getSafeLabel(b.with));
           break;
         case AnnotationActivitySortField.DATE:
-          comparison = (a.date ?? '').localeCompare(b.date ?? '');
+          const dateA = a.date ? new Date(a.date) : new Date(0); // Use epoch date if a.date is null or undefined
+          const dateB = b.date ? new Date(b.date) : new Date(0); // Use epoch date if b.date is null or undefined
+          comparison = dateA.getTime() - dateB.getTime();
           break;
         default:
           comparison = this.getSafeLabel(a.gp).localeCompare(this.getSafeLabel(b.gp));
