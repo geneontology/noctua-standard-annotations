@@ -31,7 +31,7 @@
     </div>
     <div class="noc-relation-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch">
       <span class="">
-        @if (annotationActivity.isComplement) {
+        @if (annotationActivity.goterm.isComplement) {
         <strong> NOT </strong>
         }
         <span>{{annotationActivity.gpToTermEdge.inverseEntity?.label}}</span>
