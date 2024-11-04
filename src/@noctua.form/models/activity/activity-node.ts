@@ -121,6 +121,8 @@ export class ActivityNode implements ActivityNodeDisplay {
   pendingEntityChanges: PendingChange;
   pendingRelationChanges: PendingChange;
 
+  chemicalParticipants = []
+
 
   constructor(activityNode?: Partial<ActivityNodeDisplay>) {
     if (activityNode) {

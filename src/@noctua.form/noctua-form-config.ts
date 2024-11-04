@@ -233,9 +233,9 @@ const simpleAnnotationEdgeConfig: SAConfigEdgeMap = {
     mfNodeRequired: true
   },
   [inverseEdge.isActiveIn.id]: {
-    gpToTermPredicate: edge.enabledBy.id,
-    mfToTermPredicate: edge.occursIn.id,
-    mfNodeRequired: true
+    gpToTermPredicate: edge.isActiveIn.id,
+    mfNodeRequired: false,
+    gpToTermReverse: false
   },
   [inverseEdge.actsUpstreamOf.id]: {
     gpToTermPredicate: edge.enabledBy.id,
@@ -551,6 +551,7 @@ export const noctuaFormConfig = {
 
   ccOnlyEdges: [
     edge.locatedIn.id,
+    edge.isActiveIn.id,
     edge.partOf.id,
     edge.contributesTo.id,
   ],

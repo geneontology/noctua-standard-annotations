@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 import { NoctuaDataService } from '@noctua.common/services/noctua-data.service';
-import { Activity, Cam, CamOperation, NoctuaFormConfigService, BbopGraphService } from '@geneontology/noctua-form-base';
+import { Activity, Cam, CamOperation, NoctuaFormConfigService, BbopGraphService, CamService } from '@geneontology/noctua-form-base';
 import { NoctuaShapesService } from '@noctua.graph/services/shapes.service';
 import { noctuaStencil } from '@noctua.graph/data/cam-stencil';
 import { NoctuaGraphEditorService } from '@noctua.graph/services/graph-editor-service';
@@ -33,6 +33,7 @@ export class CamGraphComponent implements OnInit, AfterViewInit, OnDestroy {
     public noctuaGraphEditorService: NoctuaGraphEditorService,
     // public noctuaCamEditorService: NoctuaCamEditorService,
     private _bbopGraphService: BbopGraphService,
+    private camService: CamService,
     public noctuaCommonMenuService: NoctuaCommonMenuService,
     public noctuaCamGraphService: CamGraphService,
     private noctuaCamShapesService: NoctuaShapesService) {
@@ -68,6 +69,8 @@ export class CamGraphComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         self.cam = cam;
         self.noctuaCamGraphService.cam = self.cam;
+
+        this.camService.updateMFProperties(cam);
         if (cam.operation !== CamOperation.ADD_ACTIVITY) {
           self.noctuaCamGraphService.addToCanvas(self.cam, this.noctuaGraphEditorService.selectedGraphLayoutDetail.id);
         }

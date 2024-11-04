@@ -399,6 +399,8 @@ export class NoctuaFormConfigService {
       }
     }
 
+    if (!annotationActivity.goterm) return null
+
     const edgeId = this.findEdge(gpToTermEdgeId);
     const inverseEdgeId = annotationActivity.findEdgeByCriteria(criteria);
     const inverseEdge = this.findEdge(inverseEdgeId);

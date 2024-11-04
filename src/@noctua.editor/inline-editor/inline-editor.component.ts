@@ -28,6 +28,7 @@ export class NoctuaInlineEditorComponent implements OnInit, OnDestroy {
     @Input() cam: Cam;
     @Input() activity: Activity;
     @Input() annotationActivity: AnnotationActivity;
+    @Input() autocompleteCategory;
     @Input() entity: ActivityNode;
     @Input() category: EditorCategory;
     @Input() evidenceIndex = 0;
@@ -62,6 +63,7 @@ export class NoctuaInlineEditorComponent implements OnInit, OnDestroy {
             //for Standard Editor
             editorType: this.editorType,
             annotationActivity: this.annotationActivity,
+            autocompleteCategory: this.autocompleteCategory
         };
 
         if (this.editorType === EditorType.DEFAULT) {
