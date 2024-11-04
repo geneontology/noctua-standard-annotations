@@ -19,6 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { finalize, map, mergeMap } from 'rxjs/operators';
 import { noctuaFormConfig } from './../noctua-form-config';
 import { DataGeneratorUtils } from './../data/data-generator-utils';
+import { DataUtils } from '@noctua.form/data/config/data-utils';
 
 declare const require: any;
 
@@ -191,12 +192,18 @@ export class CamService {
 
   addCamAnnotationActivities(cam: Cam) {
 
-    cam.annotationActivities = cam.activities.map((activity: Activity) => {
+    const annotationActivities = [];
+
+    for (const activity of cam.activities) {
       const annotationActivity = this.noctuaFormConfigService.activityToAnnotation(activity);
 
-      annotationActivity.activity = activity;
-      return annotationActivity
-    });
+      if (annotationActivity) {
+        annotationActivity.activity = activity;
+        annotationActivities.push(annotationActivity);
+      }
+    }
+
+    cam.annotationActivities = annotationActivities;
 
     // For data generation purposes e2e testing
 
@@ -561,6 +568,25 @@ export class CamService {
       cam.updateActivityDisplayNumber();
     });
 
+  }
+
+
+
+  updateMFProperties(cam: Cam) {
+    cam.activities.forEach((activity: Activity) => {
+      if (activity.mfNode?.term.id) {
+        this.noctuaLookupService.getTermDetail(activity.mfNode.term.id)
+          .subscribe((res) => {
+            if (!Array.isArray(res) && res.neighborhoodGraphJson) {
+              const parsed = JSON.parse(res.neighborhoodGraphJson);
+              console.log(parsed);
+              const objs = DataUtils.processHasParticipants(parsed);
+              activity.mfNode.chemicalParticipants = objs;
+              console.log(objs);
+            }
+          });
+      }
+    });
   }
 
   private _compareDateReviewAdded(a: Cam, b: Cam): number {

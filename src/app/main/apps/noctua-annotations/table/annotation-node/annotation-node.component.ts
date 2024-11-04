@@ -156,6 +156,24 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
     this.inlineEditorService.open(this.currentMenuEvent.target, { data });
   }
 
+  toggleIsComplement() {
+    const self = this;
+
+    const success = () => {
+      this.annotationFormService.toggleIsComplement(self.annotationActivity)
+        .pipe(takeUntil(self._unsubscribeAll))
+        .subscribe(() => {
+          self.zone.run(() => {
+            self.noctuaFormDialogService.openInfoToast('NOT Qualifier successfully updated.', 'OK');
+            self.camService.getCam(this.cam.id);
+          });
+        });
+    };
+    this.confirmDialogService.openConfirmDialog('Confirm Update?',
+      'You are about to update NOT Qualifier.',
+      success);
+  }
+
   updateCurrentMenuEvent(event) {
     this.currentMenuEvent = event;
   }

@@ -98,4 +98,22 @@ export class DataUtils {
     return predicates;
   }
 
+
+  public static processHasParticipants(data): any[] {
+    const nodeMap = new Map(data.nodes.map(node => [node.id, node.lbl]));
+
+    return data.edges
+      .filter(edge => edge.pred === "RO:0000057")
+      .map(edge => ({
+        id: edge.obj,
+        label: nodeMap.get(edge.obj) || ''
+      }));
+  }
+
+  public static findCommonItems(itemsA, itemsB) {
+    const idSetB = new Set(itemsB.map(item => item.id));
+
+    return itemsA.filter(item => idSetB.has(item.id));
+  }
+
 }

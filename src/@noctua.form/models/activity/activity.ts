@@ -4,7 +4,6 @@ import { noctuaFormConfig } from './../../noctua-form-config';
 import { SaeGraph } from './sae-graph';
 import { ActivityError, ErrorLevel, ErrorType } from './parser/activity-error';
 import { ActivityNode, ActivityNodeType, compareNodeWeight } from './activity-node';
-import * as EntityDefinition from './../../data/config/entity-definition';
 import { Evidence } from './evidence';
 import { Triple } from './triple';
 import { Entity } from './entity';

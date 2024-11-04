@@ -10,4 +10,5 @@ export interface GOlrResponse {
   rootTypes: Entity[];
   xref: string;
   notAnnotatable: boolean;
+  neighborhoodGraphJson: string;
 }

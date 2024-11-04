@@ -2,6 +2,7 @@ import { PositionStrategy } from "@angular/cdk/overlay";
 import { Cam, Activity, Entity, ActivityNode, AnnotationActivity } from "@noctua.form";
 
 export enum EditorCategory {
+  GP = 'GP',
   RELATIONSHIP = 'RELATIONSHIP',
   TERM = 'TERM',
   EVIDENCE = 'EVIDENCE',
@@ -37,6 +38,7 @@ export interface EditorConfig extends EditorDropdownDialogConfig {
   annotationActivity?: AnnotationActivity;
   entity?: ActivityNode;
   category: EditorCategory;
+  autocompleteCategory?: any;
   evidenceIndex?: any;
   relationshipChoices?: any;
 }
