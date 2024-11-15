@@ -202,17 +202,19 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
     switch (category) {
       case EditorCategory.GP_TO_TERM_EDGE:
         this.displaySection.relationship = true;
-        this.relationLabel = 'GP To Term Relation';
+        this.relationLabel = this.label = 'GP To Term Relation';
         this.dynamicForm.get(FormStructureKeys.RELATION).setValue(this.annotationActivity.gpToTermEdge.inverseEntity);
         this.relationshipChoices = this.annotationActivity.gpToTermEdges;
         break;
       case EditorCategory.GP:
+        this.label = 'Gene Product';
         this.displaySection.term = true;
         this.autocompleteType = AutocompleteType.TERM
         this.dynamicForm.get(FormStructureKeys.TERM).setValue(this.annotationActivity.gp.term.label);
         this.autocompleteCategory = this.annotationActivity?.gp.category;
         break;
       case EditorCategory.TERM:
+        this.label = 'GO Term';
         this.displaySection.term = true;
         this.autocompleteType = AutocompleteType.TERM
         this.dynamicForm.get(FormStructureKeys.TERM).setValue(this.annotationActivity.goterm.term.label);
