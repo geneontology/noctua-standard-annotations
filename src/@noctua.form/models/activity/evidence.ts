@@ -262,6 +262,10 @@ export class Evidence {
   }
 
   public static formatWithFrom(value: string) {
+    if (!value) {
+      return value;
+    }
+
     const formatted = value.replace(/\s+/g, "");
     return formatted;
   }

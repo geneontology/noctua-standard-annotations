@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, finalize, forkJoin, from, Observable, of, throwError } from 'rxjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { NoctuaFormConfigService } from './config/noctua-form-config.service';
+import { ActivityNode } from './../models/activity/activity-node';
 import { Activity, ActivityType } from './../models/activity/activity';
 import { BbopGraphService } from './bbop-graph.service';
 import { CamService } from './cam.service';
@@ -211,9 +212,26 @@ export class NoctuaAnnotationFormService {
     return forkJoin(this.bbopGraphService.addActivity(this.cam, saveData.nodes, saveData.triples, saveData.title));
   }
 
+  editAnnotationNode(
+    cam: Cam,
+    oldNode: ActivityNode,
+    newNodeId: string
+  ): Observable<any> {
 
+    const actionPromise = this.bbopGraphService.editNode(cam, oldNode, newNodeId);
 
-  editAnnotation(
+    return from(actionPromise).pipe(
+      finalize(() => {
+        this.cam.loading.status = false;
+      }),
+      catchError((error) => {
+        console.error('Error editing annotation:', error);
+        return of(null);
+      })
+    )
+  }
+
+  editEvidence(
     editorCategory: EditorCategory,
     cam: Cam,
     annotationActivity: AnnotationActivity,
@@ -273,6 +291,20 @@ export class NoctuaAnnotationFormService {
       }),
       catchError((error) => {
         console.error('Error editing annotation:', error);
+        return of(null);
+      })
+    )
+  }
+
+  toggleIsComplement(annotationActivity: AnnotationActivity): Observable<any> {
+    const cam = this.cam;
+
+    return from(this.bbopGraphService.toggleIsComplement(cam, annotationActivity.goterm)).pipe(
+      finalize(() => {
+        this.cam.loading.status = false;
+      }),
+      catchError((error) => {
+        console.error('Error updating NOT Qualifier:', error);
         return of(null);
       })
     )

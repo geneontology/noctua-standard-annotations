@@ -515,6 +515,7 @@ export class NoctuaLookupService {
         replacedBy: item.replaced_by,
         rootTypes: self._makeEntitiesArray(item.isa_closure, item.isa_closure_label),
         xref: xref,
+        neighborhoodGraphJson: item.neighborhood_graph_json,
         notAnnotatable: !item.subset?.includes('gocheck_do_not_annotate')
       } as GOlrResponse;
     });
