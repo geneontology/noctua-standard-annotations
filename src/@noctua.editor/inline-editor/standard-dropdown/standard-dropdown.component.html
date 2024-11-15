@@ -1,7 +1,7 @@
 <div name="dynamicForm" [formGroup]="dynamicForm" fxLayout="row" fxLayoutAlign="start center" class="w-full">
   @if (displaySection.relationship) {
   <div class="p-1 w-[250px]">
-    <mat-form-field appearance="outline" class="noc-sm w-full" [attr.data-cy]="'form-input-relation'">
+    <mat-form-field appearance="outline" class="noc-sm w-full" [attr.data-pw]="'form-input-relation'">
       <mat-label>{{relationLabel}}</mat-label>
       <mat-select class="" panelClass="noc-term-autocomplete" placeholder="" formControlName="relation"
         [compareWith]="compareFn">

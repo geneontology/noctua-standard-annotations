@@ -1,5 +1,5 @@
 <mat-form-field class="noc-sm w-full noc-white-mat-field" [appearance]="appearance"
-  [attr.data-cy]="'form-input-' + control">
+  [attr.data-pw]="'form-input-' + formControlName">
   <mat-label>{{label}}</mat-label>
   <textarea type="text" matInput [formControl]="control" [matAutocomplete]="termAuto" row="2" (focus)="onFocus()">
   </textarea>

@@ -20,19 +20,19 @@
       <div class="noc-section-body p-8 w-full" fxLayout="column" fxLayoutAlign="start center">
         <div class="noc-create w-full" fxLayout="row wrap" fxLayoutAlign="center center">
           <button mat-raised-button (click)="createModel(WorkbenchId.STANDARD_ANNOTATIONS)" fxFlex="45"
-            class="noc-rounded-button m-1" [attr.data-cy]="'create-standard-annotations-button'">
+            class="noc-rounded-button m-1" [attr.data-pw]="'create-standard-annotations-button'">
             STANDARD ANNOTATIONS EDITOR
           </button>
           <button mat-raised-button (click)="createModel(WorkbenchId.VISUAL_PATHWAY_EDITOR)" fxFlex="45"
-            class="noc-rounded-button m-1" [attr.data-cy]="'create-pathway-button'">
+            class="noc-rounded-button m-1" [attr.data-pw]="'create-pathway-button'">
             PATHWAY EDITOR
           </button>
           <button mat-raised-button (click)="createModel(WorkbenchId.FORM)" fxFlex="45" class="noc-rounded-button m-1"
-            [attr.data-cy]="'create-form-button'">
+            [attr.data-pw]="'create-form-button'">
             FORM EDITOR
           </button>
           <button mat-raised-button (click)="createModel(WorkbenchId.GRAPH_EDITOR)" fxFlex="45"
-            class="noc-rounded-button m-1" [attr.data-cy]="'create-graph-button'">
+            class="noc-rounded-button m-1" [attr.data-pw]="'create-graph-button'">
             GRAPH EDITOR
           </button>
         </div>

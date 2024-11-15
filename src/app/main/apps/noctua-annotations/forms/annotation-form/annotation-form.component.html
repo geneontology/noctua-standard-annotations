@@ -13,7 +13,7 @@
         <div class="p-1 " fxFlex="30" fxLayout="column" fxLayoutAlign="start stretch">
           <mat-checkbox class="noc-qualifier-cbx" formControlName="isComplement">NOT</mat-checkbox>
           <mat-form-field appearance="fill" class="noc-sm w-full noc-white-mat-field"
-            [attr.data-cy]="'form-input-gpterm-relation'">
+            [attr.data-pw]="'form-input-gpterm-relation'">
             <mat-label>GP to Term Relation</mat-label>
             <mat-select class="" panelClass="noc-term-autocomplete" placeholder="" formControlName="gpToTermEdge"
               [compareWith]="compareFn">
@@ -68,16 +68,28 @@
         </div>
         <span fxFlex></span>
       </div>
-      <div class="p-0 px-3" fxLayout="row" fxLayoutAlign="start center">
-        <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="evidenceCode"
-          [autocompleteType]="AutocompleteType.EVIDENCE_CODE" [label]="annotationActivity?.evidenceCode.label"
-          [category]="annotationActivity?.evidenceCode.category"></noc-term-autocomplete>
-        <noc-term-autocomplete fxFlex="30" class="p-1" formControlName="reference"
-          [autocompleteType]="AutocompleteType.REFERENCE"
-          [label]="annotationActivity?.reference.label"></noc-term-autocomplete>
-        <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="withFrom"
-          [label]="annotationActivity?.with.label" [autocompleteType]="AutocompleteType.WITH"></noc-term-autocomplete>
-        <div fxFlex="40px"></div>
+      <div formArrayName="evidences" class="px-3 pt-1" fxLayout="column" fxLayoutAlign="start center">
+        <div *ngFor="let item of evidences.controls; let i=index" [formGroupName]="i" class="w-full">
+          <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="evidenceCode"
+            [autocompleteType]="AutocompleteType.EVIDENCE_CODE" [label]="annotationActivity?.evidenceCode.label"
+            [category]="annotationActivity?.evidenceCode.category"></noc-term-autocomplete>
+          <noc-term-autocomplete fxFlex="30" class="p-1" formControlName="reference"
+            [autocompleteType]="AutocompleteType.REFERENCE"
+            [label]="annotationActivity?.reference.label"></noc-term-autocomplete>
+          <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="withFrom"
+            [label]="annotationActivity?.with.label" [autocompleteType]="AutocompleteType.WITH"></noc-term-autocomplete>
+          <div fxFlex="40px"></div>
+          @if(evidences.length>1) {
+          <button mat-icon-button (click)="deleteEvidence(i)" class="text-warn">
+            <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
+          </button>
+          }
+        </div>
+      </div>
+      <div class="pl-4 py-4">
+        <a (click)="addEvidence()" class="cursor-pointer" color="primary">
+          Add Another Evidence
+        </a>
       </div>
       <div class="noc-section-header pr-4" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
@@ -93,7 +105,7 @@
         <div *ngFor="let item of annotationExtensions.controls; let i=index" [formGroupName]="i" class="w-full">
           <div class="p-1" fxFlex="35" fxLayout="column" fxLayoutAlign="start stretch">
             <mat-form-field appearance="fill" class="noc-sm w-full noc-white-mat-field"
-              [attr.data-cy]="'form-input-extension-relation'">
+              [attr.data-pw]="'form-input-extension-relation'">
               <mat-label>Extension Relation</mat-label>
               <mat-select class="" panelClass="noc-term-autocomplete" placeholder="" formControlName="extensionEdge"
                 [compareWith]="compareFn">
@@ -177,7 +189,7 @@
         <button mat-raised-button (click)='clearForm()' color=""
           class="mr-[8px!important] noc-rounded-button">Clear</button>
         <button mat-raised-button [disabled]="hasErrors()" (click)="save()" type="submit"
-          class="noc-rounded-button noc-primary-button" [attr.data-cy]="'save-annotation-button'">Save</button>
+          class="noc-rounded-button noc-primary-button" [attr.data-pw]="'save-annotation-button'">Save</button>
       </div>
     </div>
   </div>

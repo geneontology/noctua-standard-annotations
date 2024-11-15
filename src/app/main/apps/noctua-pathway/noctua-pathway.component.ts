@@ -8,6 +8,7 @@ import {
   NoctuaFormConfigService,
   NoctuaUserService
 } from '@geneontology/noctua-form-base'
+import { environment } from 'environments/environment';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
@@ -19,6 +20,8 @@ import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 export class NoctuaPathwayComponent implements OnInit, OnDestroy {
   cam: Cam;
   modelId: string;
+  apiUrl: string;
+
   private _unsubscribeAll: Subject<any>;
   constructor(
     private route: ActivatedRoute,
@@ -35,6 +38,7 @@ export class NoctuaPathwayComponent implements OnInit, OnDestroy {
       .subscribe(params => {
         this.modelId = params['model_id'] || null;
         const baristaToken = params['barista_token'] || null;
+        this.apiUrl = `${environment.searchApi}/stored?id=${this.modelId}`;
         this.noctuaUserService.getUser(baristaToken);
       });
 
