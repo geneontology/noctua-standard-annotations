@@ -1,10 +1,10 @@
 <mat-form-field class="noc-sm w-full noc-white-mat-field" [appearance]="appearance"
-  [attr.data-cy]="'form-input-' + control">
+  [attr.data-pw]="'form-input-' + formControlName">
   <mat-label>{{label}}</mat-label>
   <textarea type="text" matInput [formControl]="control" [matAutocomplete]="termAuto" row="2" (focus)="onFocus()">
   </textarea>
   @if (autocompleteType === AutocompleteType.REFERENCE) {
-  <button mat-button matSuffix (click)="openAddReference($event)" class="noc-evidence-db-trigger">
+  <button mat-button matSuffix (click)="openAddReference($event)" class="noc-evidence-db-trigger" [attr.tabindex]="-1">
     <fa-icon [icon]="['fas', 'file-medical']"></fa-icon>
   </button>
   }

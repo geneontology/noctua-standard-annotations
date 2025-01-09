@@ -427,8 +427,6 @@ export class NoctuaFormConfigService {
     return annotationActivity
   }
 
-
-
   private _getAnnotationExtensions(activity: Activity, id: string): AnnotationExtension[] {
 
     const extension: AnnotationExtension[] = []
@@ -534,7 +532,6 @@ export class NoctuaFormConfigService {
       }
       return acc;
     }, []);
-
   }
 
 
@@ -614,14 +611,6 @@ export class NoctuaFormConfigService {
     const rootNode = find(noctuaFormConfig.rootNode, { id: id });
 
     return rootNode ? rootNode.aspect : '';
-  }
-
-  getModelId(url: string) {
-    return 'gomodel:' + url.substr(url.lastIndexOf('/') + 1);
-  }
-
-  getIndividalId(url: string) {
-    return 'gomodel:' + url.substr(url.lastIndexOf('/') + 2);
   }
 
   private _parameterize = (params) => {

@@ -16,7 +16,8 @@ import {
   BbopGraphService,
   AnnotationActivity,
   AnnotationExtension,
-  NoctuaAnnotationFormService
+  NoctuaAnnotationFormService,
+  Gene
 } from '@geneontology/noctua-form-base';
 
 import {
@@ -36,6 +37,7 @@ import { NoctuaFormDialogService } from 'app/main/apps/noctua-form/services/dial
 import { SettingsOptions } from '@noctua.common/models/graph-settings';
 import { RightPanel } from '@noctua.common/models/menu-panels';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
+import { NoctuaAnnotationsDialogService } from '../../services/dialog.service';
 
 @Component({
   selector: 'noc-annotation-node',
@@ -72,6 +74,7 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
     public camService: CamService,
     private bbopGraphService: BbopGraphService,
     public annotationFormService: NoctuaAnnotationFormService,
+    private noctuaAnnotationsDialogService: NoctuaAnnotationsDialogService,
     private confirmDialogService: NoctuaConfirmDialogService,
     public noctuaUserService: NoctuaUserService,
     public noctuaFormConfigService: NoctuaFormConfigService,
@@ -176,6 +179,23 @@ export class AnnotationNodeComponent implements OnInit, OnDestroy {
 
   updateCurrentMenuEvent(event) {
     this.currentMenuEvent = event;
+  }
+
+  addGenes() {
+
+    const success = (genes: Gene[]) => {
+      const geneIds = genes.map(gene => gene.id);
+
+      this.annotationFormService.saveGPsAnnotation(this.annotationActivity, geneIds)
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe(() => {
+          this.noctuaAnnotationsDialogService.openInfoToast(`${geneIds.length} Annotation(s) successfully created.`, 'OK');
+        });
+    };
+
+    const data = { annotationActivity: this.annotationActivity };
+    this.noctuaAnnotationsDialogService.openUploadGenesDialog(data, success);
+
   }
 
   deleteAnnotation() {

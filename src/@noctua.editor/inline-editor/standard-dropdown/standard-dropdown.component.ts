@@ -28,11 +28,6 @@ enum FormStructureKeys {
   TERM = 'term'
 }
 
-const RELATION_NOT_EDITABLE = [
-  noctuaFormConfig.edge.isActiveIn.id,
-  noctuaFormConfig.edge.locatedIn.id,
-]
-
 @Component({
   selector: 'noc-standard-dropdown',
   templateUrl: './standard-dropdown.component.html',
@@ -168,13 +163,7 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
         break;
 
       case EditorCategory.GP_TO_TERM_EDGE:
-
-        if (RELATION_NOT_EDITABLE.includes(relationId)) {
-          const relationLabel = this.noctuaFormConfigService.findEdge(relationId)?.label;
-          this.noctuaFormDialogService.openInfoToast(`Editing "${relationLabel}" is not currently supported. Please delete the annotation and add the new relation instead.`, 'OK');
-
-          this.close();
-        } else if (relationId !== this.annotationActivity.gpToTermEdge.inverseEntity.id) {
+        if (relationId !== this.annotationActivity.gpToTermEdge.inverseEntity.id) {
           this.annotationFormService.editRelation(this.category, this.cam, this.annotationActivity, relationId)
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(handleResponse);
@@ -207,12 +196,14 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
         this.relationshipChoices = this.annotationActivity.gpToTermEdges;
         break;
       case EditorCategory.GP:
+        this.label = 'Gene Product';
         this.displaySection.term = true;
         this.autocompleteType = AutocompleteType.TERM
         this.dynamicForm.get(FormStructureKeys.TERM).setValue(this.annotationActivity.gp.term.label);
         this.autocompleteCategory = this.annotationActivity?.gp.category;
         break;
       case EditorCategory.TERM:
+        this.label = 'GO Term';
         this.displaySection.term = true;
         this.autocompleteType = AutocompleteType.TERM
         this.dynamicForm.get(FormStructureKeys.TERM).setValue(this.annotationActivity.goterm.term.label);
@@ -269,7 +260,6 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
         distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)))
       .subscribe({
         next: (value) => {
-          console.log('Annotation form group processed:', value);
           const objectRootTypes = value.term?.rootTypes ?? [];
 
           const { edges, range } = this.annotationFormService.getEdgesRange(this.annotationActivity.goterm.rootTypes,
