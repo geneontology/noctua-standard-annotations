@@ -7,13 +7,12 @@ import { find, filter, each, uniqWith, difference } from 'lodash';
 import { noctuaFormConfig } from './../noctua-form-config';
 import { Article } from './../models/article';
 import { compareEvidenceEvidence, compareEvidenceReference, compareEvidenceWith, Evidence, EvidenceExt } from './../models/activity/evidence';
-import { ActivityNode, ActivityNodeType, GoCategory } from './../models/activity/activity-node';
+import { ActivityNode, GoCategory } from './../models/activity/activity-node';
 import { Entity } from './../models/activity/entity';
 import { Predicate } from './../models/activity/predicate';
 import { NoctuaUserService } from './user.service';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
-import * as EntityDefinition from './../data/config/entity-definition';
 import * as ShapeUtils from './../data/config/shape-utils';
 import { GOlrResponse } from './../models/golr';
 import { AutocompleteType } from './../models/autocomplete';
@@ -154,34 +153,11 @@ export class NoctuaLookupService {
   }
 
   withPreLookup(): string[] {
-
     const filtered = uniqWith(this.evidenceList, compareEvidenceWith);
     return filtered.map((evidence: Evidence) => {
       return evidence.with
     });
   }
-
-  /*  evidenceLookup(searchText: string, category: 'reference' | 'with'): string[] {
- 
-     const filterValue = searchText.toLowerCase();
-     let filteredResults: string[] = [];
- 
-     switch (category) {
-       case 'reference':
-         filteredResults = this.referencePreLookup().filter(
-           option => option ? option.toLowerCase().includes(filterValue) : false
-         );
-         break;
-       case 'with':
-         filteredResults = this.withPreLookup().filter(
-           option => option ? option.toLowerCase().includes(filterValue) : false
-         );
-         break;
-     }
- 
-     return filteredResults;
-   } */
-
 
   companionLookup(gp, aspect, extraParams) {
     const self = this;
@@ -418,6 +394,53 @@ export class NoctuaLookupService {
     );
   }
 
+  getGenesDetails(ids: string[]) {
+
+    const queryString = ids.map(id => `annotation_class:"${id}"`).join(' OR ');
+
+    const requestParams = {
+      q: queryString,
+      defType: 'edismax',
+      indent: 'on',
+      qt: 'standard',
+      wt: 'json',
+      rows: ids.length.toString(),
+      start: '0',
+      fl: 'annotation_class,annotation_class_label,score',
+      'facet': 'true',
+      'facet.mincount': '1',
+      'facet.sort': 'count',
+      'facet.limit': '25',
+      'json.nl': 'arrarr',
+      packet: '1',
+      callback_type: 'search',
+      'facet.field': [
+        'source',
+        'subset',
+        'idspace',
+        'is_obsolete'
+      ],
+      fq: [
+        'document_category:"ontology_class"',
+      ],
+    };
+
+    const params = new HttpParams({
+      fromObject: requestParams
+    });
+
+    const url = this.golrURLBase + params.toString();
+
+    return this.httpClient.jsonp(url, 'json.wrf').pipe(
+      map(response => this._lookupMap(response)),
+      map(response => {
+        const exactMatches = response.filter(result =>
+          ids.includes(result.id)
+        );
+        return exactMatches;
+      })
+    );
+  }
 
   getTermURL(id: string) {
     const self = this;

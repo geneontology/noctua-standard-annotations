@@ -111,14 +111,14 @@
         </button>
         }
         <mat-menu #userMenu="matMenu" class="">
-          <a mat-button (click)="logout()" class="red-500-fg w-full" [attr.data-cy]="'noc-logout-button'">
+          <a mat-button (click)="logout()" class="red-500-fg w-full" [attr.data-pw]="'noc-logout-button'">
             Logout
           </a>
         </mat-menu>
         @if (!noctuaUserService.user) {
         <div>
           <a mat-button href="{{noctuaConfigService.loginUrl}}" class="noc-login-button"
-            [attr.data-cy]="'noc-login-button'">
+            [attr.data-pw]="'noc-login-button'">
             Login
           </a>
         </div>

@@ -100,6 +100,14 @@ export class BbopGraphService {
       }
     };
 
+    const meta = (resp) => {
+      console.log('Resp meta', resp)
+      console.log(resp.has_undo_p())
+      console.log(resp.has_redo_p())
+
+    }
+
+
     const shieldsUp = () => { };
     const shieldsDown = () => { };
 
@@ -108,8 +116,9 @@ export class BbopGraphService {
     manager.register('manager_error', managerError, 10);
     manager.register('warning', warning, 10);
     manager.register('error', error, 10);
+    manager.register('meta', meta, 10);
 
-    manager.use_reasoner_p(useReasoner);
+    //manager.use_reasoner_p(useReasoner);
 
     return manager;
   }
@@ -970,6 +979,37 @@ export class BbopGraphService {
       payload = payload + '&provided-by=' + self.noctuaUserService.user.group.id;
     }
     return this.httpClient.post(`${baristaUrl}/api/${globalMinervaDefinitionName}/m3BatchPrivileged`, payload, { headers });
+  }
+
+  undoModel(cam: Cam) {
+    const self = this;
+    const reqs = new minerva_requests.request_set(self.noctuaUserService.baristaToken, cam.id);
+
+    reqs.undo_last_model_batch();
+
+    if (self.noctuaUserService.user && self.noctuaUserService.user.groups.length > 0) {
+      //reqs.use_groups([self.noctuaUserService.user.group.id]);
+    }
+    //reqs.store_model(cam.id);
+
+    console.log('undoModel', reqs);
+    console.log('aaaa', cam.manager.get_model_undo_redo(cam.id));
+
+    return cam.manager.request_with(reqs);
+  }
+
+  redoModel(cam: Cam) {
+    const self = this;
+    const reqs = new minerva_requests.request_set(self.noctuaUserService.baristaToken, cam.id);
+
+    reqs.redo_last_model_batch();
+
+    if (self.noctuaUserService.user && self.noctuaUserService.user.groups.length > 0) {
+      reqs.use_groups([self.noctuaUserService.user.group.id]);
+    }
+    reqs.store_model(cam.id);
+
+    return cam.manager.request_with(reqs);
   }
 
   resetModel(cam: Cam) {

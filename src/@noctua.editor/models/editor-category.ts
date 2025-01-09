@@ -1,5 +1,5 @@
 import { PositionStrategy } from "@angular/cdk/overlay";
-import { Cam, Activity, Entity, ActivityNode, AnnotationActivity } from "@noctua.form";
+import { Cam, Activity, ActivityNode, AnnotationActivity } from "@noctua.form";
 
 export enum EditorCategory {
   GP = 'GP',

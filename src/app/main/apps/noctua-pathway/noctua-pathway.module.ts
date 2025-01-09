@@ -21,6 +21,7 @@ import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { NoctuaSharedModule } from '@noctua/shared.module';
+import { NoctuaFormModule } from '../noctua-form/noctua-form.module';
 
 
 const routes = [
@@ -55,6 +56,7 @@ const routes = [
     MatSnackBarModule,
     MatTableModule,
     MatTooltipModule,
+    NoctuaFormModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
