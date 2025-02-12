@@ -1,10 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
 import {
   ActivityType,
   BbopGraphService,
   Cam,
+  CamOperation,
   CamService,
   Contributor,
   LeftPanel,
@@ -24,7 +25,7 @@ import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
   templateUrl: './noctua-pathway.component.html',
   styleUrls: ['./noctua-pathway.component.scss']
 })
-export class NoctuaPathwayComponent implements OnInit, OnDestroy {
+export class NoctuaPathwayComponent implements OnInit, AfterViewInit, OnDestroy {
   cam: Cam;
   modelId: string;
   apiUrl: string;
@@ -34,6 +35,7 @@ export class NoctuaPathwayComponent implements OnInit, OnDestroy {
   MiddlePanel = MiddlePanel;
   RightPanel = RightPanel;
 
+  @ViewChild('gocamViz') gocamViz: ElementRef;
 
   @ViewChild('leftDrawer', { static: true })
   leftDrawer: MatDrawer;
@@ -74,30 +76,36 @@ export class NoctuaPathwayComponent implements OnInit, OnDestroy {
 
         this.noctuaFormConfigService.setupUrls();
         this.noctuaFormConfigService.setUniversalUrls();
-        this.loadCam(this.modelId);
+
+        this.cam = this.camService.getCam(this.modelId, CamOperation.VIEW_PATHWAY);
       });
   }
 
   ngOnInit(): void {
     this.noctuaCommonMenuService.setLeftDrawer(this.leftDrawer);
     this.noctuaCommonMenuService.setRightDrawer(this.rightDrawer);
-    this._bbopGraphService.onCamGraphChanged
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((cam: Cam) => {
-        if (!cam || cam.id !== this.cam.id) {
-          return;
-        }
-        this.cam = cam;
-      });
+
+  }
+
+  ngAfterViewInit() {
+    if (this.gocamViz?.nativeElement) {
+      const vizElement = this.gocamViz.nativeElement;
+      // Call setModelData when your model data is ready
+      this._bbopGraphService.onCamGraphChanged
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((cam: Cam) => {
+          if (!cam || cam.id !== this.cam.id) return;
+          this.cam = cam;
+
+          console.log('cam', cam.response?._data);
+          vizElement.setModelData(cam.response?._data);
+        });
+    }
   }
 
   ngOnDestroy(): void {
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
-  }
-
-  loadCam(modelId) {
-    this.cam = this.camService.getCam(modelId);
   }
 
 }

@@ -17,10 +17,12 @@
             <div class="flex items-center gap-4 w-full">
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-200 ">1
               </div>
-              <p class="mt-1 text-[10px]">Enter gene IDs in left textbox one per line eg UniProtKB:Q9P258</p>
+              <p class="mt-1 text-[10px]">Enter gene IDs (max {{maxGenes}}) e.g. UniProtKB:Q9P258 WB:WBGene0000009.
+                Supports: one
+                per line, comma-separated, or JSON format</p>
             </div>
             <div class="flex items-center gap-4 w-full">
-              <div class="flex h-10 w-10 shrink-0 items-center rounded-full bg-green-200">2
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-200">2
               </div>
               <p class="mt-1 text-[10px]">Click "Load Genes" to see matches (Found genes, Partial matches, Not found)
                 in right panel tabs</p>
@@ -33,9 +35,10 @@
             </div>
           </div>
           <mat-form-field appearance="outline" class="w-full flex-grow noc-genes-textarea">
-            <mat-label>Gene Ids</mat-label>
-            <textarea matInput formControlName="geneIds" placeholder="Enter Gene IDs eg UniProtKB:Q9P258"
-              class="w-full h-full"></textarea>
+            <mat-label>Gene Ids (max {{maxGenes}}) </mat-label>
+            <textarea matInput formControlName="geneIds"
+              placeholder="Enter Gene IDs (eg: UniProtKB:Q9P258, WB:WBGene0000009)"
+              class="w-full h-full !overflow-y-auto"></textarea>
           </mat-form-field>
 
           <button (click)="loadGenes()" mat-raised-button color="" class="mt-4 flex items-center justify-center gap-2">
@@ -65,14 +68,12 @@
             <!-- Matched Genes -->
             <ng-container *ngIf="activeTab === 'matched'">
               <cdk-virtual-scroll-viewport itemSize="50" class="h-full">
-                <div class="grid grid-cols-3 gap-4 p-4 bg-gray-100 font-semibold">
+                <div class="grid grid-cols-2 gap-4 p-4 bg-gray-100 font-semibold">
                   <div>ID</div>
-                  <div>Symbol</div>
                   <div>Label</div>
                 </div>
-                <div *cdkVirtualFor="let gene of genes" class="grid grid-cols-3 gap-4 p-4 hover:bg-gray-50 border-b">
+                <div *cdkVirtualFor="let gene of genes" class="grid grid-cols-2 gap-4 p-4 hover:bg-gray-50 border-b">
                   <div>{{gene.id}}</div>
-                  <div>{{gene.geneSymbol}}</div>
                   <div>{{gene.label}}</div>
                 </div>
               </cdk-virtual-scroll-viewport>
@@ -81,15 +82,13 @@
             <!-- Unmatched Genes -->
             <ng-container *ngIf="activeTab === 'unmatched'">
               <cdk-virtual-scroll-viewport itemSize="50" class="h-full">
-                <div class="grid grid-cols-3 gap-4 p-4 bg-gray-100 font-semibold">
+                <div class="grid grid-cols-2 gap-4 p-4 bg-gray-100 font-semibold">
                   <div>ID</div>
-                  <div>Symbol</div>
                   <div>Label</div>
                 </div>
                 <div *cdkVirtualFor="let gene of nonMatchingGenes"
-                  class="grid grid-cols-3 gap-4 p-4 hover:bg-gray-50 border-b">
+                  class="grid grid-cols-2 gap-4 p-4 hover:bg-gray-50 border-b">
                   <div>{{gene.id}}</div>
-                  <div>{{gene.geneSymbol}}</div>
                   <div>{{gene.label}}</div>
                 </div>
               </cdk-virtual-scroll-viewport>

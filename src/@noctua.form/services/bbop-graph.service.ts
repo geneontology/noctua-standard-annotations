@@ -183,10 +183,8 @@ export class BbopGraphService {
   }
 
   rebuild(cam: Cam, response) {
-    const self = this;
 
-    // cam.loading.status = true;
-    // cam.loading.message = 'Loading Model Entities Metadata...';
+    cam.response = response;
 
     if (cam.graph) {
       const inGraph = new bbopGraph();
@@ -202,10 +200,6 @@ export class BbopGraphService {
     cam.modified = response.data()['modified-p'];
     cam.isReasoned = response['is-reasoned'];
 
-    if (cam.isReasoned) {
-
-    }
-
     const titleAnnotations = cam.graph.get_annotations_by_key('title');
     const commentAnnotations = cam.graph.get_annotations_by_key('comment');
     const stateAnnotations = cam.graph.get_annotations_by_key('state');
@@ -213,8 +207,8 @@ export class BbopGraphService {
     const groupAnnotations = cam.graph.get_annotations_by_key('providedBy');
     const contributorAnnotations = cam.graph.get_annotations_by_key('contributor');
 
-    cam.contributors = self.noctuaUserService.getContributorsFromAnnotations(contributorAnnotations);
-    cam.groups = self.noctuaUserService.getGroupsFromAnnotations(groupAnnotations);
+    cam.contributors = this.noctuaUserService.getContributorsFromAnnotations(contributorAnnotations);
+    cam.groups = this.noctuaUserService.getGroupsFromAnnotations(groupAnnotations);
 
     if (dateAnnotations.length > 0) {
       cam.date = dateAnnotations[0].value();
@@ -229,11 +223,16 @@ export class BbopGraphService {
     })
 
     if (stateAnnotations.length > 0) {
-      cam.state = self.noctuaFormConfigService.findModelState(stateAnnotations[0].value());
+      cam.state = this.noctuaFormConfigService.findModelState(stateAnnotations[0].value());
     }
 
-    self.loadCam(cam);
-    self.loadViolations(cam, response.data()['validation-results'])
+    if (cam.operation === CamOperation.VIEW_PATHWAY) {
+      this.onCamGraphChanged.next(cam);
+      cam.loading.status = false;
+      return
+    }
+    this.loadCam(cam);
+    this.loadViolations(cam, response.data()['validation-results'])
     cam.loading.status = false;
   }
 
@@ -292,23 +291,22 @@ export class BbopGraphService {
   }
 
   loadCam(cam: Cam, publish = true) {
-    const self = this;
-    const activities = self.graphToActivities(cam.graph);
+    const activities = this.graphToActivities(cam.graph);
 
     if (environment.isGraph) {
-      const molecules = self.graphToMolecules(cam.graph);
+      const molecules = this.graphToMolecules(cam.graph);
 
       activities.push(...molecules);
 
       if (cam.operation === CamOperation.ADD_ACTIVITY) {
-        const activity = self.getAddedActivity(activities, cam.activities);
-        self.onActivityAdded.next(activity);
+        const activity = this.getAddedActivity(activities, cam.activities);
+        this.onActivityAdded.next(activity);
       }
 
       cam.activities = activities;
       cam.updateProperties()
-      cam.causalRelations = self.getCausalRelations(cam);
-      self.getActivityLocations(cam)
+      cam.causalRelations = this.getCausalRelations(cam);
+      this.getActivityLocations(cam)
     } else {
       cam.activities = activities;
       cam.updateProperties()
@@ -320,7 +318,7 @@ export class BbopGraphService {
     cam.operation = CamOperation.NONE;
 
     if (publish) {
-      self.onCamGraphChanged.next(cam);
+      this.onCamGraphChanged.next(cam);
     }
   }
 

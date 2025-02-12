@@ -9,9 +9,9 @@
     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="p-0 px-3 pt-1" fxLayout="row" fxLayoutAlign="start end">
         <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="gp" [label]="annotationActivity?.gp.label"
-          [category]="annotationActivity?.gp.category" [attr.tabindex]="1"></noc-term-autocomplete>
+          [category]="annotationActivity?.gp.category"></noc-term-autocomplete>
         <div class="p-1 " fxFlex="30" fxLayout="column" fxLayoutAlign="start stretch">
-          <mat-checkbox class="noc-qualifier-cbx" formControlName="isComplement" [attr.tabindex]="-1">NOT</mat-checkbox>
+          <mat-checkbox class="noc-qualifier-cbx" formControlName="isComplement">NOT</mat-checkbox>
           <mat-form-field appearance="fill" class="noc-sm w-full noc-white-mat-field"
             [attr.data-pw]="'form-input-gpterm-relation'">
             <mat-label>GP to Term Relation</mat-label>
@@ -47,8 +47,7 @@
           [label]="annotationActivity?.goterm.label"
           [category]="annotationActivity?.goterm.category"></noc-term-autocomplete>
 
-        <button mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu"
-          [attr.tabindex]="-1">
+        <button mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu">
@@ -81,7 +80,7 @@
             [label]="annotationActivity?.with.label" [autocompleteType]="AutocompleteType.WITH"></noc-term-autocomplete>
           <div fxFlex="40px"></div>
           @if(evidences.length>1) {
-          <button mat-icon-button (click)="deleteEvidence(i)" class="text-warn" [attr.tabindex]="-1">
+          <button mat-icon-button (click)="deleteEvidence(i)" class="text-warn">
             <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
           </button>
           }
@@ -139,7 +138,7 @@
           <noc-term-autocomplete fxFlex="" class="p-1" formControlName="extensionTerm"
             [label]="annotationActivity?.extensions[i]?.extensionTerm.label"
             [category]="annotationActivity?.extensions[i]?.extensionTerm?.category"></noc-term-autocomplete>
-          <button mat-icon-button (click)="deleteExtension(i)" class="text-warn" [attr.tabindex]="-1">
+          <button mat-icon-button (click)="deleteExtension(i)" class="text-warn">
             <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
           </button>
         </div>
@@ -164,7 +163,7 @@
                 class="noc-comment-box !resize-y"></textarea>
             </mat-form-field>
           </div>
-          <button mat-icon-button (click)="deleteExtension(i)" class="text-warn" [attr.tabindex]="-1">
+          <button mat-icon-button (click)="deleteExtension(i)" class="text-warn">
             <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
           </button>
         </div>

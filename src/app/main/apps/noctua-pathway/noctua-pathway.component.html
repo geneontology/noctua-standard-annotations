@@ -35,7 +35,7 @@
       <mat-drawer-content class="w-full h-full" fxLayout="column" fxLayoutAlign="start stretch">
         @if(modelId) {
         <div class="w-full h-full p-4" fxLayout="row" fxLayoutAlign="center start">
-          <wc-gocam-viz [attr.gocam-id]="modelId" [attr.api-url]="apiUrl">
+          <wc-gocam-viz #gocamViz>
           </wc-gocam-viz>
         </div>
         }

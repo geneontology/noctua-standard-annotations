@@ -3049,9 +3049,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-sparql-query-builder
-ISC
-
 sync-request
 MIT
 Copyright (c) 2014 Forbes Lindesay
