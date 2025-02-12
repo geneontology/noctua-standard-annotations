@@ -12,65 +12,20 @@
     <span class='mr-12 text-3xl'>
       Standard Annotations <small class="text-gray-600">( {{cam.annotationActivities?.length}} )</small>
     </span>
-    <span fxFlex></span>
-    <div class="" fxLayout="row" fxLayoutAlign="start center">
-      <span class='mr-4'>
-        <strong>Sort By</strong> :
-      </span>
-      <button mat-stroked-button class="noc-rounded-button noc-action-button noc-half-button noc-r noc-xs" color=""
-        [matMenuTriggerFor]="sortByOptionMenu">
-        {{cam.annotationActivitySortBy.label }}
-        <fa-icon [icon]="['fas', 'caret-down']"></fa-icon>
-      </button>
-      <button mat-stroked-button (click)="toggleSortDirection()"
-        class="noc-rounded-button noc-action-button noc-icon noc-half-button noc-l noc-xs" color="primary">
-        @if (cam.annotationActivitySortBy.ascending) {
-        <fa-icon [icon]="['fas', 'sort-alpha-down']"></fa-icon>
-        }
-        @if (!cam.annotationActivitySortBy.ascending) {
-        <fa-icon [icon]="['fas', 'sort-alpha-down-alt']"></fa-icon>
-        }
-      </button>
-      <mat-menu #sortByOptionMenu="matMenu" class="noc-dropdown-menu">
-        @for (sortByOption of noctuaFormConfigService.annotationActivitySortField.options; track sortByOption) {
-        <button mat-menu-item class="" (click)="sortBy(sortByOption)">
-          {{sortByOption.label}}
-        </button>
-        }
-      </mat-menu>
-      <span fxFlex></span>
-    </div>
   </div>
-
-  <div class="noc-table-header w-full" fxLayout="row" fxLayoutAlign="start center">
-    <div class="noc-cell noc-gp-cell" fxFlex="">
-      Gene Product
+  <div class="noc-table-header w-full flex items-center">
+    @for (header of TABLE_HEADERS; track header) {
+    <div class="noc-cell noc-{{header.className}}" [class.flex-1]="header.flex" [class.cursor-pointer]="header.sort"
+      (click)="header.sort && sortBy({id: header.sort, label: header.label})">
+      {{header.label}}
+      @if (header.sort && cam.annotationActivitySortBy.field === header.sort) {
+      <fa-icon [icon]="['fas', cam.annotationActivitySortBy.ascending ? 'sort-down' : 'sort-up']"></fa-icon>
+      }
+      @if (header.icon) {
+      <fa-icon [icon]="['fas', header.icon]"></fa-icon>
+      }
     </div>
-    <div class="noc-cell noc-relation-cell">
-      Relationship
-    </div>
-    <div class="noc-cell noc-term-cell" fxFlex="">
-      Term
-    </div>
-    <div class="noc-cell noc-evidence-code-cell" fxFlex="">
-      Evidence
-    </div>
-    <div class="noc-cell noc-reference-cell">
-      Reference
-    </div>
-    <div class="noc-cell noc-with-cell">
-      With
-    </div>
-    <div class="noc-cell noc-extensions-cell" fxFlex="">
-      Extension
-    </div>
-    <div class="noc-cell noc-date-cell">
-      Date Modified
-    </div>
-    <div class="noc-cell noc-comments-cell">
-      <fa-icon [icon]="['fas', 'comment']"></fa-icon>
-    </div>
-    <div class="noc-cell noc-action-cell"> </div>
+    }
   </div>
   <div class="noc-table-body w-full">
     @for (annotationActivity of cam.annotationActivities; track annotationActivity) {

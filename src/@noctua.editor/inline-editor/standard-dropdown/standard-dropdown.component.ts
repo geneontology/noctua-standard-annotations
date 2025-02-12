@@ -28,11 +28,6 @@ enum FormStructureKeys {
   TERM = 'term'
 }
 
-const RELATION_NOT_EDITABLE = [
-  noctuaFormConfig.edge.isActiveIn.id,
-  noctuaFormConfig.edge.locatedIn.id,
-]
-
 @Component({
   selector: 'noc-standard-dropdown',
   templateUrl: './standard-dropdown.component.html',
@@ -168,13 +163,7 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
         break;
 
       case EditorCategory.GP_TO_TERM_EDGE:
-
-        if (RELATION_NOT_EDITABLE.includes(relationId)) {
-          const relationLabel = this.noctuaFormConfigService.findEdge(relationId)?.label;
-          this.noctuaFormDialogService.openInfoToast(`Editing "${relationLabel}" is not currently supported. Please delete the annotation and add the new relation instead.`, 'OK');
-
-          this.close();
-        } else if (relationId !== this.annotationActivity.gpToTermEdge.inverseEntity.id) {
+        if (relationId !== this.annotationActivity.gpToTermEdge.inverseEntity.id) {
           this.annotationFormService.editRelation(this.category, this.cam, this.annotationActivity, relationId)
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(handleResponse);
@@ -202,7 +191,7 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
     switch (category) {
       case EditorCategory.GP_TO_TERM_EDGE:
         this.displaySection.relationship = true;
-        this.relationLabel = this.label = 'GP To Term Relation';
+        this.relationLabel = 'GP To Term Relation';
         this.dynamicForm.get(FormStructureKeys.RELATION).setValue(this.annotationActivity.gpToTermEdge.inverseEntity);
         this.relationshipChoices = this.annotationActivity.gpToTermEdges;
         break;
@@ -271,7 +260,6 @@ export class NoctuaEditorStandardDropdownComponent implements OnInit, OnDestroy 
         distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)))
       .subscribe({
         next: (value) => {
-          console.log('Annotation form group processed:', value);
           const objectRootTypes = value.term?.rootTypes ?? [];
 
           const { edges, range } = this.annotationFormService.getEdgesRange(this.annotationActivity.goterm.rootTypes,

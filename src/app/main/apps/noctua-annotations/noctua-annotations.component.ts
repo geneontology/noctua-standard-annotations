@@ -13,7 +13,6 @@ import {
   NoctuaFormConfigService,
   NoctuaAnnotationFormService,
   CamService,
-
   noctuaFormConfig,
   MiddlePanel,
   LeftPanel,

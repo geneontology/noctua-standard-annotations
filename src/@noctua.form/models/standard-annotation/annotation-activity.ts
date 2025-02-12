@@ -7,7 +7,7 @@ import { Predicate } from './../activity/predicate';
 import * as ShapeUtils from './../../data/config/shape-utils';
 import * as EntityDefinition from './../../data/config/entity-definition';
 import { Evidence } from './../activity/evidence';
-import { StandardAnnotationForm } from './form';
+import { AnnotationEvidenceForm, StandardAnnotationForm } from './form';
 import { cloneDeep } from 'lodash';
 import { Contributor } from '../contributor';
 import { AnnotationActivitySortBy, AnnotationActivitySortField } from './annotation-activity-sortby';
@@ -110,25 +110,6 @@ export class AnnotationActivity {
     return null;
   }
 
-  private _populateAnnotationActivity(annotationForm: StandardAnnotationForm) {
-
-    this.gp.term.id = annotationForm.gp.id;
-    this.goterm.term.id = annotationForm.goterm.id;
-    this.gpToTermEdge = annotationForm.gpToTermEdge;
-
-    this.goterm.isComplement = annotationForm.isComplement;
-
-    this.evidenceCode.term.id = annotationForm.evidenceCode.id;
-    this.reference.term.id = annotationForm.reference;
-    this.with.term.id = annotationForm.withFrom;
-
-    this.comments = Array.from(new Set(annotationForm.annotationComments.map(comment => comment.comment)));
-
-    annotationForm.annotationExtensions.forEach((ext, index) => {
-      this.extensions[index].extensionEdge = ext.extensionEdge;
-      this.extensions[index].extensionTerm.term.id = ext.extensionTerm.id;
-    });
-  }
 
   getEvidenceNodes(): Evidence[] {
     const evidenceNodes: Evidence[] = [];
@@ -202,52 +183,111 @@ export class AnnotationActivity {
     return new Triple(this.goterm, extension, predicate);
   }
 
-  createSave(annotationForm: StandardAnnotationForm) {
-
-    this._populateAnnotationActivity(annotationForm);
+  public static createGPsSave(srcAnnotationActivity: AnnotationActivity, gpIds: string[]) {
     const saveData = {
-      title: 'enabled by ' + annotationForm.gp?.label,
       triples: [],
-      nodes: [this.gp, this.goterm],
+      nodes: [],
       graph: null
     };
 
-    const edgeType = this.gpToTermEdge.id
-    const config = noctuaFormConfig.simpleAnnotationEdgeConfig[edgeType]
-    const evidence = this._createEvidence();
+    gpIds.forEach((gpId: string) => {
+      const annotationActivity = this._populateBulkAnnotationActivity(srcAnnotationActivity, gpId);
 
-    if (!config) {
-      console.warn('No configuration defined for edge:', edgeType);
-      return;
-    }
+      saveData.nodes.push(annotationActivity.gp, annotationActivity.goterm);
 
-    if (config.mfNodeRequired) {
-      const mfNode = ShapeUtils.generateBaseTerm([]);
+      const edgeType = annotationActivity.gpToTermEdge.inverseEntity?.id
+      const config = noctuaFormConfig.simpleAnnotationEdgeConfig[edgeType]
+      const evidence = annotationActivity._createEvidence();
 
-      const rootMF = noctuaFormConfig.rootNode.mf;
-      mfNode.term = new Entity(rootMF.id, rootMF.label);
-
-      const triple = this._createTriple(mfNode, this.gp, config.gpToTermPredicate, evidence, config.gpToTermReverse)
-      saveData.triples.push(triple);
-
-      if (config.mfToTermPredicate) {
-        const mfTriple = this._createTriple(mfNode, this.goterm, config.mfToTermPredicate, evidence)
-        saveData.triples.push(mfTriple);
+      if (!config) {
+        console.warn('No configuration defined for edge:', edgeType);
+        return;
       }
 
-    } else {
-      const triple = this._createTriple(this.gp, this.goterm, config.gpToTermPredicate, evidence, config.gpToTermReverse)
-      saveData.triples.push(triple);
-    }
+      if (config.mfNodeRequired) {
+        const mfNode = ShapeUtils.generateBaseTerm([]);
 
-    this.extensions.forEach(ext => {
+        const rootMF = noctuaFormConfig.rootNode.mf;
+        mfNode.term = new Entity(rootMF.id, rootMF.label);
 
-      if (ext.extensionTerm?.hasValue()) {
-        const extensionTriple = this._createTriple(this.goterm, ext.extensionTerm, ext.extensionEdge.id, evidence);
+        const triple = annotationActivity._createTriple(mfNode, annotationActivity.gp, config.gpToTermPredicate, evidence, config.gpToTermReverse)
+        saveData.triples.push(triple);
 
-        saveData.nodes.push(ext.extensionTerm);
-        saveData.triples.push(extensionTriple);
+        if (config.mfToTermPredicate) {
+          const mfTriple = annotationActivity._createTriple(mfNode, annotationActivity.goterm, config.mfToTermPredicate, evidence)
+          saveData.triples.push(mfTriple);
+        }
+
+      } else {
+        const triple = annotationActivity._createTriple(annotationActivity.gp, annotationActivity.goterm, config.gpToTermPredicate, evidence, config.gpToTermReverse)
+        saveData.triples.push(triple);
       }
+
+      annotationActivity.extensions.forEach(ext => {
+
+        if (ext.extensionTerm?.hasValue()) {
+          const extensionTriple = annotationActivity._createTriple(annotationActivity.goterm, ext.extensionTerm, ext.extensionEdge.id, evidence);
+
+          saveData.nodes.push(ext.extensionTerm);
+          saveData.triples.push(extensionTriple);
+        }
+      });
+    });
+
+    return saveData;
+  }
+
+  public static createSave(annotationForm: StandardAnnotationForm) {
+
+    const saveData = {
+      title: 'enabled by ' + annotationForm.gp?.label,
+      triples: [],
+      nodes: [],
+      graph: null
+    };
+
+    annotationForm.evidences.forEach(evidenceForm => {
+      const annotationActivity = this._populateAnnotationActivity(annotationForm, evidenceForm);
+
+      saveData.nodes.push(annotationActivity.gp, annotationActivity.goterm);
+
+      const edgeType = annotationActivity.gpToTermEdge.id
+      const config = noctuaFormConfig.simpleAnnotationEdgeConfig[edgeType]
+      const evidence = annotationActivity._createEvidence();
+
+      if (!config) {
+        console.warn('No configuration defined for edge:', edgeType);
+        return;
+      }
+
+      if (config.mfNodeRequired) {
+        const mfNode = ShapeUtils.generateBaseTerm([]);
+
+        const rootMF = noctuaFormConfig.rootNode.mf;
+        mfNode.term = new Entity(rootMF.id, rootMF.label);
+
+        const triple = annotationActivity._createTriple(mfNode, annotationActivity.gp, config.gpToTermPredicate, evidence, config.gpToTermReverse)
+        saveData.triples.push(triple);
+
+        if (config.mfToTermPredicate) {
+          const mfTriple = annotationActivity._createTriple(mfNode, annotationActivity.goterm, config.mfToTermPredicate, evidence)
+          saveData.triples.push(mfTriple);
+        }
+
+      } else {
+        const triple = annotationActivity._createTriple(annotationActivity.gp, annotationActivity.goterm, config.gpToTermPredicate, evidence, config.gpToTermReverse)
+        saveData.triples.push(triple);
+      }
+
+      annotationActivity.extensions.forEach(ext => {
+
+        if (ext.extensionTerm?.hasValue()) {
+          const extensionTriple = annotationActivity._createTriple(annotationActivity.goterm, ext.extensionTerm, ext.extensionEdge.id, evidence);
+
+          saveData.nodes.push(ext.extensionTerm);
+          saveData.triples.push(extensionTriple);
+        }
+      });
     });
 
     return saveData;
@@ -294,6 +334,67 @@ export class AnnotationActivity {
     }
 
     return aspect;
+  }
+
+  private static _populateBulkAnnotationActivity(srcAnnotationActivity: AnnotationActivity, gpId: string) {
+
+    const annotationActivity = cloneDeep(srcAnnotationActivity);
+
+    annotationActivity.gp.term.id = gpId;
+    annotationActivity.gp.id = undefined;
+    annotationActivity.gp.term.uuid = undefined;
+    annotationActivity.gp.uuid = undefined;
+    annotationActivity.goterm.id = undefined;
+    annotationActivity.goterm.term.uuid = undefined;
+    annotationActivity.goterm.uuid = undefined
+    annotationActivity.gpToTermEdge.uuid = undefined;
+
+    // Evidence
+    annotationActivity.evidenceCode.term.uuid = undefined
+    annotationActivity.reference.term.uuid = undefined
+    annotationActivity.with.term.uuid = undefined;
+
+    annotationActivity.comments = [...srcAnnotationActivity.comments];
+
+    annotationActivity.extensions.forEach((extension: AnnotationExtension) => {
+      extension.extensionEdge.uuid = undefined;
+      extension.extensionTerm.uuid = undefined;
+      extension.extensionTerm.term.uuid = undefined;
+    });
+
+    return annotationActivity;
+  }
+
+  private static _populateAnnotationActivity(annotationForm: StandardAnnotationForm, evidenceForm: AnnotationEvidenceForm) {
+
+    const annotationActivity = new AnnotationActivity();
+    annotationActivity.gp = ShapeUtils.generateBaseTerm([]);
+    annotationActivity.goterm = ShapeUtils.generateBaseTerm([]);
+
+    annotationActivity.gp.term.id = annotationForm.gp.id;
+    annotationActivity.goterm.term.id = annotationForm.goterm.id;
+    annotationActivity.gpToTermEdge = annotationForm.gpToTermEdge;
+    annotationActivity.goterm.isComplement = annotationForm.isComplement;
+
+    // Evidence
+    annotationActivity.evidenceCode.term.id = evidenceForm.evidenceCode.id;
+    annotationActivity.reference.term.id = evidenceForm.reference;
+    annotationActivity.with.term.id = evidenceForm.withFrom;
+
+    annotationActivity.comments = Array.from(new Set(annotationForm.annotationComments.map(comment => comment.comment)));
+
+    annotationForm.annotationExtensions.forEach((ext) => {
+      const extension = new AnnotationExtension();
+
+      extension.extensionTerm = ShapeUtils.generateBaseTerm([]);
+      extension.extensionEdge = ext.extensionEdge;
+      extension.extensionTerm.term.id = ext.extensionTerm.id;
+
+      annotationActivity.extensions.push(extension);
+
+    });
+
+    return annotationActivity;
   }
 
   public static getSortByKey(annotationActivity: AnnotationActivity) {

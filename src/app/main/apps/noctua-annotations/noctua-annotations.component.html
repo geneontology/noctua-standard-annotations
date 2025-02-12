@@ -34,8 +34,8 @@
     <div *ngIf="!noctuaUserService.user" class="noc-not-loggedin" fxLayout="row" fxLayoutAlign="center center">
       Not Logged In: You can only view existing annotations
     </div>
-    <div *ngIf="noctuaUserService.user && cam?.modified && cam?.activities.length>0" class="noc-not-loggedin"
-      fxLayout="row" fxLayoutAlign="center center">
+    @if (noctuaUserService.user && cam?.modified && cam?.activities.length>0) {
+    <div class="noc-not-loggedin" fxLayout="row" fxLayoutAlign="center center">
       <small class="mr-16">Not Saved</small>
       <button mat-raised-button fxFlex="100px" (click)="resetCam(cam)" color="warn"
         class="noc-rounded-button noc-half-button noc-r noc-sm">
@@ -46,6 +46,7 @@
         Save
       </button>
     </div>
+    }
     <noc-cam-toolbar [cam]="cam" [options]="camToolbarOptions"></noc-cam-toolbar>
     <mat-drawer-container class="noc-drawer-container w-full h-full" fxLayout="row" fxLayoutAlign="start start"
       autosize>

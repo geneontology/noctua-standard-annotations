@@ -39,7 +39,6 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
   commentFormArray: FormArray;
   activity: Activity;
   errors: ActivityError[] = [];
-
   descriptionSectionTitle = 'Function Description';
   annotatedSectionTitle = 'Gene Product';
 
@@ -64,6 +63,7 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.annotationFormService.initializeForm();
     this.dynamicForm = this.fb.group(this.getInitialFormStructure());
+    this.addEvidence();
 
     this.dynamicForm.valueChanges
       .pipe(takeUntil(this._unsubscribeAll),
@@ -91,7 +91,7 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
           return;
         }
         this.activity = activity;
-        this.annotationActivity = { ...this.annotationFormService.onAnnotationActivityChanged } as AnnotationActivity;
+        this.annotationActivity = { ...this.annotationFormService.annotationActivity } as AnnotationActivity;
 
         this.cdr.markForCheck()
       });
@@ -150,10 +150,9 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
       goterm: '',
       annotationExtensions: this.fb.array([]),
       annotationComments: this.fb.array([]),
-      evidenceCode: '',
-      reference: '',
-      withFrom: '',
+      evidences: this.fb.array([])
     };
+
   }
 
   addMFRootTerm() {
@@ -215,13 +214,11 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    const self = this;
-
-    self.annotationFormService.saveAnnotation(this.dynamicForm.value)
+    this.annotationFormService.saveAnnotation(this.dynamicForm.value)
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(() => {
-        self.noctuaAnnotationsDialogService.openInfoToast('Annotation successfully created.', 'OK');
-        self.clearForm();
+        this.noctuaAnnotationsDialogService.openInfoToast('Annotation successfully created.', 'OK');
+        this.clearForm();
         if (this.closeDialog) {
           this.closeDialog();
         }
@@ -243,12 +240,33 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
     return o1 && o2 ? o1.id === o2.id : o1 === o2;
   }
 
+  get evidences() {
+    return this.dynamicForm.get('evidences') as FormArray;
+  }
+
   get annotationExtensions() {
     return this.dynamicForm.get('annotationExtensions') as FormArray;
   }
 
   get annotationComments() {
     return this.dynamicForm.get('annotationComments') as FormArray;
+  }
+
+  addEvidence() {
+    this.evidences.push(this.fb.group({
+      evidenceCode: '',
+      reference: '',
+      withFrom: '',
+    }));
+
+    this.dynamicForm.updateValueAndValidity();
+  }
+
+  deleteEvidence(index: number): void {
+    if (this.evidences.length > 1) {
+      this.evidences.removeAt(index);
+      this.dynamicForm.updateValueAndValidity();
+    }
   }
 
   addExtension() {

@@ -128,7 +128,8 @@ $accent: map-get($theme, accent);
           right: 8px;
         }
         &.noc-selected {
-          color: map-get($accent, default);
+          background-color: map-get($accent, default);
+          color: #eee;
         }
       }
 

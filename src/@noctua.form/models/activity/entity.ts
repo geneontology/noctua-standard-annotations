@@ -55,9 +55,7 @@ export class Entity implements EntityBase {
   }
 
   set uuid(uuid: string) {
-    if (uuid) {
-      this._uuid = uuid;
-    }
+    this._uuid = uuid;
     this.displayId = 'noc-node-' + NoctuaFormUtils.cleanID(uuid);
   }
 

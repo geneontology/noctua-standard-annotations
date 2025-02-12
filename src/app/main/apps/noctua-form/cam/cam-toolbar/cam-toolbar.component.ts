@@ -107,6 +107,13 @@ export class CamToolbarComponent implements OnInit, OnDestroy {
     this.noctuaCommonMenuService.openLeftDrawer();
   }
 
+  undoModel() {
+    this.camService.undoModel(this.cam);
+  }
+  redoModel() {
+    this.camService.redoModel(this.cam);
+  }
+
   ngOnDestroy(): void {
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();

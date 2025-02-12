@@ -100,6 +100,14 @@ export class BbopGraphService {
       }
     };
 
+    const meta = (resp) => {
+      console.log('Resp meta', resp)
+      console.log(resp.has_undo_p())
+      console.log(resp.has_redo_p())
+
+    }
+
+
     const shieldsUp = () => { };
     const shieldsDown = () => { };
 
@@ -108,8 +116,9 @@ export class BbopGraphService {
     manager.register('manager_error', managerError, 10);
     manager.register('warning', warning, 10);
     manager.register('error', error, 10);
+    manager.register('meta', meta, 10);
 
-    manager.use_reasoner_p(useReasoner);
+    //manager.use_reasoner_p(useReasoner);
 
     return manager;
   }
@@ -174,10 +183,8 @@ export class BbopGraphService {
   }
 
   rebuild(cam: Cam, response) {
-    const self = this;
 
-    // cam.loading.status = true;
-    // cam.loading.message = 'Loading Model Entities Metadata...';
+    cam.response = response;
 
     if (cam.graph) {
       const inGraph = new bbopGraph();
@@ -193,10 +200,6 @@ export class BbopGraphService {
     cam.modified = response.data()['modified-p'];
     cam.isReasoned = response['is-reasoned'];
 
-    if (cam.isReasoned) {
-
-    }
-
     const titleAnnotations = cam.graph.get_annotations_by_key('title');
     const commentAnnotations = cam.graph.get_annotations_by_key('comment');
     const stateAnnotations = cam.graph.get_annotations_by_key('state');
@@ -204,8 +207,8 @@ export class BbopGraphService {
     const groupAnnotations = cam.graph.get_annotations_by_key('providedBy');
     const contributorAnnotations = cam.graph.get_annotations_by_key('contributor');
 
-    cam.contributors = self.noctuaUserService.getContributorsFromAnnotations(contributorAnnotations);
-    cam.groups = self.noctuaUserService.getGroupsFromAnnotations(groupAnnotations);
+    cam.contributors = this.noctuaUserService.getContributorsFromAnnotations(contributorAnnotations);
+    cam.groups = this.noctuaUserService.getGroupsFromAnnotations(groupAnnotations);
 
     if (dateAnnotations.length > 0) {
       cam.date = dateAnnotations[0].value();
@@ -220,11 +223,16 @@ export class BbopGraphService {
     })
 
     if (stateAnnotations.length > 0) {
-      cam.state = self.noctuaFormConfigService.findModelState(stateAnnotations[0].value());
+      cam.state = this.noctuaFormConfigService.findModelState(stateAnnotations[0].value());
     }
 
-    self.loadCam(cam);
-    self.loadViolations(cam, response.data()['validation-results'])
+    if (cam.operation === CamOperation.VIEW_PATHWAY) {
+      this.onCamGraphChanged.next(cam);
+      cam.loading.status = false;
+      return
+    }
+    this.loadCam(cam);
+    this.loadViolations(cam, response.data()['validation-results'])
     cam.loading.status = false;
   }
 
@@ -283,23 +291,22 @@ export class BbopGraphService {
   }
 
   loadCam(cam: Cam, publish = true) {
-    const self = this;
-    const activities = self.graphToActivities(cam.graph);
+    const activities = this.graphToActivities(cam.graph);
 
     if (environment.isGraph) {
-      const molecules = self.graphToMolecules(cam.graph);
+      const molecules = this.graphToMolecules(cam.graph);
 
       activities.push(...molecules);
 
       if (cam.operation === CamOperation.ADD_ACTIVITY) {
-        const activity = self.getAddedActivity(activities, cam.activities);
-        self.onActivityAdded.next(activity);
+        const activity = this.getAddedActivity(activities, cam.activities);
+        this.onActivityAdded.next(activity);
       }
 
       cam.activities = activities;
       cam.updateProperties()
-      cam.causalRelations = self.getCausalRelations(cam);
-      self.getActivityLocations(cam)
+      cam.causalRelations = this.getCausalRelations(cam);
+      this.getActivityLocations(cam)
     } else {
       cam.activities = activities;
       cam.updateProperties()
@@ -311,7 +318,7 @@ export class BbopGraphService {
     cam.operation = CamOperation.NONE;
 
     if (publish) {
-      self.onCamGraphChanged.next(cam);
+      this.onCamGraphChanged.next(cam);
     }
   }
 
@@ -970,6 +977,37 @@ export class BbopGraphService {
       payload = payload + '&provided-by=' + self.noctuaUserService.user.group.id;
     }
     return this.httpClient.post(`${baristaUrl}/api/${globalMinervaDefinitionName}/m3BatchPrivileged`, payload, { headers });
+  }
+
+  undoModel(cam: Cam) {
+    const self = this;
+    const reqs = new minerva_requests.request_set(self.noctuaUserService.baristaToken, cam.id);
+
+    reqs.undo_last_model_batch();
+
+    if (self.noctuaUserService.user && self.noctuaUserService.user.groups.length > 0) {
+      //reqs.use_groups([self.noctuaUserService.user.group.id]);
+    }
+    //reqs.store_model(cam.id);
+
+    console.log('undoModel', reqs);
+    console.log('aaaa', cam.manager.get_model_undo_redo(cam.id));
+
+    return cam.manager.request_with(reqs);
+  }
+
+  redoModel(cam: Cam) {
+    const self = this;
+    const reqs = new minerva_requests.request_set(self.noctuaUserService.baristaToken, cam.id);
+
+    reqs.redo_last_model_batch();
+
+    if (self.noctuaUserService.user && self.noctuaUserService.user.groups.length > 0) {
+      reqs.use_groups([self.noctuaUserService.user.group.id]);
+    }
+    reqs.store_model(cam.id);
+
+    return cam.manager.request_with(reqs);
   }
 
   resetModel(cam: Cam) {
