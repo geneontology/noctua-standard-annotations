@@ -4,7 +4,7 @@
   <textarea type="text" matInput [formControl]="control" [matAutocomplete]="termAuto" row="2" (focus)="onFocus()">
   </textarea>
   @if (autocompleteType === AutocompleteType.REFERENCE) {
-  <button mat-button matSuffix (click)="openAddReference($event)" class="noc-evidence-db-trigger" [attr.tabindex]="-1">
+  <button mat-button matSuffix (click)="openAddReference($event)" class="noc-evidence-db-trigger">
     <fa-icon [icon]="['fas', 'file-medical']"></fa-icon>
   </button>
   }

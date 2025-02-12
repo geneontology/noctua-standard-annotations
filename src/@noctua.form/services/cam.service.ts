@@ -12,7 +12,7 @@ import { ActivityFormMetadata } from './../models/forms/activity-form-metadata';
 import { Evidence, compareEvidence } from './../models/activity/evidence';
 import { Cam, CamStats } from './../models/activity/cam';
 import { each, find, groupBy, uniqWith } from 'lodash';
-import { ActivityNodeType, ActivityNode, Entity, CamLoadingIndicator, CamQueryMatch, ReloadType, TermsSummary } from './../models/activity';
+import { ActivityNodeType, ActivityNode, Entity, CamLoadingIndicator, CamQueryMatch, ReloadType, TermsSummary, CamOperation } from './../models/activity';
 import { compareTerm } from './../models/activity/activity-node';
 import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -106,10 +106,11 @@ export class CamService {
   }
 
   //Gets a new cam
-  getCam(modelId): Cam {
+  getCam(modelId, camOperation: CamOperation = CamOperation.NONE): Cam {
     const cam: Cam = new Cam();
 
     this.cam = cam;
+    this.cam.operation = camOperation;
 
     cam.graph = null;
     cam.id = modelId;

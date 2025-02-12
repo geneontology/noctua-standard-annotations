@@ -27,7 +27,8 @@ export enum CamRebuildSignal {
 export enum CamOperation {
   NONE = 'none',
   ADD_ACTIVITY = 'add_activity',
-  ADD_CAUSAL_RELATION = 'add_causal_relation'
+  ADD_CAUSAL_RELATION = 'add_causal_relation',
+  VIEW_PATHWAY = 'view_pathway',
 }
 
 export class CamQueryMatch {
@@ -145,6 +146,7 @@ export class Cam {
   rebuildRule = new CamRebuildRule();
 
   //bbop graphs
+  response;
   graph;
   storedGraph;
   pendingGraph;
