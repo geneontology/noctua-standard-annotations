@@ -41,11 +41,11 @@ $accent: map-get($theme, accent);
     padding: 0 10px 0 5px;
     //background-color: lighten(map-get($accent, default), 10%);
     @include deep-height(50px);
-    color: darken(map-get($accent, default), 20%);
+    //color: darken(map-get($accent, default), 20%);
     position: relative;
 
     a {
-      color: darken(map-get($accent, default), 5%);
+      color: #222;
       font-size: 16px;
       &:hover {
         color: darken(map-get($accent, default), 20%);
@@ -58,19 +58,6 @@ $accent: map-get($theme, accent);
 
     mat-toolbar-row {
       @include deep-height(40px);
-    }
-
-    .noc-apps-button {
-      margin-right: 12px;
-      //background-color: #aaeaf6;
-      border-radius: 0 !important;
-      @include deep-height(50px);
-      @include deep-width(50px);
-      color: darken(map-get($accent, default), 20%);
-
-      mat-icon {
-        @include noc-icon-size(30px);
-      }
     }
 
     .noc-cam-title {
@@ -160,7 +147,7 @@ $accent: map-get($theme, accent);
     }
 
     a {
-      color: darken(map-get($accent, default), 2%);
+      color: #222;
       font-size: 24px;
     }
 

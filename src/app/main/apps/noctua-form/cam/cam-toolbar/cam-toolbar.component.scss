@@ -198,6 +198,13 @@ $accent: map-get($theme, accent);
     }
   }
 
+  .noc-edit-button {
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: 12px;
+    font-weight: normal;
+  }
+
   .noc-toolbar {
     padding: 0px 20px;
     height: 40px;

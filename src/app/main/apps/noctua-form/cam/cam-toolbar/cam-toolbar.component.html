@@ -21,7 +21,8 @@
   </div>
   }
   @if (cam.title) {
-  <div class="noc-title" fxLayout="row" fxLayoutAlign="start center">
+  <div class="noc-title" fxLayout="row" fxLayoutAlign="start center" matTooltip="{{cam.title}}"
+    [matTooltipPosition]="'above'" [matTooltipShowDelay]="2000">
     <div class="text-truncate pr-8">
       <strong>Title: </strong>{{cam.title }}
     </div>
@@ -102,9 +103,26 @@
       }
     </mat-chip-list>
   </div>
-  <div fxFlex="115px" fxLayout="row" fxLayoutAlign="start center">
-    <button mat-button [matMenuTriggerFor]="exportMenu" class="noc-toolbar-button noc-rounded-button" color="">
-      <fa-icon [icon]="['fas', 'download']"></fa-icon>
+  <div fxFlex="180px" fxLayout="row" fxLayoutAlign="end center">
+    <button mat-stroked-button [matMenuTriggerFor]="viewMenu" class="noc-edit-button noc-rounded-button noc-sm mr-3"
+      color="">
+      VIEW IN
+    </button>
+    <mat-menu #viewMenu="matMenu">
+      <a [href]='cam?.model?.modelInfo?.annotationPreviewUrl' target="_blank" mat-menu-item>
+        Annotation Preview
+      </a>
+      <a [href]='cam?.model?.modelInfo?.pathwayViewerUrl' target="_blank" mat-menu-item>
+        Pathway Viewer
+      </a>
+      <a [href]='cam?.model?.modelInfo?.graphEditorUrl' target="_blank" mat-menu-item>
+        Graph Editor
+      </a>
+
+    </mat-menu>
+    <button mat-stroked-button [matMenuTriggerFor]="exportMenu" class="noc-edit-button noc-rounded-button noc-sm"
+      color="">
+      EXPORT AS
     </button>
     <mat-menu #exportMenu="matMenu">
       <a [href]='cam?.model?.modelInfo?.gpadUrl' target="_blank" mat-menu-item>
