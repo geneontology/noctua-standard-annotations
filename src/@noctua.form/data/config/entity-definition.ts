@@ -92,7 +92,7 @@ export const GoCellTypeEntity = {
 
 export const GoAnatomicalEntity = {
     id: ActivityNodeType.GoAnatomicalEntity,
-    category: 'CARO:0000000',
+    category: 'UBERON:0001062',
     categoryType: 'isa_closure',
 } as GoCategory;
 
