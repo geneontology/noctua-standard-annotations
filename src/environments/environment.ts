@@ -45,7 +45,7 @@ const globalKnownRelations = typeof global_known_relations !== 'undefined'
 
 export const environment = {
   production: false,
-  isDev: false,
+  isDev: true,
   isBeta: false,
   isGraph: false,
   globalGolrNeoServer: golrNeoServer,
