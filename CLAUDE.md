@@ -7,38 +7,6 @@ Gene Ontology annotation workbench for creating, editing, and managing Causal Ac
 
 - `./workbenches/` - Compiled output folder, do not analyze or modify
 
-## Task Management
-
-### Always Create and Maintain Task Plans
-
-For EVERY non-trivial task you receive:
-
-**Before starting work**: Create `.plans/[task-category]/[task-name].md` with:
-
-- Clear goal statement
-- Current state analysis (what works, what's broken)
-- Detailed implementation plan broken into phases/steps
-- Progress tracking table
-- Dependencies and blockers
-- Files to create/modify
-- Next steps
-
-**While working**: Update `.plans/[task-category]/[task-name].md` after completing each step:
-
-- Mark completed steps with ✓ or DONE
-- Update progress tables
-- Add new findings or changes to approach
-- Note any issues encountered
-- Update next steps
-
-**After completing**: Final update to `.plans/[task-category]/[task-name].md`:
-
-- Mark all steps complete
-- Summary of what was accomplished
-- Any remaining TODO items
-- Lessons learned or notes for future work
-
-See [.plans/template.md](.plans/template.md) for detailed examples and formats.
 
 ## Tech Stack
 - **Framework:** Angular 17.3 with TypeScript 5.4
@@ -101,13 +69,13 @@ src/
 
 ## Key Services
 
-| Service | Location | Purpose |
-| --- | --- | --- |
-| **NoctuaGraphService** | `@noctua.form/services/graph.service.ts` | CAM graph state, Minerva manager |
-| **CamService** | `@noctua.form/services/cam.service.ts` | CAM CRUD, form initialization |
-| **NoctuaLookupService** | `@noctua.form/services/lookup.service.ts` | Ontology term autocomplete (GOLr) |
-| **NoctuaUserService** | `@noctua.form/services/user.service.ts` | User auth, Barista token management |
-| **CurieService** | `@noctua.curie/services/curie.service.ts` | CURIE expansion/compression |
+| Service                 | Location                                  | Purpose                             |
+| ----------------------- | ----------------------------------------- | ----------------------------------- |
+| **NoctuaGraphService**  | `@noctua.form/services/graph.service.ts`  | CAM graph state, Minerva manager    |
+| **CamService**          | `@noctua.form/services/cam.service.ts`    | CAM CRUD, form initialization       |
+| **NoctuaLookupService** | `@noctua.form/services/lookup.service.ts` | Ontology term autocomplete (GOLr)   |
+| **NoctuaUserService**   | `@noctua.form/services/user.service.ts`   | User auth, Barista token management |
+| **CurieService**        | `@noctua.curie/services/curie.service.ts` | CURIE expansion/compression         |
 
 ## State Management
 
@@ -172,3 +140,13 @@ cc @pgaudet @vanaukenk @kltm @thomaspd
 - Global scripts (jQuery, Lodash, Backbone, Dagre, Graphlib) loaded via angular.json scripts array
 - Production builds require 6GB memory (`node --max_old_space_size=6144`)
 - jQuery/Backbone still used for BBOP library integrations
+
+
+## Git Commits
+
+- Do NOT include the `Co-Authored-By` line in commit messages.
+
+## Task Plans
+
+- Always create and maintain task plans using the [.plans/template.md](.plans/template.md) system.
+- On context resume, check `.plans/` for ACTIVE plans before doing anything else.

@@ -5,12 +5,12 @@
 :host {
   padding-top: 8px;
   width: 100%;
-  @include deep-width(400px);
+  @include deep-width(450px);
   @include mat.elevation(4);
 
   background-color: #fbf9de;
 
-  .noc-form-secion {
+  .noc-form-section {
     max-height: 500px;
 
     .noc-with-group {

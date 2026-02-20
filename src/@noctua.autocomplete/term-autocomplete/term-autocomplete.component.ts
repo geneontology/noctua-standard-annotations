@@ -3,6 +3,7 @@ import { NG_VALUE_ACCESSOR, FormControl, ControlValueAccessor } from '@angular/f
 import { AutocompleteType, GOlrResponse, GoCategory, NoctuaFormUtils, NoctuaLookupService } from '@geneontology/noctua-form-base';
 import { Subject, Subscription, catchError, debounceTime, filter, of, startWith, switchMap, takeUntil } from 'rxjs';
 import { InlineReferenceService } from '@noctua.editor/inline-reference/inline-reference.service';
+import { InlineWithService } from '@noctua.editor/inline-with/inline-with.service';
 
 @Component({
   selector: 'noc-term-autocomplete',
@@ -36,6 +37,7 @@ export class TermAutocompleteComponent implements OnInit, OnDestroy, ControlValu
 
   constructor(private lookupService: NoctuaLookupService,
     private inlineReferenceService: InlineReferenceService,
+    private inlineWithService: InlineWithService,
   ) {
     this._unsubscribeAll = new Subject();
   }
@@ -119,6 +121,14 @@ export class TermAutocompleteComponent implements OnInit, OnDestroy, ControlValu
       formControl: this.control as FormControl,
     };
     this.inlineReferenceService.open(event.target, { data });
+  }
+
+  openAddWith(event) {
+    event.stopPropagation();
+    const data = {
+      formControl: this.control as FormControl,
+    };
+    this.inlineWithService.open(event.target, { data });
   }
 
   termDisplayFn(term): string | undefined {
