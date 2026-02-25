@@ -1,12 +1,12 @@
-<form [formGroup]="myForm" novalidate class="pl-8 pr-8 w-full" fxLayout="column" fxLayoutAlign="start stretch">
-  <div formArrayName="databaseGroups" class="noc-form-section w-full overflow-y-auto" fxLayout="column"
-    fxLayoutAlign="start stretch">
+<form [formGroup]="myForm" novalidate class="pl-2 pr-2 w-full" fxLayout="column" fxLayoutAlign="start stretch">
+  <div formArrayName="databaseGroups" class="noc-form-section w-full overflow-y-auto overflow-x-hidden max-h-[400px]"
+    fxLayout="column" fxLayoutAlign="start stretch">
 
     @for (group of $any(myForm.get('databaseGroups'))?.controls; track group; let i = $index) {
-    <div class="noc-with-group mb-16 px-12">
+    <div class="noc-with-group mb-3 px-3">
       <div [formGroupName]="i">
-        <div class="mb-8" fxLayout="row" fxLayoutAlign="start center">
-          <strong class="mr-8">With/From</strong>
+        <div class="mb-2" fxLayout="row" fxLayoutAlign="start center">
+          <strong class="mr-2">With/From</strong>
           <button mat-icon-button (click)="deleteGroup(i)" matTooltip="Delete Group">
             <mat-icon>delete_forever</mat-icon>
           </button>
@@ -15,7 +15,7 @@
           @for (entity of $any(group.get('entities')).controls; track entity; let j = $index) {
           <div class="mb-8" fxLayout="row" fxLayoutAlign="start center">
             <div [formGroupName]="j" fxLayout="row" fxLayoutAlign="start center" fxFlex="">
-              <mat-form-field appearance="outline" fxFlex="120px" class="noc-sm mr-12">
+              <mat-form-field appearance="outline" fxFlex="120px" class="mr-3">
                 <mat-select formControlName="db" placeholder="Database">
                   @for (db of dbOptions; track db) {
                   <mat-option [value]="db">
@@ -24,7 +24,7 @@
                   }
                 </mat-select>
               </mat-form-field>
-              <mat-form-field appearance="outline" fxFlex="" class="noc-sm">
+              <mat-form-field appearance="outline" fxFlex="" class="">
                 <input matInput formControlName="accession" type="text" placeholder="Accession" autocomplete="off">
               </mat-form-field>
             </div>
@@ -37,7 +37,7 @@
           </div>
           }
           @if ($any(group.get('entities')).controls.length === 0) {
-          <div class="p-16">
+          <div class="p-2">
             <a (click)="addNewEntity(group.get('entities'), null, null)">
               Add With/From
             </a>
