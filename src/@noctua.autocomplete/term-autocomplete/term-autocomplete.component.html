@@ -8,6 +8,11 @@
     <fa-icon [icon]="['fas', 'file-medical']"></fa-icon>
   </button>
   }
+  @if (autocompleteType === AutocompleteType.WITH) {
+  <button mat-button matSuffix (click)="openAddWith($event)" class="noc-evidence-db-trigger">
+    <fa-icon [icon]="['fas', 'file-medical']"></fa-icon>
+  </button>
+  }
   <mat-autocomplete #termAuto="matAutocomplete" [displayWith]="termDisplayFn"
     (optionSelected)="selectTerm($event.option.value)" class="noc-term-autocomplete" fxLayout="row"
     fxLayoutAlign="start start">

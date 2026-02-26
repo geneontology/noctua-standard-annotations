@@ -1,0 +1,22 @@
+export const withFromAllowedDBs = [
+    'AGI_LocusCode',
+    'EcoCyc',
+    'FB',
+    'GO',
+    'MGI',
+    'PomBase',
+    'PR',
+    'RGD',
+    'RNAcentral',
+    'SGD',
+    'UniProtKB',
+    'WB',
+    'Xenbase',
+    'ZFIN',
+    'CHEBI',
+    'ComplexPortal',
+    'EC',
+    'InterPro',
+    'PANTHER',
+    'RHEA'
+];

@@ -7,6 +7,7 @@ import { ActivityFormMetadata } from './../forms/activity-form-metadata';
 import { evidenceValidator } from './validators/evidence-validator';
 import { Entity } from '../activity/entity';
 import { Predicate } from '../activity/predicate';
+import { DataUtils } from '../../data/config/data-utils';
 
 export class EvidenceForm {
     uuid;
@@ -36,7 +37,8 @@ export class EvidenceForm {
         evidence.evidence = new Entity(this.evidence.value.id, this.evidence.value.label);
 
         evidence.reference = this.reference.value ? this.reference.value.replace(/\s/g, '') : null;
-        evidence.with = this.with.value ? this.with.value.replace(/\s/g, '') : null;
+        const withFrom = this.with.value ? DataUtils.correctDatabaseIdentifierCase(this.with.value) : null;
+        evidence.with = withFrom ? withFrom.replace(/\s/g, '') : null;
     }
 
     onValueChanges(predicate: Predicate) {

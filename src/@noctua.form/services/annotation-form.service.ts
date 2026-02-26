@@ -15,6 +15,7 @@ import { AnnotationExtensionForm, StandardAnnotationForm } from './../models/sta
 import { ActivityError, ErrorLevel, ErrorType } from './../models/activity/parser/activity-error';
 import { EditorCategory } from '@noctua.editor/models/editor-category';
 import { Evidence } from 'public-api';
+import { DataUtils } from './../data/config/data-utils';
 
 
 @Injectable({
@@ -177,6 +178,15 @@ export class NoctuaAnnotationFormService {
         if (!evidence.reference.includes(':')) {
           const error = new ActivityError(ErrorLevel.error, ErrorType.general,
             `Use DB:accession format for reference @ ${index + 1}`);
+          errors.push(error);
+        }
+      }
+
+      if (evidence.withFrom) {
+        const hasError = DataUtils.validateDatabaseIdentifiers(evidence.withFrom);
+        if (hasError) {
+          const error = new ActivityError(ErrorLevel.error, ErrorType.general,
+            `With/From @ ${index + 1} - ${hasError}`);
           errors.push(error);
         }
       }
@@ -412,7 +422,8 @@ export class NoctuaAnnotationFormService {
         actionPromise = this.bbopGraphService.editEvidenceCode(cam, oldAnnotations, newAnnotation);
         break;
       case EditorCategory.WITH:
-        actionPromise = this.bbopGraphService.editWith(cam, oldAnnotations, newAnnotation);
+        const correctedAnnotation = DataUtils.correctDatabaseIdentifierCase(newAnnotation);
+        actionPromise = this.bbopGraphService.editWith(cam, oldAnnotations, correctedAnnotation);
         break;
       case EditorCategory.REFERENCE:
         actionPromise = this.bbopGraphService.editReference(cam, oldAnnotations, newAnnotation);

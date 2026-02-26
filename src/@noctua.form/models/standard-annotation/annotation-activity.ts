@@ -11,6 +11,7 @@ import { AnnotationEvidenceForm, StandardAnnotationForm } from './form';
 import { cloneDeep } from 'lodash';
 import { Contributor } from '../contributor';
 import { AnnotationActivitySortBy, AnnotationActivitySortField } from './annotation-activity-sortby';
+import { DataUtils } from './../../data/config/data-utils';
 
 
 export interface AnnotationEdgeConfig {
@@ -379,7 +380,9 @@ export class AnnotationActivity {
     // Evidence
     annotationActivity.evidenceCode.term.id = evidenceForm.evidenceCode.id;
     annotationActivity.reference.term.id = evidenceForm.reference;
-    annotationActivity.with.term.id = evidenceForm.withFrom;
+    annotationActivity.with.term.id = evidenceForm.withFrom
+      ? DataUtils.correctDatabaseIdentifierCase(evidenceForm.withFrom)
+      : evidenceForm.withFrom;
 
     annotationActivity.comments = Array.from(new Set(annotationForm.annotationComments.map(comment => comment.comment)));
 
