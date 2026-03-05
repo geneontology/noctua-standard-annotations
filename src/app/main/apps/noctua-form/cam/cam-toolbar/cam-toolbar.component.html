@@ -31,18 +31,6 @@
     </div>
   </div>
   }
-  <!--   <div class="flex">
-    <button mat-button class="noc-toolbar-button noc-rounded-button" (click)="undoModel()"
-      matTooltip="Undo Last Changes" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
-      <fa-icon [icon]="['fas', 'undo']"></fa-icon>
-      Undo
-    </button>
-    <button mat-button class="noc-toolbar-button noc-rounded-button" (click)="redoModel()"
-      matTooltip="Redo Last Changes" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
-      <fa-icon [icon]="['fas', 'undo']"></fa-icon>
-      Redo
-    </button>
-  </div> -->
 
   <div class="noc-br noc-bl px-4">
     <button mat-button class="noc-toolbar-button noc-rounded-button" (click)="openCamForm()"
@@ -51,12 +39,6 @@
       <div class="noc-comments-badge">
         {{cam?.comments.length}}
       </div>
-    </button>
-  </div>
-  <div class="noc-br px-4">
-    <button mat-button color="" class="noc-toolbar-button noc-rounded-button" (click)="openCopyModel()"
-      matTooltip="Make a copy of this model" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
-      <fa-icon [icon]="['fas', 'clone']"></fa-icon>
     </button>
   </div>
   @if (cam.state) {
