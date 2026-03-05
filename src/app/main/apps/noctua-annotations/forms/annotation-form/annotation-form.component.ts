@@ -252,6 +252,17 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
     return this.dynamicForm.get('annotationComments') as FormArray;
   }
 
+  addEvidenceISS(index: number) {
+    const evidenceGroup = this.evidences.at(index) as FormGroup;
+    evidenceGroup.patchValue({
+      evidenceCode: {
+        id: noctuaFormConfig.evidenceAutoPopulate.iss.evidence.id,
+        label: noctuaFormConfig.evidenceAutoPopulate.iss.evidence.label
+      },
+      reference: noctuaFormConfig.evidenceAutoPopulate.iss.reference
+    });
+  }
+
   addEvidence() {
     this.evidences.push(this.fb.group({
       evidenceCode: '',
