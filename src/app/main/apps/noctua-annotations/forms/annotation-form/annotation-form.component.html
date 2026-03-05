@@ -78,28 +78,21 @@
             [label]="annotationActivity?.reference.label"></noc-term-autocomplete>
           <noc-term-autocomplete fxFlex="35" class="p-1" formControlName="withFrom"
             [label]="annotationActivity?.with.label" [autocompleteType]="AutocompleteType.WITH"></noc-term-autocomplete>
-          <div fxFlex="40px"></div>
-          @if(evidences.length>1) {
-          <button mat-icon-button (click)="deleteEvidence(i)" class="text-warn">
-            <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
+          <button mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="evidenceMenu">
+            <mat-icon>more_vert</mat-icon>
           </button>
-          }
+          <mat-menu #evidenceMenu="matMenu" class="noc-dropdown-menu">
+            <button mat-menu-item class="" (click)="addEvidenceISS(i)">
+              Add ISS Evidence
+            </button>
+          </mat-menu>
         </div>
       </div>
-      <!--    <div class="pl-4 py-4">
-        <a (click)="addEvidence()" class="cursor-pointer" color="primary">
-          Add Another Evidence
-        </a>
-      </div> -->
       <div class="noc-section-header pr-4" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
           Extensions
         </div>
         <span fxFlex></span>
-        <!--  <button mat-stroked-button (click)="addExtension()" type="submit" class="noc-xs noc-rounded-button"
-          color="primary">
-          Add
-        </button> -->
       </div>
       <div formArrayName="annotationExtensions" class="px-3 pt-1" fxLayout="column" fxLayoutAlign="start center">
         <div *ngFor="let item of annotationExtensions.controls; let i=index" [formGroupName]="i" class="w-full">

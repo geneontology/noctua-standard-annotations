@@ -487,6 +487,13 @@ export const noctuaFormConfig = {
         'label': 'no biological data found used in manual assertion'
       },
       reference: 'GO_REF:0000015'
+    },
+    iss: {
+      evidence: {
+        'id': 'ECO:0000250',
+        'label': 'sequence similarity evidence used in manual assertion'
+      },
+      reference: 'GO_REF:0000024'
     }
   },
   rootNode: rootNode,
