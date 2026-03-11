@@ -168,28 +168,32 @@ export class AnnotationFormComponent implements OnInit, OnDestroy {
   }
 
   private _addRootTerm(rootTerm) {
-    const goterm = this.dynamicForm.get('goterm')
-    const evidenceCode = this.dynamicForm.get('evidenceCode')
-    const reference = this.dynamicForm.get('reference')
+    const goterm = this.dynamicForm.get('goterm');
 
     const term = {
-      "id": rootTerm.id,
-      "label": rootTerm.label,
-      "rootTypes": [
+      'id': rootTerm.id,
+      'label': rootTerm.label,
+      'rootTypes': [
         {
-          "id": rootTerm.id,
+          'id': rootTerm.id,
         }
       ],
-    }
+    };
 
     goterm.patchValue(term);
 
-    evidenceCode.patchValue({
-      id: noctuaFormConfig.evidenceAutoPopulate.nd.evidence.id,
-      label: noctuaFormConfig.evidenceAutoPopulate.nd.evidence.label
-    });
+    if (this.evidences.length === 0) {
+      this.addEvidence();
+    }
 
-    reference.patchValue(noctuaFormConfig.evidenceAutoPopulate.nd.reference);
+    const evidenceGroup = this.evidences.at(0) as FormGroup;
+    evidenceGroup.patchValue({
+      evidenceCode: {
+        id: noctuaFormConfig.evidenceAutoPopulate.nd.evidence.id,
+        label: noctuaFormConfig.evidenceAutoPopulate.nd.evidence.label
+      },
+      reference: noctuaFormConfig.evidenceAutoPopulate.nd.reference
+    });
   }
 
   openCommentsForm() {
