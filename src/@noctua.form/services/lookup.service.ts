@@ -16,6 +16,7 @@ import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 import * as ShapeUtils from './../data/config/shape-utils';
 import { GOlrResponse } from './../models/golr';
 import { AutocompleteType } from './../models/autocomplete';
+import { GoBiologicalPhase } from './../data/config/entity-definition';
 
 declare const require: any;
 
@@ -71,10 +72,10 @@ export class NoctuaLookupService {
   search(searchText: string, categories: GoCategory[]): Observable<GOlrResponse[]> {
 
     const reqs = ShapeUtils.getTermLookup(categories);
-    return this.termLookup(searchText, reqs.requestParams);
+    return this.termLookup(searchText, reqs.requestParams, categories);
   }
 
-  termLookup(searchText, requestParams) {
+  termLookup(searchText, requestParams, categories?: GoCategory[]) {
     const self = this;
     requestParams.q = NoctuaUtils.formatSolrQueryString(searchText);
     const params = new HttpParams({
@@ -84,7 +85,7 @@ export class NoctuaLookupService {
 
     return this.httpClient.jsonp(url, 'json.wrf').pipe(
       map(response => {
-        const result = this._lookupMap(response);
+        const result = this._lookupMap(response, categories);
         return result;
       }),
       catchError(err => {
@@ -519,8 +520,9 @@ export class NoctuaLookupService {
     return article;
   }
 
-  private _lookupMap(response): GOlrResponse[] {
+  private _lookupMap(response, categories?: GoCategory[]): GOlrResponse[] {
     const self = this;
+    const allowNotAnnotatable = categories?.some(cat => cat.category === GoBiologicalPhase.category);
     const data = response.response.docs;
     const result: GOlrResponse[] = data.map((item) => {
       let xref;
@@ -539,7 +541,7 @@ export class NoctuaLookupService {
         rootTypes: self._makeEntitiesArray(item.isa_closure, item.isa_closure_label),
         xref: xref,
         neighborhoodGraphJson: item.neighborhood_graph_json,
-        notAnnotatable: !item.subset?.includes('gocheck_do_not_annotate')
+        notAnnotatable: allowNotAnnotatable || !item.subset?.includes('gocheck_do_not_annotate')
       } as GOlrResponse;
     });
 
