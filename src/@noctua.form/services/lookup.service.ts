@@ -116,19 +116,22 @@ export class NoctuaLookupService {
       return [];
     }
 
+    const allowNotAnnotatable = categories.some(cat => cat.category === GoBiologicalPhase.category);
+
     const results: GOlrResponse[] = this.termList.map((node) => {
+      const isPhase = node.rootTypes?.some(rt => rt.id === GoBiologicalPhase.category);
       return {
         id: node.term.id,
         label: node.term.label,
         rootTypes: node.rootTypes,
-        notAnnotatable: true,
+        notAnnotatable: allowNotAnnotatable || !isPhase,
       } as GOlrResponse;
 
     }).filter((result) =>
       result.rootTypes.some((rootType) =>
         categories.some((category) => category.category === rootType.id)
       )
-    );;
+    );
 
     return results;
 
