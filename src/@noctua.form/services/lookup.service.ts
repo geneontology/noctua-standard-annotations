@@ -16,7 +16,9 @@ import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 import * as ShapeUtils from './../data/config/shape-utils';
 import { GOlrResponse } from './../models/golr';
 import { AutocompleteType } from './../models/autocomplete';
-import { GoBiologicalPhase } from './../data/config/entity-definition';
+import { GoBiologicalPhase, UberonStage } from './../data/config/entity-definition';
+
+const PHASE_CATEGORIES = new Set([GoBiologicalPhase.category, UberonStage.category]);
 
 declare const require: any;
 
@@ -116,10 +118,10 @@ export class NoctuaLookupService {
       return [];
     }
 
-    const allowNotAnnotatable = categories.some(cat => cat.category === GoBiologicalPhase.category);
+    const allowNotAnnotatable = categories.some(cat => PHASE_CATEGORIES.has(cat.category));
 
     const results: GOlrResponse[] = this.termList.map((node) => {
-      const isPhase = node.rootTypes?.some(rt => rt.id === GoBiologicalPhase.category);
+      const isPhase = node.rootTypes?.some(rt => PHASE_CATEGORIES.has(rt.id));
       return {
         id: node.term.id,
         label: node.term.label,
@@ -525,7 +527,7 @@ export class NoctuaLookupService {
 
   private _lookupMap(response, categories?: GoCategory[]): GOlrResponse[] {
     const self = this;
-    const allowNotAnnotatable = categories?.some(cat => cat.category === GoBiologicalPhase.category);
+    const allowNotAnnotatable = categories?.some(cat => PHASE_CATEGORIES.has(cat.category));
     const data = response.response.docs;
     const result: GOlrResponse[] = data.map((item) => {
       let xref;
