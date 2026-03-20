@@ -2,26 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TreeModule } from '@ali-hm/angular-tree-component';
-import { NoctuaFormComponent } from './noctua-form.component';
 import { NoctuaSharedModule } from './../../../../@noctua/shared.module';
 import { NoctuaFormDialogService } from './services/dialog.service';
-import { ActivityFormComponent } from './cam/activity/activity-form/activity-form.component';
-import { EntityFormComponent } from './cam/activity/activity-form/entity-form/entity-form.component';
-import { CamTableComponent } from './cam/cam-table/cam-table.component';
 import { CamFormComponent } from './cam/cam-form/cam-form.component';
 import { AddEvidenceDialogComponent } from './dialogs/add-evidence/add-evidence.component';
 import { ActivityErrorsDialogComponent } from './dialogs/activity-errors/activity-errors.component';
 import { BeforeSaveDialogComponent } from './dialogs/before-save/before-save.component';
 import { CreateFromExistingDialogComponent } from './dialogs/create-from-existing/create-from-existing.component';
-import { LinkToExistingDialogComponent } from './dialogs/link-to-existing/link-to-existing.component';
 import { SelectEvidenceDialogComponent } from './dialogs/select-evidence/select-evidence.component';
 import { SearchDatabaseDialogComponent } from './dialogs/search-database/search-database.component';
-import { ActivityConnectorFormComponent } from './cam/activity/activity-connector-form/activity-connector-form.component';
-import { ActivityTableComponent } from './cam/cam-table/activity-table/activity-table.component';
-import { GraphPreviewComponent } from './cam/cam-preview/graph-preview/graph-preview.component';
 import { NoctuaConfirmDialogModule } from '@noctua/components';
-import { CamPreviewComponent } from './cam/cam-preview/cam-preview.component';
-import { CamGraphComponent } from './cam/cam-preview/cam-graph/cam-graph.component';
 import { NoctuaEditorModule } from '@noctua.editor/noctua-editor.module';
 import { PreviewActivityDialogComponent } from './dialogs/preview-activity/preview-activity.component';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
@@ -46,36 +36,15 @@ import { SearchEvidenceDialogComponent } from './dialogs/search-evidence/search-
 import { SelectEvidenceComponent } from './components/select-evidence/select-evidence.component';
 import { MatTreeModule } from '@angular/material/tree';
 import { CamErrorsDialogComponent } from './dialogs/cam-errors/cam-errors.component';
-import { EvidenceTableComponent } from './cam/cam-table/activity-table/evidence-table/evidence-table.component';
-import { ActivityTreeComponent } from './cam/cam-table/activity-tree/activity-tree.component';
-import { ActivityTreeNodeComponent } from './cam/cam-table/activity-tree/activity-tree-node/activity-tree-node.component';
-import { CreateActivityDialogComponent } from './dialogs/create-activity/create-activity.component';
-import { ActivityTreeTableComponent } from './cam/cam-table/activity-tree-table/activity-tree-table.component';
-import { PreviewActivityComponent } from './cam/activity/preview-activity/preview-activity.component';
 import { NoctuaSearchBaseModule } from '@noctua.search';
 import { CopyModelComponent } from './cam/copy-model/copy-model.component';
 import { ResizableModule } from 'angular-resizable-element';
 import { NoctuaTermDetailComponent } from './components/term-detail/term-detail.component';
-import { CamStatsComponent } from './components/cam-stats/cam-stats.component';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { GeneralStatsComponent } from './components/cam-stats/general-stats/general-stats.component';
-import { AspectStatsComponent } from './components/cam-stats/aspect-stats/aspect-stats.component';
-import { ContributionStatsComponent } from './components/cam-stats/contribution-stats/contribution-stats.component';
-import { StatementStatsComponent } from './components/cam-stats/statement-stats/statement-stats.component';
-import { GPStatsComponent } from './components/cam-stats/gp-stats/gp-stats.component';
-import { ActivityFormTableNodeComponent } from './cam/cam-table/activity-form-table/activity-form-table-node/activity-form-table-node.component';
-import { ActivityFormTableComponent } from './cam/cam-table/activity-form-table/activity-form-table.component';
-import { EvidenceFormTableComponent } from './cam/cam-table/activity-form-table/evidence-table/evidence-table.component';
 import { ConfirmCopyModelDialogComponent } from './dialogs/confirm-copy-model/confirm-copy-model.component';
 import { CamToolbarComponent } from './cam/cam-toolbar/cam-toolbar.component';
 import { CommentsDialogComponent } from './dialogs/comments/comments.component';
 
-const routes = [
-  {
-    path: 'f',
-    component: NoctuaFormComponent
-  }
-];
+const routes = [];
 
 @NgModule({
   imports: [
@@ -87,7 +56,6 @@ const routes = [
     NoctuaConfirmDialogModule,
     NoctuaEditorModule,
     NoctuaSearchBaseModule,
-    NgxChartsModule,
 
     //Material
     MatAutocompleteModule,
@@ -112,34 +80,17 @@ const routes = [
     ResizableModule,
   ],
   exports: [
-    ActivityFormComponent,
-    EntityFormComponent,
-    CamTableComponent,
     AddEvidenceDialogComponent,
-    CreateActivityDialogComponent,
     ActivityErrorsDialogComponent,
     CamErrorsDialogComponent,
     BeforeSaveDialogComponent,
     CreateFromExistingDialogComponent,
-    LinkToExistingDialogComponent,
     SelectEvidenceDialogComponent,
     SearchDatabaseDialogComponent,
     SearchEvidenceDialogComponent,
     PreviewActivityDialogComponent,
     CamFormComponent,
     CopyModelComponent,
-    ActivityConnectorFormComponent,
-    ActivityTableComponent,
-    ActivityTreeComponent,
-    ActivityTreeTableComponent,
-    ActivityTreeNodeComponent,
-    ActivityFormTableComponent,
-    ActivityFormTableNodeComponent,
-    CamPreviewComponent,
-    PreviewActivityComponent,
-    GraphPreviewComponent,
-    EvidenceFormTableComponent,
-    EvidenceTableComponent,
     ConfirmCopyModelDialogComponent,
     CommentsDialogComponent,
     CamToolbarComponent,
@@ -148,44 +99,19 @@ const routes = [
     NoctuaFormDialogService,
   ],
   declarations: [
-    NoctuaFormComponent,
-    ActivityFormComponent,
-    EntityFormComponent,
-    CamTableComponent,
     AddEvidenceDialogComponent,
-    CreateActivityDialogComponent,
     ActivityErrorsDialogComponent,
     CamErrorsDialogComponent,
     BeforeSaveDialogComponent,
     PreviewActivityDialogComponent,
     CreateFromExistingDialogComponent,
-    LinkToExistingDialogComponent,
     SelectEvidenceDialogComponent,
     SearchDatabaseDialogComponent,
     SearchEvidenceDialogComponent,
     CamFormComponent,
     CopyModelComponent,
-    ActivityConnectorFormComponent,
-    ActivityTableComponent,
-    ActivityTreeTableComponent,
-    EvidenceTableComponent,
-    GraphPreviewComponent,
-    CamPreviewComponent,
-    CamGraphComponent,
-    ActivityTreeComponent,
-    ActivityTreeNodeComponent,
-    ActivityFormTableComponent,
-    ActivityFormTableNodeComponent,
     SelectEvidenceComponent,
-    PreviewActivityComponent,
     NoctuaTermDetailComponent,
-    CamStatsComponent,
-    GPStatsComponent,
-    AspectStatsComponent,
-    GeneralStatsComponent,
-    ContributionStatsComponent,
-    StatementStatsComponent,
-    EvidenceFormTableComponent,
     ConfirmCopyModelDialogComponent,
     CommentsDialogComponent,
     CamToolbarComponent

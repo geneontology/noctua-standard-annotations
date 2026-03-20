@@ -6,22 +6,13 @@ import {
     CamService,
     NoctuaUserService,
     NoctuaFormConfigService,
-    NoctuaActivityFormService,
     ActivityType,
-    LeftPanel,
 } from '@geneontology/noctua-form-base';
-import { LeftPanel as CommonLeftPanel } from '@noctua.common/models/menu-panels';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { environment } from 'environments/environment';
-import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 import { ArtBasket } from '@noctua.search/models/art-basket';
-import { NoctuaReviewSearchService } from '@noctua.search/services/noctua-review-search.service';
-import { NoctuaSearchDialogService } from '@noctua.search/services/dialog.service';
-import { NoctuaAnnouncementService } from '@noctua.announcement/services/cam.service';
-import { Announcement } from '@noctua.announcement/models/announcement';
-import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
 
 @Component({
     selector: 'noctua-toolbar',
@@ -32,8 +23,6 @@ import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.ser
 export class NoctuaToolbarComponent implements OnInit, OnDestroy {
     ActivityType = ActivityType;
     artBasket: ArtBasket
-    announcements: Announcement[];
-    announcement: Announcement;
     public cam: Cam;
     userStatusOptions: any[];
     showLoadingBar: boolean;
@@ -56,14 +45,8 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
     constructor(
         private router: Router,
         private camService: CamService,
-        private noctuaCommonMenuService: NoctuaCommonMenuService,
-        private noctuaAnnouncementService: NoctuaAnnouncementService,
         public noctuaUserService: NoctuaUserService,
-        private noctuaSearchDialogService: NoctuaSearchDialogService,
         public noctuaConfigService: NoctuaFormConfigService,
-        public noctuaActivityFormService: NoctuaActivityFormService,
-        public noctuaReviewSearchService: NoctuaReviewSearchService,
-        public noctuaSearchMenuService: NoctuaSearchMenuService,
     ) {
         this._unsubscribeAll = new Subject();
 
@@ -101,29 +84,6 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
                 this.cam = cam;
             });
 
-        this.noctuaReviewSearchService.onArtBasketChanged.pipe(
-            takeUntil(this._unsubscribeAll))
-            .subscribe((artBasket: ArtBasket) => {
-                if (artBasket) {
-                    this.artBasket = artBasket;
-                }
-            });
-        this.noctuaAnnouncementService.onAnnouncementsChanged.pipe(
-            takeUntil(this._unsubscribeAll))
-            .subscribe((announcements: Announcement[]) => {
-                if (announcements) {
-                    this.announcements = announcements
-                }
-            });
-
-        this.noctuaAnnouncementService.onAnnouncementChanged.pipe(
-            takeUntil(this._unsubscribeAll))
-            .subscribe((announcement: Announcement) => {
-                if (announcement) {
-                    this.announcement = announcement
-                }
-            });
-
         if (this.isDev && this.isBeta) {
             this.betaText = 'beta dev test'
         } else if (this.isDev) {
@@ -131,28 +91,6 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
         } else if (this.isBeta) {
             this.betaText = 'beta'
         }
-    }
-
-    openApps() {
-        this.noctuaCommonMenuService.selectLeftSidenav(CommonLeftPanel.apps)
-        this.noctuaCommonMenuService.openLeftSidenav();
-    }
-
-    openAnnouncements() {
-        this.noctuaCommonMenuService.selectLeftSidenav(CommonLeftPanel.announcement)
-        this.noctuaCommonMenuService.openLeftSidenav();
-    }
-
-    openCamForm() {
-        this.camService.initializeForm(this.cam);
-        this.noctuaCommonMenuService.selectLeftPanel(LeftPanel.camForm);
-        this.noctuaCommonMenuService.openLeftDrawer();
-    }
-
-    openActivityForm(activityType: ActivityType) {
-        this.noctuaActivityFormService.setActivityType(activityType);
-        this.noctuaCommonMenuService.selectLeftPanel(LeftPanel.activityForm);
-        this.noctuaCommonMenuService.openLeftDrawer();
     }
 
     logout() {
@@ -164,11 +102,8 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
             }
         };
 
-        if (self.artBasket?.cams.length > 0) {
-            this.noctuaSearchDialogService.openCamsUnsavedDialog(success);
-        } else {
-            window.location.href = self.noctuaConfigService.logoutUrl;
-        }
+        window.location.href = self.noctuaConfigService.logoutUrl;
+
     }
 
     ngOnDestroy(): void {

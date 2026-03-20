@@ -23,21 +23,12 @@
         <div [ngSwitch]="noctuaCommonMenuService.selectedLeftPanel" class="h-full">
           <noc-cam-form [panelDrawer]="leftDrawer" *ngSwitchCase="LeftPanel.camForm">
           </noc-cam-form>
-          <noc-copy-model [panelDrawer]="leftDrawer" [panelSide]="'left'" *ngSwitchCase="LeftPanel.copyModel">
-          </noc-copy-model>
-          <noc-find-replace [panelDrawer]="leftDrawer"
-            [hidden]="noctuaCommonMenuService.selectedLeftPanel !== LeftPanel.findReplace">
-          </noc-find-replace>
-
-          <noc-cam-terms [panelDrawer]="leftDrawer"
-            [hidden]="noctuaCommonMenuService.selectedLeftPanel !== LeftPanel.camTermsSummary"></noc-cam-terms>
         </div>
       </mat-drawer>
       <mat-drawer-content class="w-full h-full pb-96" fxLayout="column" fxLayoutAlign="start stretch">
-        <div *ngIf="cam" [ngSwitch]="noctuaCommonMenuService.selectedMiddlePanel">
+        <div *ngIf="cam">
           <noc-annotation-form> </noc-annotation-form>
-          <noc-annotations-table *ngSwitchCase="MiddlePanel.CAM_TABLE" [cam]="cam"
-            [options]="tableOptions"></noc-annotations-table>
+          <noc-annotations-table [cam]="cam" [options]="tableOptions"></noc-annotations-table>
         </div>
       </mat-drawer-content>
       <mat-drawer #rightDrawer class="noc-right-drawer" mode="side" position="end">

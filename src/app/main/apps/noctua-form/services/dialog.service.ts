@@ -7,7 +7,6 @@ import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack
 import { ActivityErrorsDialogComponent } from './../dialogs/activity-errors/activity-errors.component';
 import { BeforeSaveDialogComponent } from './../dialogs/before-save/before-save.component';
 import { CreateFromExistingDialogComponent } from './../dialogs/create-from-existing/create-from-existing.component';
-import { LinkToExistingDialogComponent } from './../dialogs/link-to-existing/link-to-existing.component';
 import { SelectEvidenceDialogComponent } from './../dialogs/select-evidence/select-evidence.component';
 import { SearchDatabaseDialogComponent } from './../dialogs/search-database/search-database.component';
 
@@ -20,7 +19,6 @@ import { NoctuaConfirmDialogComponent } from '@noctua/components/confirm-dialog/
 import { PreviewActivityDialogComponent } from '../dialogs/preview-activity/preview-activity.component';
 import { SearchEvidenceDialogComponent } from '../dialogs/search-evidence/search-evidence.component';
 import { CamErrorsDialogComponent } from '../dialogs/cam-errors/cam-errors.component';
-import { CreateActivityDialogComponent } from '../dialogs/create-activity/create-activity.component';
 import { AddEvidenceDialogComponent } from '../dialogs/add-evidence/add-evidence.component';
 import { ConfirmCopyModelDialogComponent } from '../dialogs/confirm-copy-model/confirm-copy-model.component';
 import { CommentsDialogComponent } from '../dialogs/comments/comments.component';
@@ -66,18 +64,6 @@ export class NoctuaFormDialogService {
     }
 
 
-    openCreateActivityDialog(formType: FormType): void {
-        this.dialogRef = this._matDialog.open(CreateActivityDialogComponent, {
-            panelClass: 'noc-activity-create-dialog',
-            data: {
-                formType
-            }
-        });
-        this.dialogRef.afterClosed()
-            .subscribe(response => {
-
-            });
-    }
 
     openActivityErrorsDialog(errors: any[]): void {
         this.dialogRef = this._matDialog.open(ActivityErrorsDialogComponent, {
@@ -175,17 +161,6 @@ export class NoctuaFormDialogService {
         this.dialogRef.afterClosed()
             .subscribe(response => {
 
-            });
-    }
-
-    openLinkToExistingDialogComponent(data, success): void {
-        this.dialogRef = this._matDialog.open(LinkToExistingDialogComponent, {
-            panelClass: 'noc-link-to-existing-dialog',
-            data
-        });
-        this.dialogRef.afterClosed()
-            .subscribe((response) => {
-                success(response);
             });
     }
 
