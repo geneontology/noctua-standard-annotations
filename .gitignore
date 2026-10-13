@@ -1,42 +1,45 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# compiled output
-/dist
-/tmp
-/out-tsc
+# Dependencies / build output
+node_modules
+dist
+dist-ssr
+/coverage
+*.local
 
-# dependencies
-/node_modules
-
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# IDE - VSCode
+# Editor directories and files
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# misc
-/.angular/cache
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
-/typings
+# Local env overrides (the per-mode .env.development/.staging/.production files are tracked)
+.env
+.env.local
+.env.*.local
+
+downloads
 
 # Claude Code
 .claude/settings.local.json
+
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/
 
 # System Files
 .DS_Store
