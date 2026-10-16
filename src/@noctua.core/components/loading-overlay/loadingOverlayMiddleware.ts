@@ -3,7 +3,7 @@ import { hide, show } from './loadingOverlaySlice'
 import { OperationType } from '@/features/gocam/models/operations'
 import type { Operation } from '@/features/gocam/models/operations'
 
-const HIDE_LINGER_MS = 1000
+const HIDE_LINGER_MS = 300
 
 const TRACKED_ENDPOINTS = new Set(['getGraphModel', 'updateGraphModel', 'resetGraphModel'])
 
@@ -27,25 +27,47 @@ const messageFor = (endpointName: string, originalArgs: unknown): string => {
   }
 }
 
-export const loadingOverlayMiddleware: Middleware = ({ dispatch }) => next => action => {
-  const result = next(action)
+const modelIdOf = (originalArgs: unknown): string | undefined =>
+  (originalArgs as { modelId?: string } | undefined)?.modelId
 
-  if (typeof action !== 'object' || action === null) return result
+/**
+ * The global overlay for the first load of a model and for every write. The
+ * refresh that follows a write runs under the page the user is looking at, as in
+ * Angular, rather than blocking it a second time. Each overlay is paired with its
+ * request id, so a rejection RTK Query raises without a pending never hides another.
+ */
+export const loadingOverlayMiddleware: Middleware = ({ dispatch }) => {
+  const loadedModels = new Set<string>()
+  const shown = new Set<string>()
 
-  const a = action as {
-    type?: string
-    meta?: { arg?: { endpointName?: string; originalArgs?: unknown } }
+  return next => action => {
+    const result = next(action)
+
+    if (typeof action !== 'object' || action === null) return result
+
+    const a = action as {
+      type?: string
+      meta?: { requestId?: string; arg?: { endpointName?: string; originalArgs?: unknown } }
+    }
+
+    const endpointName = a.meta?.arg?.endpointName
+    const requestId = a.meta?.requestId
+    if (!endpointName || !TRACKED_ENDPOINTS.has(endpointName) || !a.type || !requestId) {
+      return result
+    }
+    const originalArgs = a.meta?.arg?.originalArgs
+    const modelId = endpointName === 'getGraphModel' ? modelIdOf(originalArgs) : undefined
+
+    if (a.type.endsWith('/pending')) {
+      if (modelId && loadedModels.has(modelId)) return result
+      shown.add(requestId)
+      dispatch(show(messageFor(endpointName, originalArgs)))
+    } else if (a.type.endsWith('/fulfilled') || a.type.endsWith('/rejected')) {
+      if (modelId && a.type.endsWith('/fulfilled')) loadedModels.add(modelId)
+      if (!shown.delete(requestId)) return result
+      setTimeout(() => dispatch(hide()), HIDE_LINGER_MS)
+    }
+
+    return result
   }
-
-  const endpointName = a.meta?.arg?.endpointName
-  if (!endpointName || !TRACKED_ENDPOINTS.has(endpointName)) return result
-  if (!a.type) return result
-
-  if (a.type.endsWith('/pending')) {
-    dispatch(show(messageFor(endpointName, a.meta?.arg?.originalArgs)))
-  } else if (a.type.endsWith('/fulfilled') || a.type.endsWith('/rejected')) {
-    setTimeout(() => dispatch(hide()), HIDE_LINGER_MS)
-  }
-
-  return result
 }

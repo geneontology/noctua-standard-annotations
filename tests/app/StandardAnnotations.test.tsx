@@ -6,17 +6,24 @@ import { mockBarista, batchSuccess } from '@tests/fixtures/barista'
 import { saeModelRaw, SAE_MODEL_ID } from '@tests/fixtures/saeModel'
 import { CURATOR } from '@tests/fixtures/state'
 import StandardAnnotations from '@/app/StandardAnnotations'
+import NotSavedBar from '@/app/layout/NotSavedBar'
+import apiService from '@/app/store/apiService'
 
 vi.mock('@/features/search/components/Autocomplete', () => import('@tests/mocks/autocompleteMock'))
 
-const renderPage = (search: string, loggedIn = true) =>
+const renderPage = (search: string, loggedIn = true, userChecked = true) =>
   renderWithProviders(
     <MemoryRouter initialEntries={[`/${search}`]}>
+      <NotSavedBar />
       <StandardAnnotations />
     </MemoryRouter>,
     {
       preloadedState: {
-        auth: { user: loggedIn ? CURATOR : null, baristaToken: loggedIn ? 'tok-123' : null },
+        auth: {
+          user: loggedIn ? CURATOR : null,
+          baristaToken: loggedIn ? 'tok-123' : null,
+          userChecked,
+        },
       },
     }
   )
@@ -49,7 +56,7 @@ describe('StandardAnnotations page', () => {
 
   it('offers Reset and Save for a model with unsaved changes', async () => {
     const { requests } = mockBarista(request =>
-      request.params.get('intention') === 'query' && request.method === 'GET'
+      request.operations[0]?.operation === 'get'
         ? batchSuccess({ ...saeModelRaw, 'modified-p': true })
         : batchSuccess(saeModelRaw)
     )
@@ -63,5 +70,31 @@ describe('StandardAnnotations page', () => {
     await waitFor(() =>
       expect(requests.some(r => r.operations[0]?.operation === 'reset')).toBe(true)
     )
+  })
+
+  it('waits for Barista to confirm a stored token before reading the model', async () => {
+    const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
+    renderPage(`?model_id=${SAE_MODEL_ID}`, true, false)
+    await new Promise(resolve => setTimeout(resolve, 100))
+    expect(requests).toHaveLength(0)
+  })
+
+  it('keeps the model on the page when a refresh fails', async () => {
+    let fail = false
+    mockBarista(() =>
+      fail ? { 'message-type': 'error', message: 'Minerva is down' } : batchSuccess(saeModelRaw)
+    )
+    const { store } = renderPage(`?model_id=${SAE_MODEL_ID}`)
+    expect(await screen.findAllByTestId('annotation-row')).toHaveLength(9)
+
+    fail = true
+    // The tag is added by camApiSlice's enhanceEndpoints, which the base api type doesn't know.
+    store.dispatch(apiService.util.invalidateTags(['graph' as never]))
+
+    await waitFor(() =>
+      expect(store.getState().toast.message).toBe('Could not refresh the model: Minerva is down')
+    )
+    expect(screen.getAllByTestId('annotation-row')).toHaveLength(9)
+    expect(screen.queryByText(/Could not load/)).not.toBeInTheDocument()
   })
 })

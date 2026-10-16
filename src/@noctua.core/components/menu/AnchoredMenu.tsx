@@ -110,7 +110,11 @@ const AnchoredMenu = ({
       ) {
         return
       }
-      if (target.closest('[class*="Select"], [class*="Combobox"], [class*="Popover-dropdown"], [class*="Menu-dropdown"]')) {
+      if (
+        target.closest(
+          '[class*="Select"], [class*="Combobox"], [class*="Popover-dropdown"], [class*="Menu-dropdown"]'
+        )
+      ) {
         return
       }
       onClose()
@@ -146,18 +150,40 @@ interface MenuItemProps {
   className?: string
   /** Renders the row inert and greyed — the action exists but isn't available. */
   disabled?: boolean
+  /** Makes the whole row a link (opened in a new tab), not a button wrapping one. */
+  href?: string
   children: ReactNode
 }
 
-export const MenuItem = ({ onClick, className, disabled = false, children }: MenuItemProps) => (
-  <button
-    type="button"
-    onClick={onClick}
-    disabled={disabled}
-    className={`block w-full px-3 py-1.5 text-left text-sm text-gray-900 hover:bg-primary-200 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent ${className ?? ''}`}
-  >
-    {children}
-  </button>
-)
+const MENU_ITEM_CLASS =
+  'block w-full px-3 py-1.5 text-left text-sm text-gray-900 hover:bg-primary-200 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent'
+
+export const MenuItem = ({
+  onClick,
+  className,
+  disabled = false,
+  href,
+  children,
+}: MenuItemProps) =>
+  href && !disabled ? (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={onClick}
+      className={`${MENU_ITEM_CLASS} !no-underline ${className ?? ''}`}
+    >
+      {children}
+    </a>
+  ) : (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`${MENU_ITEM_CLASS} ${className ?? ''}`}
+    >
+      {children}
+    </button>
+  )
 
 export default AnchoredMenu

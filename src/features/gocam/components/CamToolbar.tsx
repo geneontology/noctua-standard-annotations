@@ -63,7 +63,7 @@ const CamToolbar: React.FC = () => {
         <div className="flex h-full max-w-[320px] items-center border-r border-gray-200 pr-3">
           <span data-testid="model-title" className="grow truncate pr-2 text-gray-800">
             <span className="mr-1 font-semibold text-gray-900">Title:</span>
-            {cam.title || <span className="italic text-gray-400">Untitled</span>}
+            {cam.title || <span className="text-gray-400 italic">Untitled</span>}
           </span>
           <button
             data-testid="edit-model-title"
@@ -95,11 +95,10 @@ const CamToolbar: React.FC = () => {
             aria-label="Model comments"
           >
             <FaComment size={16} />
-            {commentCount > 0 && (
-              <span className="absolute right-0 top-0 rounded-md bg-green-700 px-1 py-px text-[10px] font-medium text-white">
-                {commentCount}
-              </span>
-            )}
+            {/* Always shown, 0 included, as the Angular toolbar did. */}
+            <span className="absolute top-0 right-0 rounded-md bg-green-700 px-1 py-px text-[10px] font-medium text-white">
+              {commentCount}
+            </span>
           </ActionIcon>
         </Tooltip>
       </div>
@@ -127,7 +126,7 @@ const CamToolbar: React.FC = () => {
         </Chip>
       )}
 
-      <ContributorChips contributors={cam.contributors || []} />
+      <ContributorChips contributors={cam.contributors || []} onClick={openDetails} />
 
       <div className="ml-auto flex shrink-0 items-center justify-end gap-2">
         <ToolbarLinkMenu label="VIEW IN" items={viewInItems} />

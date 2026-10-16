@@ -88,4 +88,26 @@ describe('CamDetailsForm', () => {
     expect(requests[0].params.get('provided-by')).toBe('https://www.uniprot.org')
     expect(store.getState().auth.user?.group?.id).toBe('https://www.uniprot.org')
   })
+
+  it('lists contributors and groups, and opens the model in the other editors', () => {
+    renderWithProviders(<CamDetailsForm />, { preloadedState: stateWith() })
+    const summary = screen.getByTestId('model-summary')
+    expect(summary).toHaveTextContent('Groups:')
+    expect(summary).toHaveTextContent('Contributors:')
+    const href = (name: string) => screen.getByRole('link', { name }).getAttribute('href')
+    expect(href('Pathway Editor')).toContain(
+      `noctua-visual-pathway-editor?model_id=${encodeURIComponent(SAE_MODEL_ID)}`
+    )
+    expect(href('Form Editor')).toContain('noctua-form?model_id=')
+    expect(href('Graph Editor')).toContain(`/editor/graph/${SAE_MODEL_ID}?barista_token=`)
+  })
+
+  it('asks for a state when the model has none, rather than writing "development"', () => {
+    const stateless = loadModel({
+      ...saeModelRaw,
+      annotations: saeModelRaw.annotations.filter(a => a.key !== 'state'),
+    })
+    renderWithProviders(<CamDetailsForm />, { preloadedState: stateWith({ model: stateless }) })
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
+  })
 })

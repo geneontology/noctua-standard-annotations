@@ -40,18 +40,15 @@ const Toolbar: React.FC = () => {
           </a>
           <a
             className="mr-1 text-xl text-gray-900 no-underline hover:text-black"
-            href="/"
-            onClick={e => {
-              e.preventDefault()
-              window.location.reload()
-            }}
+            // This model's page (Angular `homeUrl`), so a new tab opens the same model.
+            href={window.location.href}
           >
             Standard Annotations
           </a>
           {envLabel && <span className="text-xl text-gray-700">{envLabel}</span>}
         </div>
         {!isProd && (
-          <div className="text-2xs font-bold italic text-gray-700">
+          <div className="text-2xs font-bold text-gray-700 italic">
             Testing Version. Visit{' '}
             <a
               className="underline hover:text-black"
@@ -85,20 +82,13 @@ const Toolbar: React.FC = () => {
         </div>
 
         {/* Help */}
-        <div className="flex flex-row items-center border-r border-gray-300 pl-3 pr-3">
+        <div className="flex flex-row items-center border-r border-gray-300 pr-3 pl-3">
           <Button variant="subtle" onClick={e => helpMenu.open(e.currentTarget)}>
             Help
           </Button>
           <AnchoredMenu anchorEl={helpMenu.anchor} open={helpMenu.isOpen} onClose={helpMenu.close}>
-            <MenuItem onClick={helpMenu.close}>
-              <a
-                href={EXTERNAL_LINKS.NOCTUA_USERS_GUIDE}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full"
-              >
-                Noctua User&apos;s Guide
-              </a>
+            <MenuItem href={EXTERNAL_LINKS.NOCTUA_USERS_GUIDE} onClick={helpMenu.close}>
+              Noctua User&apos;s Guide
             </MenuItem>
           </AnchoredMenu>
         </div>

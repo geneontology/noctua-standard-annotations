@@ -3,7 +3,7 @@ import { Button, Select, Textarea } from '@mantine/core'
 import { v4 as uuidv4 } from 'uuid'
 import { useAppSelector, useAppDispatch } from '@/app/hooks'
 import { selectCamModel } from '@/features/gocam/slices/camSlice'
-import { selectAuthUser, setUserGroup } from '@/features/auth/slices/authSlice'
+import { selectAuthUser, selectBaristaToken, setUserGroup } from '@/features/auth/slices/authSlice'
 import { closeDialog } from '@/@noctua.core/components/dialog/dialogSlice'
 import { showToast } from '@/@noctua.core/components/toast/toastSlice'
 import SectionHeading from '@/@noctua.core/components/form/SectionHeading'
@@ -12,6 +12,7 @@ import type { CommentItem } from '@/@noctua.core/components/form/CommentListEdit
 import { MODEL_STATES } from '../data/camConstants'
 import { getMutationErrorMessage, useUpdateGraphModelMutation } from '../slices/camApiSlice'
 import { buildSaveModelDetailsOperations } from '../services/modelOperations'
+import { useModelUrls } from '../hooks/useModelUrls'
 
 const toItems = (comments: string[]): CommentItem[] =>
   comments.map(text => ({ uid: uuidv4(), text }))
@@ -25,10 +26,12 @@ const CamDetailsForm: React.FC = () => {
   const cam = useAppSelector(selectCamModel)
   const user = useAppSelector(selectAuthUser)
   const isLoggedIn = !!user
+  const urls = useModelUrls(cam?.id, useAppSelector(selectBaristaToken))
   const [updateGraphModel, { isLoading }] = useUpdateGraphModelMutation()
 
   const [title, setTitle] = useState(cam?.title ?? '')
-  const [state, setState] = useState(cam?.state ?? 'development')
+  // No state is chosen for the user: a model without one must be given one (Angular `required`).
+  const [state, setState] = useState(cam?.state ?? '')
   const [groupId, setGroupId] = useState<string | null>(user?.group?.id ?? null)
   const [comments, setComments] = useState<CommentItem[]>(() => toItems(cam?.comments ?? []))
 
@@ -89,7 +92,9 @@ const CamDetailsForm: React.FC = () => {
           />
           <Select
             label="State"
-            value={state}
+            placeholder="Choose a state"
+            required
+            value={state || null}
             onChange={value => value && setState(value)}
             disabled={!isLoggedIn}
             size="sm"
@@ -114,6 +119,30 @@ const CamDetailsForm: React.FC = () => {
             readOnly={!isLoggedIn}
           />
         </div>
+        <SectionHeading>Model Summary</SectionHeading>
+        <dl
+          className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 px-4 py-4 text-xs"
+          data-testid="model-summary"
+        >
+          <dt className="font-semibold">Contributors:</dt>
+          <dd>{cam.contributors.map(c => c.name ?? c.uri).join('; ') || '—'}</dd>
+          <dt className="font-semibold">Groups:</dt>
+          <dd>{cam.groups.map(g => g.label ?? g.id).join('; ') || '—'}</dd>
+          <dt className="font-semibold">Open In:</dt>
+          <dd className="flex flex-wrap gap-x-2">
+            <a href={urls?.pathwayEditor} target="_blank" rel="noopener noreferrer">
+              Pathway Editor
+            </a>
+            <span>&bull;</span>
+            <a href={urls?.formEditor} target="_blank" rel="noopener noreferrer">
+              Form Editor
+            </a>
+            <span>&bull;</span>
+            <a href={urls?.graphEditor} target="_blank" rel="noopener noreferrer">
+              Graph Editor
+            </a>
+          </dd>
+        </dl>
       </div>
 
       <div className="flex shrink-0 justify-end gap-2 border-t border-gray-200 bg-gray-50 px-4 py-3">
@@ -121,7 +150,7 @@ const CamDetailsForm: React.FC = () => {
           {isLoggedIn ? 'Cancel' : 'Close'}
         </Button>
         {isLoggedIn && (
-          <Button variant="filled" size="sm" onClick={handleSave} disabled={isLoading}>
+          <Button variant="filled" size="sm" onClick={handleSave} disabled={isLoading || !state}>
             {isLoading ? 'Saving...' : 'Save'}
           </Button>
         )}

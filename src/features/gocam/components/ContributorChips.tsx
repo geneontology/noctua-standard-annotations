@@ -12,9 +12,11 @@ const SLATE_CIRCLE = 'border-slate-300 bg-slate-200 text-slate-600'
 
 interface ContributorChipsProps {
   contributors: Contributor[]
+  /** Each chip opens the Model Details form, as in the Angular cam toolbar. */
+  onClick?: () => void
 }
 
-const ContributorChips: React.FC<ContributorChipsProps> = ({ contributors }) => {
+const ContributorChips: React.FC<ContributorChipsProps> = ({ contributors, onClick }) => {
   const overflowMenu = usePopover()
 
   const visible = contributors.slice(0, MAX_VISIBLE)
@@ -30,6 +32,7 @@ const ContributorChips: React.FC<ContributorChipsProps> = ({ contributors }) => 
             chipClass={SLATE_CHIP}
             circleClass={SLATE_CIRCLE}
             className="max-w-[180px]"
+            onClick={onClick}
           >
             {contributor.name ?? contributor.uri}
           </Chip>

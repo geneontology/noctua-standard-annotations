@@ -30,15 +30,8 @@ const ToolbarLinkMenu: React.FC<ToolbarLinkMenuProps> = ({ label, items }) => {
       </Button>
       <AnchoredMenu anchorEl={menu.anchor} open={menu.isOpen} onClose={menu.close}>
         {items.map(item => (
-          <MenuItem key={item.label} onClick={menu.close}>
-            <a
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full"
-            >
-              {item.label}
-            </a>
+          <MenuItem key={item.label} href={item.href} onClick={menu.close}>
+            {item.label}
           </MenuItem>
         ))}
       </AnchoredMenu>

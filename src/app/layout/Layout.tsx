@@ -2,6 +2,7 @@ import type React from 'react'
 import { Outlet } from 'react-router-dom'
 import { useMediaQuery } from '@mantine/hooks'
 import Toolbar from './Toolbar'
+import NotSavedBar from './NotSavedBar'
 import { selectRightDrawerOpen } from '@/@noctua.core/components/drawer/drawerSlice'
 import LoadingOverlay from '@/@noctua.core/components/loading-overlay/LoadingOverlay'
 import { selectAuthUser } from '@/features/auth/slices/authSlice'
@@ -36,6 +37,8 @@ const Layout: React.FC<LayoutProps> = ({ rightDrawerContent }) => {
           Not Logged In: You can only view existing annotations
         </div>
       )}
+
+      <NotSavedBar />
 
       <div className="z-40 w-full shrink-0">
         <CamToolbar />
