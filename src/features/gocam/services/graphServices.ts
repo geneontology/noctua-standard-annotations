@@ -99,7 +99,8 @@ export const transformGraphData = (
           node.contributors.push(getContributor(annotation.value))
           break
         case AnnotationKey.DATE:
-          node.date = annotation.value
+          // Like the Angular reader, the first date wins.
+          if (!node.date) node.date = annotation.value
           break
         case AnnotationKey.PROVIDED_BY:
           node.groups.push(getGroup(annotation.value))
@@ -144,7 +145,7 @@ export const transformGraphData = (
           edge.contributors.push(getContributor(annotation.value))
           break
         case AnnotationKey.DATE:
-          edge.date = annotation.value
+          if (!edge.date) edge.date = annotation.value
           break
         case AnnotationKey.PROVIDED_BY:
           edge.groups.push(getGroup(annotation.value))
@@ -227,7 +228,14 @@ export const describeBatchError = (message: string): string => {
   if (message.toLowerCase().includes('token')) {
     return 'It seems like you have a bad token. Please log in again.'
   }
+  if (message.includes('Empty models should not be saved')) {
+    return "Minerva can't save a model with no annotations left."
+  }
   if (message.includes('UnknownIdentifierException')) {
+    // The batch named an individual that is gone (e.g. edited away in another tab).
+    if (message.includes('No individual found')) {
+      return 'Part of this annotation no longer exists in the model. Reload the page and try again.'
+    }
     return 'The model could not be found.'
   }
   return message

@@ -22,8 +22,12 @@ const metadataOf = (state: RootState): GraphMetadata => ({
 })
 
 /** The m3Batch POST body: token, the acting group, the intention, and the requests. */
-const batchBody = (state: RootState, intention: 'action' | 'query', requests: Operation[]) => {
-  const baristaToken = state.auth.baristaToken || ''
+const batchBody = (
+  state: RootState,
+  intention: 'action' | 'query',
+  requests: Operation[],
+  baristaToken = state.auth.baristaToken || ''
+) => {
   const groupId = state.auth.user?.group?.id || ''
 
   const bodyParams = new URLSearchParams()
@@ -44,22 +48,26 @@ const graphApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
   endpoints: builder => ({
     getGraphModel: builder.query<GraphModelApiResponse | null, GraphQueryArg>({
       async queryFn({ modelId, baristaToken }, queryApi, _extraOptions, baseQuery) {
-        const baseUrl = getBaristaApiUrl(baristaToken)
+        const state = queryApi.getState() as RootState
+        const get: Operation[] = [
+          {
+            entity: OperationEntity.MODEL,
+            operation: OperationType.GET,
+            arguments: { 'model-id': modelId },
+          },
+        ]
 
-        const requests = encodeURIComponent(
-          JSON.stringify([
-            {
-              entity: OperationEntity.MODEL,
-              operation: OperationType.GET,
-              arguments: { 'model-id': modelId },
-            },
-          ])
-        )
-
-        const tokenParam = baristaToken ? `token=${encodeURIComponent(baristaToken)}&` : ''
-        const result = await baseQuery({
-          url: `${baseUrl}?${tokenParam}intention=query&requests=${requests}`,
-        })
+        // Logged in: a privileged POST, so the token stays out of the URL (and
+        // server logs), as the Angular manager sent it. Otherwise a public GET.
+        const result = baristaToken
+          ? await baseQuery({
+              ...batchBody(state, 'query', get, baristaToken),
+              method: 'POST',
+              headers: FORM_HEADERS,
+            })
+          : await baseQuery({
+              url: `${getBaristaApiUrl('')}?intention=query&requests=${encodeURIComponent(JSON.stringify(get))}`,
+            })
 
         if (result.error) return { error: result.error }
 
@@ -67,7 +75,6 @@ const graphApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
         if (errorMessage) return { error: { status: 'CUSTOM_ERROR', error: errorMessage } }
 
         const body = result.data as { data?: unknown } | undefined
-        const state = queryApi.getState() as RootState
 
         return {
           data: body?.data ? { data: transformGraphData(body.data, metadataOf(state)) } : null,
@@ -79,7 +86,10 @@ const graphApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
     updateGraphModel: builder.mutation<GraphModelApiResponse | null, Operation[]>({
       async queryFn(requests, queryApi, _extraOptions, baseQuery) {
         const state = queryApi.getState() as RootState
-        const { url, body } = batchBody(state, 'action', requests)
+        // A save with no edits is a query, as the Angular `storeCam` sent it: other
+        // editors on the model aren't told to rebuild for nothing.
+        const storeOnly = requests.every(op => op.operation === OperationType.STORE)
+        const { url, body } = batchBody(state, storeOnly ? 'query' : 'action', requests)
 
         const result = await baseQuery({ url, method: 'POST', headers: FORM_HEADERS, body })
 

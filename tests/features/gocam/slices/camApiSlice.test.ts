@@ -13,6 +13,7 @@ const endpoints = (apiService as unknown as { endpoints: Record<string, any> }).
 const loggedIn = {
   auth: {
     baristaToken: 'tok-123',
+    userChecked: true,
     user: {
       uri: 'https://orcid.org/0000-0000-0000-0099',
       name: 'Test Curator',
@@ -25,7 +26,7 @@ const loggedIn = {
 afterEach(() => vi.unstubAllGlobals())
 
 describe('getGraphModel', () => {
-  it('reads the model with a query m3Batch, privileged when there is a token', async () => {
+  it('reads the model with a privileged query POST when there is a token', async () => {
     const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
     const store = makeStore()
 
@@ -35,7 +36,8 @@ describe('getGraphModel', () => {
 
     const [request] = requests
     expect(request.url).toBe('http://localhost:3400/api/minerva_local/m3BatchPrivileged')
-    expect(request.method).toBe('GET')
+    // The token goes in the body, never the URL (server logs), as Angular sent it.
+    expect(request.method).toBe('POST')
     expect(request.params.get('intention')).toBe('query')
     expect(request.params.get('token')).toBe('tok-123')
     expect(request.params.has('use-reasoner')).toBe(false)
@@ -51,6 +53,7 @@ describe('getGraphModel', () => {
       endpoints.getGraphModel.initiate({ modelId: SAE_MODEL_ID, baristaToken: '' })
     )
     expect(requests[0].url).toBe('http://localhost:3400/api/minerva_local/m3Batch')
+    expect(requests[0].method).toBe('GET')
     expect(requests[0].params.has('token')).toBe(false)
   })
 
@@ -67,19 +70,29 @@ describe('getGraphModel', () => {
 })
 
 describe('updateGraphModel', () => {
+  const store = {
+    entity: OperationEntity.MODEL,
+    operation: OperationType.STORE,
+    arguments: { 'model-id': SAE_MODEL_ID },
+  }
   const ops = [
     {
       entity: OperationEntity.MODEL,
-      operation: OperationType.STORE,
-      arguments: { 'model-id': SAE_MODEL_ID },
+      operation: OperationType.ADD_ANNOTATION,
+      arguments: { 'model-id': SAE_MODEL_ID, values: [{ key: 'comment', value: 'x' }] },
     },
+    store,
   ]
+
+  it('sends a save with no edits as a query, as the Angular storeCam did', async () => {
+    const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
+    await makeStore(loggedIn).dispatch(endpoints.updateGraphModel.initiate([store]))
+    expect(requests[0].params.get('intention')).toBe('query')
+  })
 
   it('posts an action batch with the token and the acting group', async () => {
     const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
-    const store = makeStore(loggedIn)
-
-    const result = await store.dispatch(endpoints.updateGraphModel.initiate(ops))
+    const result = await makeStore(loggedIn).dispatch(endpoints.updateGraphModel.initiate(ops))
 
     const [request] = requests
     expect(request.url).toBe('http://localhost:3400/api/minerva_local/m3BatchPrivileged')
@@ -93,7 +106,10 @@ describe('updateGraphModel', () => {
   })
 
   it('surfaces a Barista bad-token error', async () => {
-    mockBarista(() => ({ message_type: 'error', message: 'You are using a bad token; please remove it.' }))
+    mockBarista(() => ({
+      message_type: 'error',
+      message: 'You are using a bad token; please remove it.',
+    }))
     const result = await makeStore(loggedIn).dispatch(endpoints.updateGraphModel.initiate(ops))
     expect('error' in result && result.error).toEqual({
       status: 'CUSTOM_ERROR',

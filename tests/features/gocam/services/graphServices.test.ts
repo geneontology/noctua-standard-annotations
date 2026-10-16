@@ -86,7 +86,10 @@ describe('transformGraphData', () => {
     const not = (id: string) => ({ type: 'complement', filler: cls(id) })
 
     expect(individual([cls('GO:1'), cls('GO:2')]).id).toBe('GO:2')
-    expect(individual([cls('GO:1'), not('GO:2')])).toMatchObject({ id: 'GO:2', isComplement: false })
+    expect(individual([cls('GO:1'), not('GO:2')])).toMatchObject({
+      id: 'GO:2',
+      isComplement: false,
+    })
     expect(individual([not('GO:1'), not('GO:2')])).toMatchObject({ id: 'GO:2', isComplement: true })
   })
 
@@ -133,6 +136,36 @@ describe('describeBatchError', () => {
   it('explains permission and unknown-model errors', () => {
     expect(describeBatchError('...InsufficientPermissionsException...')).toMatch(/permission/)
     expect(describeBatchError('...UnknownIdentifierException: Could not find a model')).toBe(
+      'The model could not be found.'
+    )
+  })
+})
+
+describe('dates and batch errors', () => {
+  it('keeps the first date of an individual, as the Angular reader did', () => {
+    const model = transformGraphData({
+      id: 'gomodel:dates',
+      individuals: [
+        {
+          id: 'i1',
+          type: [{ type: 'class', id: 'GO:0005634', label: 'nucleus' }],
+          annotations: [
+            { key: 'date', value: '2024-01-01' },
+            { key: 'date', value: '2025-06-01' },
+          ],
+        },
+      ],
+      facts: [],
+      annotations: [],
+    })
+    expect(model.nodes[0].date).toBe('2024-01-01')
+  })
+
+  it('names a vanished individual rather than a missing model', () => {
+    expect(
+      describeBatchError("UnknownIdentifierException. No individual found for id: 'gomodel:1/2'")
+    ).toMatch(/no longer exists/)
+    expect(describeBatchError('UnknownIdentifierException: Could not find a model')).toBe(
       'The model could not be found.'
     )
   })
