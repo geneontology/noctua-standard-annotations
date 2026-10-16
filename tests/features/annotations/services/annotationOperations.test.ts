@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import type { Operation } from '@/features/gocam/models/operations'
 import { AnnotationKey, OperationEntity, OperationType } from '@/features/gocam/models/operations'
-import { extractAnnotations, getDeletableNodeUids } from '@/features/annotations/services/annotationExtraction'
+import {
+  canRemoveExtensionTerm,
+  extractAnnotations,
+  getDeletableNodeUids,
+} from '@/features/annotations/services/annotationExtraction'
+import { transformGraphData } from '@/features/gocam/services/graphServices'
 import {
   buildAddExtensionOperations,
   buildCopyAnnotationToGenesOperations,
@@ -19,7 +24,7 @@ import {
 import type { CreateAnnotationInput } from '@/features/annotations/services/annotationOperations'
 import { InverseRelations } from '@/@noctua.core/models/relations'
 import { loadModel, saeModelRaw } from '@tests/fixtures/models'
-import { SAE_MODEL_ID, saeUid } from '@tests/fixtures/saeModel'
+import { SAE_MODEL_ID, rawFact, rawIndividual, saeUid } from '@tests/fixtures/saeModel'
 
 const MODEL = SAE_MODEL_ID
 const user = { orcid: 'https://orcid.org/0000-0000-0000-0099', groupUrl: 'http://geneontology.org' }
@@ -71,8 +76,11 @@ describe('buildCreateAnnotationsOperations', () => {
     )!
     const evidenceVar = (evidenceLink.arguments.values as { value: string }[])[0].value
     expect(classOf(ops, evidenceVar)).toEqual({ type: 'class', id: 'ECO:0000314' })
-    const evidenceValues = ofKind(ops, OperationEntity.INDIVIDUAL, OperationType.ADD_ANNOTATION)
-      .find(op => op.arguments.individual === evidenceVar)!.arguments.values
+    const evidenceValues = ofKind(
+      ops,
+      OperationEntity.INDIVIDUAL,
+      OperationType.ADD_ANNOTATION
+    ).find(op => op.arguments.individual === evidenceVar)!.arguments.values
     expect(evidenceValues).toEqual([{ key: 'source', value: 'PMID:1' }])
 
     expect(ops.at(-1)).toEqual({
@@ -93,12 +101,20 @@ describe('buildCreateAnnotationsOperations', () => {
     expect(classOf(ops, edges[0].subject)).toEqual({ type: 'class', id: 'GO:0003674' })
     expect(classOf(ops, edges[1].object)).toEqual({ type: 'class', id: 'GO:0006915' })
     // Each fact gets its own evidence individual.
-    expect(addedIndividuals(ops).filter(i => (i.expression as { id: string }).id === 'ECO:0000314')).toHaveLength(2)
+    expect(
+      addedIndividuals(ops).filter(i => (i.expression as { id: string }).id === 'ECO:0000314')
+    ).toHaveLength(2)
   })
 
   it('stores "located in" from the gene product, with a complement for NOT', () => {
     const ops = buildCreateAnnotationsOperations(
-      [input({ goTermId: 'GO:0005737', relationId: InverseRelations.LOCATED_IN, isComplement: true })],
+      [
+        input({
+          goTermId: 'GO:0005737',
+          relationId: InverseRelations.LOCATED_IN,
+          isComplement: true,
+        }),
+      ],
       MODEL
     )
     const [edge] = addedEdges(ops)
@@ -162,7 +178,11 @@ describe('buildCreateAnnotationsOperations', () => {
 
   it('splits a multi-reference evidence into separate sources on create', () => {
     const ops = buildCreateAnnotationsOperations(
-      [input({ evidence: { evidenceCodeId: 'ECO:0000314', sources: ['PMID:1| PMID:2'], withFrom: '' } })],
+      [
+        input({
+          evidence: { evidenceCodeId: 'ECO:0000314', sources: ['PMID:1| PMID:2'], withFrom: '' },
+        }),
+      ],
       MODEL
     )
     const evidenceValues = ofKind(ops, OperationEntity.INDIVIDUAL, OperationType.ADD_ANNOTATION)[0]
@@ -192,7 +212,11 @@ describe('buildCopyAnnotationToGenesOperations', () => {
       type: 'complement',
       filler: { type: 'class', id: 'GO:0004672' },
     })
-    expect(addedEdges(ops).map(e => e.predicate).sort()).toEqual(
+    expect(
+      addedEdges(ops)
+        .map(e => e.predicate)
+        .sort()
+    ).toEqual(
       ['BFO:0000066', 'BFO:0000066', 'RO:0002233', 'RO:0002233', 'RO:0002333', 'RO:0002333'].sort()
     )
     // No title for copies.
@@ -263,9 +287,9 @@ describe('edit builders', () => {
       [{ key: 'source', value: 'PMID:444' }],
       [{ key: 'source', value: 'PMID:555' }],
     ])
-    expect(ofKind(ops, OperationEntity.INDIVIDUAL, OperationType.ADD_ANNOTATION)[0].arguments.values).toEqual([
-      { key: 'source', value: 'PMID:42' },
-    ])
+    expect(
+      ofKind(ops, OperationEntity.INDIVIDUAL, OperationType.ADD_ANNOTATION)[0].arguments.values
+    ).toEqual([{ key: 'source', value: 'PMID:42' }])
   })
 
   it('writes several references as separate sources', () => {
@@ -276,7 +300,9 @@ describe('edit builders', () => {
       'PMID:555| PMID:9 ',
       MODEL
     )
-    expect(ofKind(ops, OperationEntity.INDIVIDUAL, OperationType.ADD_ANNOTATION)[0].arguments.values).toEqual([
+    expect(
+      ofKind(ops, OperationEntity.INDIVIDUAL, OperationType.ADD_ANNOTATION)[0].arguments.values
+    ).toEqual([
       { key: 'source', value: 'PMID:555' },
       { key: 'source', value: 'PMID:9' },
     ])
@@ -303,10 +329,10 @@ describe('buildEditRelationOperations', () => {
     expect(addedEdges(ops)).toEqual([
       { subject: saeUid('gp1'), predicate: 'RO:0002326', object: saeUid('mf1') },
     ])
-    // The old fact's evidence individual is removed, a copy is attached to the new fact.
-    expect(
-      ofKind(ops, OperationEntity.INDIVIDUAL, OperationType.REMOVE).map(op => op.arguments.individual)
-    ).toEqual([saeUid('ev1')])
+    // Minerva drops the old fact's evidence with the fact; removing it again would
+    // fail the batch. A copy is attached to the new fact.
+    expect(ofKind(ops, OperationEntity.INDIVIDUAL, OperationType.REMOVE)).toHaveLength(0)
+    expect(ops.at(-1)).toMatchObject({ entity: 'model', operation: 'store' })
     expect(classOf(ops, addedIndividuals(ops)[0].variable)).toEqual({
       type: 'class',
       id: 'ECO:0000314',
@@ -321,14 +347,20 @@ describe('buildEditRelationOperations', () => {
   })
 
   it('swaps the root-MF edge for "acts upstream of"', () => {
-    const ops = buildEditRelationOperations(byGp('BETA2 Hsap'), InverseRelations.ACTS_UPSTREAM_OF, MODEL)
+    const ops = buildEditRelationOperations(
+      byGp('BETA2 Hsap'),
+      InverseRelations.ACTS_UPSTREAM_OF,
+      MODEL
+    )
     expect(addedEdges(ops)).toEqual([
       { subject: saeUid('mf2'), predicate: 'RO:0002411', object: saeUid('bp2') },
     ])
   })
 
   it('refuses a change that would need a root MF added or removed', () => {
-    expect(buildEditRelationOperations(byGp('DELTA4 Hsap'), InverseRelations.INVOLVED_IN, MODEL)).toEqual([])
+    expect(
+      buildEditRelationOperations(byGp('DELTA4 Hsap'), InverseRelations.INVOLVED_IN, MODEL)
+    ).toEqual([])
   })
 })
 
@@ -355,6 +387,23 @@ describe('extension, comment and delete builders', () => {
     expect(ops[1].arguments.individual).toBe(saeUid('x1'))
   })
 
+  it('keeps a term something else still uses when deleting its extension', () => {
+    const [extension] = byGp('ALPHA1 Hsap').extensions
+    const ops = buildDeleteExtensionOperations(extension, MODEL, false)
+    expect(ops.map(op => `${op.entity}:${op.operation}`)).toEqual(['edge:remove', 'model:store'])
+  })
+
+  it('rewrites existing comments exactly as stored, not trimmed', () => {
+    const edge = { ...byGp('ALPHA1 Hsap').edges[0], comments: ['note '] }
+    const ops = buildReplaceCommentsOperations([edge], ['note ', 'second'], MODEL)
+    expect(
+      ofKind(ops, OperationEntity.EDGE, OperationType.ADD_ANNOTATION)[0].arguments.values
+    ).toEqual([
+      { key: 'comment', value: 'note ' },
+      { key: 'comment', value: 'second' },
+    ])
+  })
+
   it('replaces the comments on every fact', () => {
     const annotation = byGp('ALPHA1 Hsap')
     const ops = buildReplaceCommentsOperations(annotation.edges, ['new note'], MODEL)
@@ -375,5 +424,54 @@ describe('extension, comment and delete builders', () => {
         .map(op => op.arguments.individual)
         .sort()
     ).toEqual(['mf2', 'gp2', 'bp2', 'ph2'].map(saeUid).sort())
+  })
+})
+
+describe('canRemoveExtensionTerm', () => {
+  // GP1 enables a kinase activity that has_input GP2; GP2 also has its own CC annotation.
+  const raw = {
+    'modified-p': false,
+    id: 'gomodel:sharedext',
+    individuals: [
+      rawIndividual('mf', 'GO:0004672', 'protein kinase activity', ['GO:0003674']),
+      rawIndividual('gp1', 'UniProtKB:P1', 'ONE Hsap', ['CHEBI:33695', 'CHEBI:24431']),
+      rawIndividual('gp2', 'UniProtKB:P2', 'TWO Hsap', ['CHEBI:33695', 'CHEBI:24431']),
+      rawIndividual('cc', 'GO:0005634', 'nucleus', ['UBERON:0001062', 'GO:0005575']),
+      rawIndividual('cc2', 'GO:0005737', 'cytoplasm', ['UBERON:0001062', 'GO:0005575']),
+    ],
+    facts: [
+      rawFact('mf', 'RO:0002333', 'enabled by', 'gp1'),
+      rawFact('mf', 'RO:0002233', 'has input', 'gp2'),
+      rawFact('mf', 'BFO:0000066', 'occurs in', 'cc2'),
+      rawFact('gp2', 'RO:0001025', 'located in', 'cc'),
+    ],
+    annotations: [],
+  }
+  const model = transformGraphData(raw)
+  const all = extractAnnotations(model)
+  const extensionsOf = (label: string) => all.find(a => a.gp.label === label)!.extensions
+
+  it("keeps a gene product that is another annotation's subject", () => {
+    const hasInput = extensionsOf('ONE Hsap').find(e => e.term.label === 'TWO Hsap')!
+    expect(canRemoveExtensionTerm(hasInput, all, model)).toBe(false)
+  })
+
+  it('removes a term only the extension uses', () => {
+    const occursIn = extensionsOf('ONE Hsap').find(e => e.term.label === 'cytoplasm')!
+    expect(canRemoveExtensionTerm(occursIn, all, model)).toBe(true)
+  })
+})
+
+describe('buildCopyAnnotationToGenesOperations — extension NOT', () => {
+  it('keeps the NOT of an extension term on the copies', () => {
+    const annotation = byGp('ALPHA1 Hsap')
+    const extension = annotation.extensions[0]
+    const withNot = {
+      ...annotation,
+      extensions: [{ ...extension, term: { ...extension.term, isComplement: true } }],
+    }
+    const ops = buildCopyAnnotationToGenesOperations(withNot, ['UniProtKB:P9'], MODEL)
+    const extensionEdge = addedEdges(ops).find(e => e.predicate === extension.relation.id)!
+    expect(classOf(ops, extensionEdge.object)).toMatchObject({ type: 'complement' })
   })
 })

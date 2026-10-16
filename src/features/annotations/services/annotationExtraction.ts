@@ -134,6 +134,35 @@ const collectSubgraph = (
   }
 }
 
+/**
+ * Causal extensions of the GO term (e.g. BP `regulates` BP), which the walk leaves
+ * out so it doesn't wander into neighbouring activities. SAE's Add Extension
+ * offers them, so they are read back — unless they lead to another annotation's
+ * activity (a GO-CAM's MF → MF edge). The target is taken as a leaf.
+ */
+const collectCausalExtensions = (
+  goTerm: GraphNode,
+  index: GraphIndex,
+  boundary: WalkBoundary,
+  nodes: GraphNode[],
+  edges: Edge[],
+  visited: Set<string>
+) => {
+  for (const edge of index.outgoing.get(goTerm.uid) ?? []) {
+    if (!CAUSAL_EDGES.has(edge.id) || edges.includes(edge)) continue
+    if (boundary.otherStartEdges.has(edge.uid)) continue
+    const target = index.nodesById.get(edge.targetId)
+    if (!target || boundary.otherRoots.has(target.uid)) continue
+    const allowed = getTermRelations(goTerm.rootTypes, target.rootTypes)
+    if (!allowed.some(relation => relation.id === edge.id)) continue
+    edges.push(edge)
+    if (!visited.has(target.uid)) {
+      visited.add(target.uid)
+      nodes.push(target)
+    }
+  }
+}
+
 const orderEdges = (edges: Edge[], factOrder: Map<string, number>): Edge[] =>
   [...edges].sort((a, b) => (factOrder.get(a.uid) ?? 0) - (factOrder.get(b.uid) ?? 0))
 
@@ -240,12 +269,26 @@ export const extractAnnotations = (model: GraphModel | null): StandardAnnotation
       collectSubgraph(subject, index, unitType, boundary, nodes, collected, visited)
 
       if (isRootMF) {
-        for (const edge of orderEdges(collected, factOrder)) {
-          if (edge.sourceId !== subject.uid || !MF_TO_TERM_EDGES.has(edge.id)) continue
-          const target = index.nodesById.get(edge.targetId)
-          if (!target) continue
+        // The last mf-to-term edge names the GO term, as in Angular — but one SAE
+        // can name ("involved in", "acts upstream of"…) wins over one it can't (a
+        // GO-CAM's `occurs_in`), since Minerva returns facts in no fixed order.
+        const termEdges = orderEdges(collected, factOrder).filter(
+          edge =>
+            edge.sourceId === subject.uid &&
+            MF_TO_TERM_EDGES.has(edge.id) &&
+            index.nodesById.has(edge.targetId)
+        )
+        const named = termEdges.filter(edge =>
+          findRelationByCriteria({
+            gpToTermPredicate: Relations.ENABLED_BY,
+            mfNodeRequired: true,
+            mfToTermPredicate: edge.id,
+          })
+        )
+        const edge = (named.length > 0 ? named : termEdges).at(-1)
+        if (edge) {
           termEdge = edge
-          goTerm = target
+          goTerm = index.nodesById.get(edge.targetId)!
           criteria = {
             gpToTermPredicate: Relations.ENABLED_BY,
             mfNodeRequired: true,
@@ -254,6 +297,8 @@ export const extractAnnotations = (model: GraphModel | null): StandardAnnotation
         }
       }
     }
+
+    collectCausalExtensions(goTerm, index, boundary, nodes, collected, visited)
 
     const edges = orderEdges(collected, factOrder)
     const evidence: Evidence | null = startEdge.evidence[0] ?? null
@@ -282,6 +327,46 @@ export const extractAnnotations = (model: GraphModel | null): StandardAnnotation
   }
 
   return annotations
+}
+
+/**
+ * Whether Delete Extension may remove the extension's term individual with its
+ * fact. It stays when another fact points at it, or when it is part of another
+ * annotation (e.g. a gene product with its own `located_in` annotation).
+ */
+export const canRemoveExtensionTerm = (
+  extension: AnnotationExtension,
+  annotations: StandardAnnotation[],
+  model: GraphModel | null
+): boolean => {
+  const { uid } = extension.term
+  const otherFact = model?.edges.some(
+    edge => edge.targetId === uid && edge.uid !== extension.edge.uid
+  )
+  const inAnnotation = annotations.some(annotation =>
+    [annotation.rootNode.uid, annotation.gp.uid, annotation.goTerm.uid].includes(uid)
+  )
+  return !otherFact && !inAnnotation
+}
+
+/**
+ * Whether deleting the annotation (its individuals `nodeUids`, and with its facts
+ * their evidence) would leave the model with no individuals at all.
+ */
+export const leavesModelEmpty = (
+  model: GraphModel,
+  annotation: StandardAnnotation,
+  nodeUids: string[]
+): boolean => {
+  const removed = new Set(nodeUids)
+  const removedFacts = model.edges.filter(
+    edge =>
+      edge.uid === annotation.startEdge.uid ||
+      removed.has(edge.sourceId) ||
+      removed.has(edge.targetId)
+  )
+  for (const edge of removedFacts) edge.evidence.forEach(ev => removed.add(ev.uid))
+  return model.nodes.every(node => removed.has(node.uid))
 }
 
 /**

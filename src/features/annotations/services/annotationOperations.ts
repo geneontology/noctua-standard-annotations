@@ -27,7 +27,7 @@ export interface CreateAnnotationInput {
   /** The displayed relation (a key of `ANNOTATION_EDGE_CONFIG`, e.g. "enables"). */
   relationId: string
   evidence: EvidenceInput
-  extensions: { relationId: string; termId: string }[]
+  extensions: { relationId: string; termId: string; isComplement?: boolean }[]
   comments: string[]
 }
 
@@ -74,6 +74,10 @@ const edgeArgs = (subject: string, object: string, predicate: string, modelId: s
 const uniqueNonEmpty = (values: string[]): string[] =>
   Array.from(new Set(values.map(value => value.trim()).filter(Boolean)))
 
+/** Comments as written (Angular kept their whitespace): unique, blank ones dropped. */
+const uniqueComments = (values: string[]): string[] =>
+  Array.from(new Set(values.filter(value => value.trim())))
+
 const evidenceInputOf = (evidence: Evidence): EvidenceInput => ({
   evidenceCodeId: evidence.evidenceCode.id,
   sources: evidence.sources.length > 0 ? evidence.sources : [evidence.reference],
@@ -100,7 +104,7 @@ const addFact = (
     arguments: edgeArgs(subject, object, predicate, modelId),
   })
 
-  const commentValues = uniqueNonEmpty(comments)
+  const commentValues = uniqueComments(comments)
   if (commentValues.length > 0) {
     operations.push({
       entity: OperationEntity.EDGE,
@@ -174,20 +178,55 @@ export const buildCreateAnnotationsOperations = (
     const termVar = addIndividual(operations, modelId, input.goTermId, input.isComplement)
     const extensionVars = input.extensions
       .filter(ext => ext.relationId && ext.termId)
-      .map(ext => ({ ...ext, variable: addIndividual(operations, modelId, ext.termId) }))
+      .map(ext => ({
+        ...ext,
+        variable: addIndividual(operations, modelId, ext.termId, ext.isComplement),
+      }))
 
     const evidences = [input.evidence]
 
     if (config.mfNodeRequired) {
       const mfVar = addIndividual(operations, modelId, ROOT_NODES.mf.id)
-      addFact(operations, modelId, mfVar, gpVar, config.gpToTermPredicate, evidences, input.comments)
+      addFact(
+        operations,
+        modelId,
+        mfVar,
+        gpVar,
+        config.gpToTermPredicate,
+        evidences,
+        input.comments
+      )
       if (config.mfToTermPredicate) {
-        addFact(operations, modelId, mfVar, termVar, config.mfToTermPredicate, evidences, input.comments)
+        addFact(
+          operations,
+          modelId,
+          mfVar,
+          termVar,
+          config.mfToTermPredicate,
+          evidences,
+          input.comments
+        )
       }
     } else if (config.gpToTermReverse) {
-      addFact(operations, modelId, termVar, gpVar, config.gpToTermPredicate, evidences, input.comments)
+      addFact(
+        operations,
+        modelId,
+        termVar,
+        gpVar,
+        config.gpToTermPredicate,
+        evidences,
+        input.comments
+      )
     } else {
-      addFact(operations, modelId, gpVar, termVar, config.gpToTermPredicate, evidences, input.comments)
+      addFact(
+        operations,
+        modelId,
+        gpVar,
+        termVar,
+        config.gpToTermPredicate,
+        evidences,
+        input.comments
+      )
     }
 
     for (const ext of extensionVars) {
@@ -233,6 +272,7 @@ export const buildCopyAnnotationToGenesOperations = (
       extensions: annotation.extensions.map(ext => ({
         relationId: ext.relation.id,
         termId: ext.term.id,
+        isComplement: ext.term.isComplement,
       })),
       comments: annotation.comments,
     })),
@@ -423,8 +463,8 @@ export const buildEditEvidenceAnnotationOperations = (
  * Change the annotation's relation (Angular `getTriplePair` + `editConnection`):
  * remove the relation's fact and add the new one — reversed when moving to or
  * from "enables", which is stored as `MF enabled_by GP` — carrying the comments
- * and a copy of the evidence. The old fact's evidence individuals are removed so
- * they are not left orphaned.
+ * and a copy of the evidence. Minerva deletes the removed fact's evidence
+ * individuals itself; removing them here too would fail the batch before its store.
  */
 export const buildEditRelationOperations = (
   annotation: StandardAnnotation,
@@ -434,9 +474,10 @@ export const buildEditRelationOperations = (
   const config = ANNOTATION_EDGE_CONFIG[newRelationId]
   if (!config) return []
   // Moving between a direct relation and one stored through a root MF would mean
-  // adding or removing the MF individual — not an edit SAE ever offered.
+  // adding or removing the MF individual — not an edit SAE ever offered. A relation
+  // SAE doesn't know (e.g. a root MF `occurs_in` from a GO-CAM) can't be mapped either.
   const current = ANNOTATION_EDGE_CONFIG[annotation.relation.id]
-  if (current && current.mfNodeRequired !== config.mfNodeRequired) return []
+  if (!current || current.mfNodeRequired !== config.mfNodeRequired) return []
 
   const oldEdge = annotation.termEdge
   const swap = oldEdge.id === Relations.ENABLED_BY || newRelationId === InverseRelations.ENABLES
@@ -464,8 +505,6 @@ export const buildEditRelationOperations = (
     oldEdge.comments
   )
 
-  for (const evidence of oldEdge.evidence) removeIndividual(operations, modelId, evidence.uid)
-
   operations.push(store(modelId))
   return operations
 }
@@ -492,19 +531,29 @@ export const buildAddExtensionOperations = (
   return operations
 }
 
-/** Remove an extension: its fact and its term individual (Angular `deleteExtension`). */
+/**
+ * Remove an extension: its fact and its term individual (Angular `deleteExtension`).
+ * The term stays when something else still uses it (`removeTerm` false), e.g. a
+ * gene product that is also the subject of its own annotation.
+ */
 export const buildDeleteExtensionOperations = (
   extension: AnnotationExtension,
-  modelId: string
+  modelId: string,
+  removeTerm = true
 ): Operation[] => {
   const operations: Operation[] = [
     {
       entity: OperationEntity.EDGE,
       operation: OperationType.REMOVE,
-      arguments: edgeArgs(extension.edge.sourceId, extension.edge.targetId, extension.edge.id, modelId),
+      arguments: edgeArgs(
+        extension.edge.sourceId,
+        extension.edge.targetId,
+        extension.edge.id,
+        modelId
+      ),
     },
   ]
-  removeIndividual(operations, modelId, extension.term.uid)
+  if (removeTerm) removeIndividual(operations, modelId, extension.term.uid)
   operations.push(store(modelId))
   return operations
 }
@@ -540,7 +589,7 @@ export const buildReplaceCommentsOperations = (
   comments: string[],
   modelId: string
 ): Operation[] => {
-  const values = uniqueNonEmpty(comments)
+  const values = uniqueComments(comments)
   const operations: Operation[] = []
 
   for (const edge of edges) {

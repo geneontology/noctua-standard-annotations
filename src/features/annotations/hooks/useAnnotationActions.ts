@@ -14,7 +14,11 @@ import type { Operation } from '@/features/gocam/models/operations'
 import type { AnnotationExtension, StandardAnnotation } from '../models/annotation'
 import type { AnnotationFormState } from '../models/annotationForm'
 import { selectAnnotations } from '../slices/annotationsSlice'
-import { getDeletableNodeUids } from '../services/annotationExtraction'
+import {
+  canRemoveExtensionTerm,
+  getDeletableNodeUids,
+  leavesModelEmpty,
+} from '../services/annotationExtraction'
 import { defaultModelTitle, toCreateAnnotationInputs } from '../services/annotationFormRules'
 import {
   buildAddExtensionOperations,
@@ -171,16 +175,24 @@ export function useAnnotationActions() {
   const deleteExtension = useCallback(
     (extension: AnnotationExtension) =>
       run(
-        buildDeleteExtensionOperations(extension, modelId),
+        buildDeleteExtensionOperations(
+          extension,
+          modelId,
+          canRemoveExtensionTerm(extension, annotations, model)
+        ),
         'Annotation Extension successfully deleted.'
       ),
-    [run, modelId]
+    [run, modelId, annotations, model]
   )
 
   const addComment = useCallback(
     (annotation: StandardAnnotation, comment: string) =>
       run(
-        buildReplaceCommentsOperations(annotation.edges, [...annotation.comments, comment], modelId),
+        buildReplaceCommentsOperations(
+          annotation.edges,
+          [...annotation.comments, comment],
+          modelId
+        ),
         'Comment successfully added.'
       ),
     [run, modelId]
@@ -205,16 +217,27 @@ export function useAnnotationActions() {
   )
 
   const deleteAnnotation = useCallback(
-    (annotation: StandardAnnotation) =>
-      run(
-        buildDeleteAnnotationOperations(
-          annotation,
-          getDeletableNodeUids(annotation, annotations),
-          modelId
-        ),
+    async (annotation: StandardAnnotation) => {
+      const nodeUids = getDeletableNodeUids(annotation, annotations)
+      // Minerva won't store a model with no individuals left; the delete would
+      // fail at its store and leave an unsaved, emptied model behind.
+      if (model && leavesModelEmpty(model, annotation, nodeUids)) {
+        dispatch(
+          showToast({
+            message:
+              "This is the model's last annotation, and Minerva can't save an empty model. Delete the model from Noctua instead.",
+            severity: 'warning',
+            duration: 8000,
+          })
+        )
+        return false
+      }
+      return run(
+        buildDeleteAnnotationOperations(annotation, nodeUids, modelId),
         'Annotation successfully deleted.'
-      ),
-    [run, modelId, annotations]
+      )
+    },
+    [run, modelId, annotations, model, dispatch]
   )
 
   const storeModel = useCallback(

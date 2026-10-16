@@ -17,6 +17,20 @@ describe('parseGeneIds', () => {
     ])
   })
 
+  it('keeps the dashes, underscores and dots of real ids', () => {
+    expect(
+      parseGeneIds(
+        'ZFIN:ZDB-GENE-040426-1432, dictyBase:DDB_G0267378\nPomBase:SPAC1002.09c\nUniProtKB:P12345-2\nComplexPortal:CPX-1'
+      )
+    ).toEqual([
+      'ZFIN:ZDB-GENE-040426-1432',
+      'dictyBase:DDB_G0267378',
+      'PomBase:SPAC1002.09c',
+      'UniProtKB:P12345-2',
+      'ComplexPortal:CPX-1',
+    ])
+  })
+
   it('drops fragments shorter than five characters', () => {
     expect(parseGeneIds('ab\nUniProtKB:P1')).toEqual(['UniProtKB:P1'])
   })

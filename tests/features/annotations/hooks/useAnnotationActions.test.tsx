@@ -73,7 +73,11 @@ describe('useAnnotationActions.copyToGenes', () => {
 describe('useUserContext', () => {
   it('credits a user without a group by ORCID alone', () => {
     const store = makeStore({
-      auth: { user: { ...CURATOR, groups: [], group: undefined }, baristaToken: 'tok' },
+      auth: {
+        user: { ...CURATOR, groups: [], group: undefined },
+        baristaToken: 'tok',
+        userChecked: true,
+      },
     })
     const { result } = renderHook(() => useUserContext(), { wrapper: wrapperFor(store) })
     expect(result.current).toEqual({ orcid: CURATOR.uri, groupUrl: '' })

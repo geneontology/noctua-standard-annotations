@@ -20,14 +20,16 @@ const MIN_ID_LENGTH = 5
 
 /**
  * Pull gene product ids out of pasted text: one per line, comma separated, or a
- * JSON-ish list. Quotes and punctuation other than `:` are dropped, ids are de-duplicated.
+ * JSON-ish list. Quotes and punctuation other than `: - _ .` are dropped (those
+ * belong to ids such as `ZFIN:ZDB-GENE-…`, `dictyBase:DDB_G…`, `PomBase:SPAC1002.09c`
+ * and isoforms like `UniProtKB:P12345-2`); ids are de-duplicated.
  */
 export const parseGeneIds = (text: string): string[] => {
   if (!text) return []
 
   const cleaned = text
     .replace(/["']/g, '')
-    .replace(/[^a-zA-Z0-9:\s,]/g, '')
+    .replace(/[^a-zA-Z0-9:\s,._-]/g, '')
     .replace(/,\s*/g, '\n')
     .replace(/[ \t]+/g, '')
 
