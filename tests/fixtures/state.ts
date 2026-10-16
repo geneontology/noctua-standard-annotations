@@ -21,6 +21,7 @@ export const stateWith = (
     auth: {
       user: loggedIn ? CURATOR : null,
       baristaToken: loggedIn ? 'tok-123' : null,
+      userChecked: true,
     },
     cam: { model },
   }

@@ -2,7 +2,13 @@ import { useCallback, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { removeBaristaTokenFromUrl } from '../authServices'
 import { useGetUserInfoQuery } from '../slices/authApiSlice'
-import { setBaristaToken, setUser, selectBaristaToken, selectAuthUser } from '../slices/authSlice'
+import {
+  setBaristaToken,
+  setUser,
+  setUserCheckFailed,
+  selectBaristaToken,
+  selectAuthUser,
+} from '../slices/authSlice'
 
 export const useAuthSetup = () => {
   const dispatch = useAppDispatch()
@@ -36,26 +42,40 @@ export const useAuthSetup = () => {
   }, [dispatch, baristaToken])
 
   // Fetch user info when we have a token
-  const { data: userInfo, isError, refetch } = useGetUserInfoQuery(baristaToken || '', {
+  const {
+    currentData: userInfo,
+    isError,
+    refetch,
+  } = useGetUserInfoQuery(baristaToken || '', {
     skip: !baristaToken || !isInitialized,
   })
 
   useEffect(() => {
     if (userInfo && userInfo.token) {
       dispatch(setUser(userInfo))
-    } else if (isError || (userInfo && !userInfo.token)) {
-      // Clear auth state if API returns error OR empty response OR response without token
+    } else if (userInfo !== undefined) {
+      // Barista answered without a token (`{}`): the token is no longer valid.
       dispatch(setUser(null))
       dispatch(setBaristaToken(null))
       localStorage.removeItem('barista_token')
+    } else if (isError) {
+      // Barista unreachable (e.g. the laptop just woke up): keep the login, as
+      // Angular did, rather than logging out every Noctua tab.
+      dispatch(setUserCheckFailed())
     }
   }, [userInfo, isError, dispatch])
 
+  // Back on the tab: pick up a login or logout done in another Noctua tab (they
+  // share the stored token), else re-check the current one.
   const handleFocus = useCallback(() => {
-    if (baristaToken && isInitialized) {
+    if (!isInitialized) return
+    const storedToken = localStorage.getItem('barista_token')
+    if (storedToken && storedToken !== baristaToken) {
+      dispatch(setBaristaToken(storedToken))
+    } else if (baristaToken) {
       refetch()
     }
-  }, [baristaToken, isInitialized, refetch])
+  }, [baristaToken, isInitialized, refetch, dispatch])
 
   useEffect(() => {
     window.addEventListener('focus', handleFocus)
