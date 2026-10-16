@@ -22,8 +22,9 @@ Ported from the Angular app (`noctua-annotations`, see `.plans/refactor/angular-
 - `npm run build` — type-check, then `vite build --mode production` into `workbenches/noctua-standard-annotations/public` (replaces the deployed build; `index.html` is renamed to `inject.tmpl`)
 - `npm run build:beta-test` — same against `noctua-standard-annotations-beta` in `staging` mode
 - `npm run test` — Vitest (only `tests/**/*.test.{ts,tsx}`); single file: `npx vitest run tests/features/annotations/services/annotationExtraction.test.ts`
-- `npm run test:e2e` — Playwright against a dev server on `/` (`--mode e2e`), Barista and GOlr mocked
+- `npm run test:e2e` — Playwright against a dev server on `/` (`--mode e2e`), with an in-memory Minerva and GOlr (`e2e/mocks/minerva.ts`). Stop any dev server on 4203 first: Playwright reuses it.
 - `LIVE=1 npx playwright test e2e/live` — read-only smoke test against barista-dev and the real GOlr (writes are aborted)
+- `LOCAL=1 LOCAL_BARISTA_TOKEN=<token> npx playwright test e2e/local` — real writes against a local Barista (`localhost:3400`, `minerva_local`) on a new scratch model per run
 - `npm run lint` / `lint:fix` — ESLint; `npm run format` — Prettier; `npm run type-check` — `tsc -p tsconfig.app.json`
 
 Environment modes: `development`, `staging`, `production` (`.env.<mode>`, committed — no secrets). Runtime vars are `VITE_`-prefixed: `VITE_APP_ENV` (dev/beta/prod), `VITE_BASE_URL`, `VITE_OUTPUT_PATH`. Barista, Minerva and GOlr locations come from `window.global_*`, injected by the Noctua workbench host; the fallbacks in `src/@noctua.core/data/constants.ts` are for a local Barista. To build somewhere harmless, override the output: `VITE_OUTPUT_PATH=<dir> npx vite build --mode production`.
@@ -76,9 +77,10 @@ Redux Toolkit with `combineSlices` (`store.ts`): `auth`, `metadata`, `cam`, `ann
 
 ### API Layer (Minerva via Barista)
 
-- **Reads:** GET `…/api/<minerva>/m3Batch(Privileged)?token&intention=query&requests=[model get]` (no reasoner, like the Angular manager).
-- **Writes:** one POST to `m3BatchPrivileged` per edit (form-urlencoded `token`, `provided-by` = the acting group, `intention=action`, `requests`). Every batch ends in a model `store`, so edits are saved as they are made. Successful writes invalidate the `graph` tag, which refetches the model.
-- **Errors:** Minerva and Barista report failures as HTTP 200 with `message-type` / `message_type: "error"`. `getBatchErrorMessage` turns them into RTK Query errors, and `useAnnotationActions` toasts them.
+- **Reads:** `intention=query` with `[model get]`, no reasoner (like the Angular manager). Logged in: a POST to `m3BatchPrivileged` (token in the body, not the URL); logged out: a GET to the public `m3Batch`.
+- **Writes:** one POST to `m3BatchPrivileged` per edit (form-urlencoded `token`, `provided-by` = the acting group, `intention=action`, `requests`). Every batch ends in a model `store`, so edits are saved as they are made; a store-only batch (the Not Saved bar's Save) is `intention=query`, as Angular's `storeCam` sent it. Successful writes invalidate the `graph` tag, which refetches the model.
+- **Errors:** Minerva and Barista report failures as HTTP 200 with `message-type` / `message_type: "error"`. `getBatchErrorMessage` turns them into RTK Query errors, and `useAnnotationActions` toasts them. A failed refresh keeps the last model on the page.
+- **Minerva rules the builders rely on:** removing a fact deletes its evidence individuals (never remove them again — the batch fails before its `store`); a batch has no rollback; a model with no individuals or no title can't be stored (so the last annotation can't be deleted, and the first create titles the model).
 - **GOlr:** JSONP via `<script>` (no CORS).
 
 ## Enforced Patterns
@@ -101,6 +103,7 @@ Redux Toolkit with `combineSlices` (`store.ts`): `auth`, `metadata`, `cam`, `ann
 Vitest + React Testing Library + jsdom. `renderWithProviders` gives an isolated store and the Mantine theme in `env="test"` (no transitions/portals).
 
 - Stub m3Batch with `mockBarista` (`tests/fixtures/barista.ts`). It records the decoded `operations` of every request, so UI tests can assert the exact batch.
+- e2e: `openModel(page, { model })` (`e2e/helpers.ts`) serves a `FakeMinerva` seeded from `e2e/fixtures/world.ts` and answers GOlr from its catalog. The fake applies batches like Minerva (variables, evidence removed with its fact, unknown ids fail, store/reset), so specs assert both the table and `minerva.factSummaries()` / `evidenceOf()`.
 - Replace the term `Autocomplete` with `vi.mock('@/features/search/components/Autocomplete', () => import('@tests/mocks/autocompleteMock'))`.
 - Prefer `saeModelRaw` / `loadModel` over hand-built graphs.
 

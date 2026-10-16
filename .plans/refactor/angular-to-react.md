@@ -69,8 +69,8 @@ as the Angular app, and lint, type-check, unit tests, and the build all pass.
 - `toggleIsComplement` → `buildToggleComplementOperations`.
 - `editEvidenceCode` / `editReference` / `editWith` → `buildEditEvidence*Operations` over every
   evidence individual in the annotation subgraph, plus the contributor/providedBy refresh.
-- `editConnection` (relation) → `buildEditRelationOperations` (remove old fact, add the new fact
-  with copied evidence and comments, and drop the now-orphaned evidence individuals).
+- `editConnection` (relation) → `buildEditRelationOperations` (remove the old fact — Minerva
+  deletes its evidence individuals with it — and add the new fact with copied evidence and comments).
 - `addExtension` → `buildAddExtensionOperations`.
 - `deleteAnnotation` (extension) → `buildDeleteExtensionOperations`.
 - `deleteActivity` → `buildDeleteAnnotationOperations` (remove every subgraph individual).
@@ -99,8 +99,27 @@ as the Angular app, and lint, type-check, unit tests, and the build all pass.
   never linked references.
 - Add More Gene(s) on a row whose relation SAE can't write (e.g. root MF `occurs in`) warns.
   Angular wrote orphan individuals and reported success.
-- Evidence edits credit the editor's ORCID even when they have no group.
-- Delete Annotation never removes an individual another annotation also uses.
+- Delete Annotation never removes an individual another annotation also uses; Delete Extension
+  keeps a term another fact or annotation uses.
+- Delete Annotation refuses the model's last annotation (Minerva can't store an empty model; Angular
+  failed at the store and left an unsaved, emptied model).
+- `provided-by` goes with every write (Angular sent it for create, relation, evidence, delete and
+  store only), so Minerva also stamps `providedBy` on the individuals other edits touch.
+- The subgraph walk stops at other annotations (their roots and start edges), so for models edited
+  elsewhere the evidence/comment fan-out, date and delete cover only this annotation. One MF
+  enabled by two GPs gives one row per GP (Angular showed the last GP twice).
+- A root MF's causal edge to a non-BP (GO-CAM MF → MF) doesn't make it "acts upstream of"; a root MF
+  with `part_of` BP and `occurs_in` CC reads "involved in" whatever Minerva's fact order; a root-MF
+  relation SAE can't name shows its edge label and can't be edited.
+- Causal extensions (BP `regulates` BP …) are read back; both apps let curators add them, Angular
+  never showed them.
+- Inline GP edits search the form's gene-product filter (Angular allowed any chemical); inline GO
+  term edits keep to the relation's range (Angular: the term's root types).
+- Obsolete terms can't be picked; plant stages (PO:0009012) join the phase categories (VPE #259).
+- Deleting a comment in the comments/model dialogs takes effect on Save (Angular saved at once);
+  the group picked in Model Details applies to every later edit in the session.
+- The Angular autocomplete's term-detail chevron called a method its component didn't have; the
+  term-detail panel is not ported.
 
 ## Steps
 
@@ -145,14 +164,51 @@ as the Angular app, and lint, type-check, unit tests, and the build all pass.
 - [x] Committed on `upgrade-to-react` in chronological chunks (scaffold → core → features → page → tests → e2e → docs)
 - [ ] User review; PR; `npm run build` to replace the deployed Angular build when ready to ship
 
+### Phase 8: Parity audit vs Angular (2026-10-15)
+- [x] Four read-only audits (read/display, m3Batch writes, form/editors, shell) against the Angular source
+- [x] Live parity on the local Barista: the same UI steps in the Angular build and the React app on scratch models, then the stored graphs diffed (6 create scenarios, 12 inline edits)
+- [x] Fixes + regression tests (see "Parity audit fixes" below)
+- [x] e2e: `FakeMinerva` (`e2e/mocks/minerva.ts`) behind 27 specs (create, every inline edit, comments, Add More Gene(s), Model Details, Not Saved, sort, errors, auth); `e2e/local` live suite (`LOCAL=1`, 4 tests, real writes on a scratch model); barista-dev live suite updated for POST reads
+- [x] Docs (CLAUDE.md, README) and plan
+
+## Parity audit fixes (Phase 8)
+
+- **Relation edit failed on every SAE annotation** (high): it removed the old fact's evidence individuals, which Minerva already deletes with the fact, so the batch died before `store` ("No individual found"). Reproduced live; fixed and verified live.
+- Relation edit is blocked (no pencil, builder returns nothing) for a relation SAE can't name, e.g. a VPE root MF `occurs_in` — it would have written `molecular_function located_in …`.
+- Root MF with several term edges (VPE: `part_of` BP + `occurs_in` CC): a relation SAE can name wins over one it can't, so the row no longer depends on Minerva's fact order.
+- Causal extensions SAE lets curators add (BP `regulates` BP …) are read back; before, both apps saved them and never showed them. Edges into another annotation's activity (GO-CAM MF → MF) stay out.
+- Delete Extension keeps a term individual that another fact or annotation uses.
+- Add More Gene(s) keeps NOT on extension terms; stored comments are rewritten as stored (not trimmed).
+- A store-only Save is `intention=query` (Angular `storeCam`); logged-in reads are POSTs (token out of the URL).
+- First `date` annotation wins (Angular); "No individual found" is no longer reported as "model could not be found".
+- Reference picker: Enter on a highlighted suggestion picks it (it used to save the half-typed accession); empty accession shows an error; an unknown DB opens blank rather than becoming `PMID:<accession>`; closes on outside click.
+- With/from picker: incomplete entries block the save with Angular's messages (they were silently dropped); DB case is matched.
+- Term autocomplete: shows exactly the current search's results (empty → "No results found", failure → message), never the previous term's list.
+- Escape: only the innermost popover handles it, and an open suggestion list closes first.
+- Inline evidence code/reference edits apply when any evidence differs (unifies mixed facts, as Angular did).
+- Form Clear also clears text typed but never picked.
+- Auth: a network error no longer logs the user out (and every Noctua tab with them); focusing the tab picks up a login from another tab; the model read waits until Barista has confirmed a stored token.
+- A failed refresh keeps the model on the page (toast) instead of replacing it with an error page.
+- Not Saved bar moved above the model toolbar (Angular position).
+- Model Details: Angular's read-only summary (contributors, groups, Open In: Pathway Editor / Form Editor / Graph Editor); a model without a state must be given one (was silently set to "development").
+- Toolbar: menu links are real anchors (were `<a>` inside `<button>`); "Standard Annotations" links to this model's page; comment count shows 0; contributor chips open Model Details; Graph Editor link takes the model from its path only.
+- Loading overlay covers first load and writes only, pairs show/hide by request id, 300 ms linger (was ~2 s per edit).
+- Add Genes keeps `- _ .` in ids (`ZFIN:ZDB-GENE-…`, `PomBase:SPAC1002.09c`, isoforms) — a bug in Angular too.
+- Table links go to the source database (UniProt etc.), as Angular's linker did, not AmiGO.
+- Deleting the model's last annotation is refused with an explanation (Minerva rejects storing an empty model: found live; Angular had the same failure). Minerva's "empty model" error is reworded.
+- "Why is the Save button disabled?" shows once the form is touched, as in Angular (Save stays disabled on an empty form; Angular left it enabled).
+- The reference and with/from picker buttons have accessible names ("Pick a reference", "Pick with/from").
+
+Visible differences left on purpose (VPE look): the form's section headings and card, contributor chips capped at two, "Title: Untitled" for an untitled model, "(dev)" environment label.
+
 ## Recovery Checkpoint
 
 > **⚠ UPDATE THIS AFTER EVERY CHANGE**
 
-- **Last completed action:** fixed the fidelity review findings: unclassified BP targets, every title/state removed on save, multi-reference split and links, Add Genes warning, contributor without group, shared-node delete, last-type reading. 175 tests pass; lint, type-check and 3 e2e are clean.
-- **Next immediate action:** the user's review; push and PR on request
-- **Recent commands run:** `npx vitest run`, `npx tsc --noEmit -p tsconfig.app.json`, `npx eslint .`, `VITE_OUTPUT_PATH=<scratch> npx vite build --mode production`
-- **Uncommitted changes:** none; the React app is committed on `upgrade-to-react` (not pushed, `npm run build` not run)
+- **Last completed action:** Phase 8 done: 219 unit tests, 27 mocked e2e, 4 local live + 2 barista-dev live pass; lint and both type-checks clean. Live parity on the local Barista (scratch models `gomodel:6ad1120d00000119` Angular / `…120` React) matches except documented deviations.
+- **Next immediate action:** the user's review; push `upgrade-to-react` on request
+- **Recent commands run:** `npx vitest run`, `npx playwright test`, `LOCAL=1 LOCAL_BARISTA_TOKEN=… npx playwright test e2e/local`, `LIVE=1 npx playwright test e2e/live`, both `tsc` projects, `npx eslint .`
+- **Uncommitted changes:** none; Phase 8 is committed on `upgrade-to-react` (on top of the `dev` merge and build)
 - **Environment state:** `node_modules` installed from VPE's lockfile (same versions)
 
 ## Failed Approaches
@@ -162,6 +218,8 @@ as the Angular app, and lint, type-check, unit tests, and the build all pass.
 | VPE's `npm run lint` setup as-is | lints the committed `workbenches/` JS and config files outside the TS project; fixed with ignorePatterns + tsconfig.node.json | 2026-10-12 |
 | Tailwind v4 auto source detection | scanned the committed Angular build in `workbenches/` (CSS warning, junk classes); fixed with `source('.')` | 2026-10-12 |
 | Model prelookup options without root types | the form's relation rule fell back to "enables" for a BP picked from the model (caught by e2e); options now carry root types | 2026-10-12 |
+| Removing a changed relation's evidence individuals | Minerva already deletes them with the fact; the second remove failed the batch before its store (caught live on the local Barista) | 2026-10-15 |
+| `npx playwright test` with `npm run dev` running | Playwright reuses the server on 4203 (development base path); on Windows the vite `node` child outlives a stopped task | 2026-10-15 |
 
 ## Files Modified
 
@@ -183,7 +241,7 @@ as the Angular app, and lint, type-check, unit tests, and the build all pass.
   - **DFS:** follows shape predicates minus causal edges, except a bpOnly root MF may follow the
     bpOnly causal edges.
   - **Root MF** (`GO:0003674`) with an mf-to-term edge (part_of, occurs_in, causally upstream ...)
-    → that edge's object is the GO term. The last such edge wins.
+    → that edge's object is the GO term. The last such edge wins, preferring one SAE can name.
   - **Displayed relation** is the inverse from `simpleAnnotationEdgeConfig` (enables, involved in,
     acts upstream of ..., located in, is active in, part of, contributes to).
   - **Evidence** is the first evidence on the start edge.
@@ -215,7 +273,8 @@ as the Angular app, and lint, type-check, unit tests, and the build all pass.
 - A stored-vs-active change review for the Not Saved bar (the Angular `openCamReviewChangesDialog` stats).
 
 ## Lessons Learned
--
+- Mocked m3Batch that echoes one model can't catch Minerva semantics (evidence deleted with its fact, empty/untitled models refused). Test writes against `FakeMinerva` and, before shipping, the local Barista.
+- Parity check that works: drive the same UI steps in the Angular build (served with the host's `global_*`) and the React app on two scratch models, then diff the stored graphs id-free.
 
 ## Additional Context (Claude)
 

@@ -22,7 +22,9 @@ Locally it falls back to a Barista at `http://localhost:3400` (see
 
 ```bash
 npm run test       # unit and component tests (Vitest)
-npm run test:e2e   # browser tests with Barista and GOlr mocked (Playwright)
+npm run test:e2e   # browser tests against an in-memory Minerva and GOlr (Playwright)
+LIVE=1 npx playwright test e2e/live    # read-only, against barista-dev
+LOCAL=1 LOCAL_BARISTA_TOKEN=<token> npx playwright test e2e/local   # real writes, local Barista
 npm run lint && npm run type-check
 ```
 
