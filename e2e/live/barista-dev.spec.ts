@@ -21,13 +21,21 @@ test.beforeEach(async ({ page }) => {
     w.global_golr_neo_server = 'http://noctua-golr.berkeleybop.org/'
   }, BARISTA)
 
-  // Read-only: no write ever reaches barista-dev, and privileged reads go public.
+  // Read-only: no write ever reaches barista-dev, and privileged reads (POSTs with
+  // `intention=query` and only a `get`) go to the public endpoint, without the token.
   await page.route('**/m3BatchPrivileged*', async route => {
-    if (route.request().method() !== 'GET') return route.abort()
+    const params = new URLSearchParams(route.request().postData() ?? '')
+    const operations = JSON.parse(params.get('requests') ?? '[]') as { operation: string }[]
+    const isRead =
+      params.get('intention') === 'query' && operations.every(op => op.operation === 'get')
+    if (!isRead) return route.abort()
     const url = new URL(route.request().url())
     url.pathname = url.pathname.replace('m3BatchPrivileged', 'm3Batch')
-    url.searchParams.delete('token')
-    const response = await route.fetch({ url: url.toString() })
+    url.search = new URLSearchParams({
+      intention: 'query',
+      requests: params.get('requests') ?? '[]',
+    }).toString()
+    const response = await route.fetch({ url: url.toString(), method: 'GET' })
     return route.fulfill({ response })
   })
   await page.route(`${BARISTA}/api/**/m3Batch`, route =>
