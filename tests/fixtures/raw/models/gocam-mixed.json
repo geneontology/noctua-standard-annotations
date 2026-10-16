@@ -1,0 +1,2084 @@
+{
+ "modified-p": false,
+ "id": "gomodel:69b432fc00000161",
+ "individuals": [
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000001",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0050058",
+     "label": "linoleate isomerase activity"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "hint-layout-y",
+     "value": "179.00000381469727"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "hint-layout-x",
+     "value": "1406"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000002",
+   "type": [
+    {
+     "type": "class",
+     "id": "MGI:MGI:88216",
+     "label": "Btk Mmus"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-05-18"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000005",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0050955",
+     "label": "thermoception"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0008150",
+     "label": "biological_process"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "hint-layout-y",
+     "value": "75"
+    },
+    {
+     "key": "hint-layout-x",
+     "value": "1256.25"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000006",
+   "type": [
+    {
+     "type": "class",
+     "id": "CHEBI:174474",
+     "label": "Thellungianin G"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "hint-layout-x",
+     "value": "1031.25"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "523.2500190734863"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000019",
+   "type": [
+    {
+     "type": "class",
+     "id": "CHEBI:86203",
+     "label": "1-octadecanoyl-2-[(7Z,10Z,13Z,16Z,19Z)-docosapentaenoyl]-sn-glycero-3-phosphocholine"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "hint-layout-x",
+     "value": "862.5"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "75"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000020",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0008289",
+     "label": "lipid binding"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "comment",
+     "value": "comment 2"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "314.0000190734863"
+    },
+    {
+     "key": "hint-layout-x",
+     "value": "986.5"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000021",
+   "type": [
+    {
+     "type": "class",
+     "id": "UniProtKB:Q60495-PRO_0000442140",
+     "label": "APP-Gamma-secretase_C-terminal_fragment_50 NCBITaxon:10141"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:36080",
+     "label": "protein"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-21"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000026",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0008289",
+     "label": "lipid binding"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "hint-layout-x",
+     "value": "1846.875"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "381.25"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000027",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0050955",
+     "label": "thermoception"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0008150",
+     "label": "biological_process"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "hint-layout-x",
+     "value": "3618.75"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "75"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000028",
+   "type": [
+    {
+     "type": "class",
+     "id": "Xenbase:XB-GENE-6252773",
+     "label": "aire.L Xlae"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000029",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0005515",
+     "label": "protein binding"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "hint-layout-x",
+     "value": "646.5"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "67.00000381469727"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000030",
+   "type": [
+    {
+     "type": "class",
+     "id": "WB:WBGene00000099",
+     "label": "air-2 Cele"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000031",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "source",
+     "value": "PMID:14704431"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "with",
+     "value": "UniProtKB:G5EE37"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000032",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "source",
+     "value": "PMID:15548597"
+    },
+    {
+     "key": "with",
+     "value": "UniProtKB:G5ECF4"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000033",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "source",
+     "value": "PMID:15916946"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "with",
+     "value": "UniProtKB:G5EE37"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000034",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "with",
+     "value": "UniProtKB:P34314"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "source",
+     "value": "PMID:15916946"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000035",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "source",
+     "value": "PMID:18070910"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "with",
+     "value": "UniProtKB:P34560"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000036",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "source",
+     "value": "PMID:21110867"
+    },
+    {
+     "key": "with",
+     "value": "UniProtKB:O17583"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000037",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "source",
+     "value": "PMID:14704431"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "with",
+     "value": "UniProtKB:G5EE37"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000038",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0007005",
+     "label": "high throughput direct assay evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "source",
+     "value": "PMID:14704431"
+    },
+    {
+     "key": "with",
+     "value": "UniProtKB:G5EE37"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000039",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0160281",
+     "label": "cytoplasmic side of trans-Golgi network membrane"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "UBERON:0001062",
+     "label": "anatomical entity"
+    },
+    {
+     "type": "class",
+     "id": "GO:0110165",
+     "label": "cellular anatomical structure"
+    },
+    {
+     "type": "class",
+     "id": "GO:0005575",
+     "label": "cellular_component"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000040",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "source",
+     "value": "PMID:14704431"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000074",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "source",
+     "value": "PMID:14704431"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000085",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "source",
+     "value": "PMID:14704431"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000086",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0042577",
+     "label": "lipid phosphatase activity"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000087",
+   "type": [
+    {
+     "type": "class",
+     "id": "WB:WBGene00000099",
+     "label": "air-2 Cele"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a0796f300000088",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "source",
+     "value": "PMID:14704431"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a6ba88c00000531",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0042577",
+     "label": "lipid phosphatase activity"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-08-17"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-6659-0416"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a6ba88c00000532",
+   "type": [
+    {
+     "type": "class",
+     "id": "WB:WBGene00000099",
+     "label": "air-2 Cele"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-6659-0416"
+    },
+    {
+     "key": "date",
+     "value": "2026-08-17"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/6a6ba88c00000533",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000353",
+     "label": "physical interaction evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "source",
+     "value": "PMID:14704431"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-6659-0416"
+    },
+    {
+     "key": "date",
+     "value": "2026-08-17"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/69b432fc00000162",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0042577",
+     "label": "lipid phosphatase activity"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "hint-layout-x",
+     "value": "392"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "46.000003814697266"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/69b432fc00000163",
+   "type": [
+    {
+     "type": "class",
+     "id": "WB:WBGene00000099",
+     "label": "air-2 Cele"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-04-09"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/69b432fc00000164",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0008289",
+     "label": "lipid binding"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "322.0000190734863"
+    },
+    {
+     "key": "hint-layout-x",
+     "value": "505"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/69b432fc00000165",
+   "type": [
+    {
+     "type": "class",
+     "id": "UniProtKB:O95477",
+     "label": "ABCA1 Hsap"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:36080",
+     "label": "protein"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-03-17"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/69b432fc00000589",
+   "type": [
+    {
+     "type": "class",
+     "id": "UniProtKB:O95477",
+     "label": "ABCA1 Hsap"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:36080",
+     "label": "protein"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "hint-layout-x",
+     "value": "125"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "20.000003814697266"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/69b432fc00000590",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0008289",
+     "label": "lipid binding"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "hint-layout-x",
+     "value": "271"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "479.9999885559082"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/69b432fc00000591",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0006081",
+     "label": "far-Western blotting evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-03-31"
+    },
+    {
+     "key": "source",
+     "value": "PMID:1478"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/69d97c3300000865",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0034440",
+     "label": "lipid oxidation"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0008150",
+     "label": "biological_process"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-04-21"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "413.00000381469727"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "hint-layout-x",
+     "value": "823"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/69d97c3300000866",
+   "type": [
+    {
+     "type": "class",
+     "id": "AGI_LocusCode:AT4G33355",
+     "label": "LTP11 Atal"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "hint-layout-x",
+     "value": "673"
+    },
+    {
+     "key": "hint-layout-y",
+     "value": "462.9999885559082"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:69b432fc00000161/69d97c3300000919",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0006303",
+     "label": "microscale thermophoresis evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-04-28"
+    },
+    {
+     "key": "source",
+     "value": "PMID:1454"
+    }
+   ]
+  }
+ ],
+ "facts": [
+  {
+   "subject": "gomodel:69b432fc00000161/69b432fc00000162",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:69b432fc00000161/69b432fc00000163",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000085",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "comment",
+     "value": "I dont agree with Val at this statement"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/6a0796f300000020",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:69b432fc00000161/6a0796f300000021",
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-21"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/6a0796f300000026",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:69b432fc00000161/6a0796f300000028",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000037",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/69b432fc00000164",
+   "property": "BFO:0000050",
+   "property-label": "part of",
+   "object": "gomodel:69b432fc00000161/6a0796f300000005",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000074",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "comment",
+     "value": "another comment"
+    },
+    {
+     "key": "comment",
+     "value": "my third comment"
+    },
+    {
+     "key": "comment",
+     "value": "this is my comnent one"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/6a0796f300000086",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:69b432fc00000161/6a0796f300000087",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000088",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/69d97c3300000866",
+   "property": "BFO:0000066",
+   "property-label": "occurs in",
+   "object": "gomodel:69b432fc00000161/69d97c3300000865",
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-04-21"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/69b432fc00000164",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:69b432fc00000161/69b432fc00000165",
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-21"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "comment",
+     "value": "another comment"
+    },
+    {
+     "key": "comment",
+     "value": "my third comment"
+    },
+    {
+     "key": "comment",
+     "value": "this is my comnent one"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/69b432fc00000589",
+   "property": "RO:0002326",
+   "property-label": "contributes to",
+   "object": "gomodel:69b432fc00000161/69b432fc00000590",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/69b432fc00000591",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-03-31"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/69b432fc00000164",
+   "property": "RO:0012009",
+   "property-label": "constitutively upstream of",
+   "object": "gomodel:69b432fc00000161/6a0796f300000020",
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "comment",
+     "value": "comment 3"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/6a0796f300000026",
+   "property": "BFO:0000066",
+   "property-label": "occurs in",
+   "object": "gomodel:69b432fc00000161/6a0796f300000039",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000040",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/69b432fc00000164",
+   "property": "RO:0002629",
+   "property-label": "directly positively regulates",
+   "object": "gomodel:69b432fc00000161/6a0796f300000001",
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-18"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/6a6ba88c00000531",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:69b432fc00000161/6a6ba88c00000532",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a6ba88c00000533",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-6659-0416"
+    },
+    {
+     "key": "date",
+     "value": "2026-08-17"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/69b432fc00000164",
+   "property": "RO:0002630",
+   "property-label": "directly negatively regulates",
+   "object": "gomodel:69b432fc00000161/69b432fc00000162",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/69d97c3300000919",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-04-28"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/6a0796f300000026",
+   "property": "BFO:0000050",
+   "property-label": "part of",
+   "object": "gomodel:69b432fc00000161/6a0796f300000027",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000038",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/6a0796f300000029",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:69b432fc00000161/6a0796f300000030",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000031",
+     "value-type": "IRI"
+    },
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000032",
+     "value-type": "IRI"
+    },
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000033",
+     "value-type": "IRI"
+    },
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000034",
+     "value-type": "IRI"
+    },
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000035",
+     "value-type": "IRI"
+    },
+    {
+     "key": "evidence",
+     "value": "gomodel:69b432fc00000161/6a0796f300000036",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-26"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:69b432fc00000161/6a0796f300000001",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:69b432fc00000161/6a0796f300000002",
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-2874-6934"
+    },
+    {
+     "key": "date",
+     "value": "2026-05-18"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "key": "conforms-to-gpad",
+   "value": "false",
+   "value-type": "xsd:boolean"
+  },
+  {
+   "key": "state",
+   "value": "review"
+  },
+  {
+   "key": "contributor",
+   "value": "https://orcid.org/0000-0002-2874-6934"
+  },
+  {
+   "key": "contributor",
+   "value": "https://orcid.org/0000-0002-6659-0416"
+  },
+  {
+   "key": "contributor",
+   "value": "https://orcid.org/0000-0003-1813-6857"
+  },
+  {
+   "key": "date",
+   "value": "2026-08-17"
+  },
+  {
+   "key": "title",
+   "value": "enabled by ABCA8 Hsap edited"
+  },
+  {
+   "key": "providedBy",
+   "value": "http://geneontology.org"
+  },
+  {
+   "key": "comment",
+   "value": "another one editing"
+  },
+  {
+   "key": "comment",
+   "value": "model level"
+  },
+  {
+   "key": "https://w3id.org/biolink/vocab/in_taxon",
+   "value": "NCBITaxon:10090",
+   "value-type": "IRI"
+  },
+  {
+   "key": "https://w3id.org/biolink/vocab/in_taxon",
+   "value": "NCBITaxon:10141",
+   "value-type": "IRI"
+  },
+  {
+   "key": "https://w3id.org/biolink/vocab/in_taxon",
+   "value": "NCBITaxon:3702",
+   "value-type": "IRI"
+  },
+  {
+   "key": "https://w3id.org/biolink/vocab/in_taxon",
+   "value": "NCBITaxon:6239",
+   "value-type": "IRI"
+  },
+  {
+   "key": "https://w3id.org/biolink/vocab/in_taxon",
+   "value": "NCBITaxon:8355",
+   "value-type": "IRI"
+  },
+  {
+   "key": "https://w3id.org/biolink/vocab/in_taxon",
+   "value": "NCBITaxon:9606",
+   "value-type": "IRI"
+  }
+ ]
+}
