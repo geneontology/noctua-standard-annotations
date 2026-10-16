@@ -5,8 +5,12 @@ import { FaCalendarDay, FaComment, FaEllipsisV, FaPencilAlt, FaRegTrashAlt } fro
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { usePopover } from '@/@noctua.core/hooks/usePopover'
 import ConfirmDialog from '@/@noctua.core/components/dialog/ConfirmDialog'
-import { setRightDrawerOpen, setRightPanelTab, RightPanelTab } from '@/@noctua.core/components/drawer/drawerSlice'
-import { getEntityUrl } from '@/@noctua.core/services/goLinker/goLinker'
+import {
+  setRightDrawerOpen,
+  setRightPanelTab,
+  RightPanelTab,
+} from '@/@noctua.core/components/drawer/drawerSlice'
+import { getSourceDbUrl } from '@/@noctua.core/services/goLinker/goLinker'
 import { formatDate } from '@/@noctua.core/services/dateUtils'
 import { selectAuthUser } from '@/features/auth/slices/authSlice'
 import type { AnnotationExtension, StandardAnnotation } from '../models/annotation'
@@ -24,7 +28,7 @@ const TermLink: React.FC<{ id: string; label?: string; url?: string | null }> = 
   label,
   url,
 }) => {
-  const href = url === undefined ? getEntityUrl(id) : url
+  const href = url === undefined ? getSourceDbUrl(id) : url
   return (
     <span className="break-words">
       {label && (
@@ -95,7 +99,7 @@ const Cell: React.FC<CellProps> = ({ className, onEdit, editLabel, testId, child
         aria-label={editLabel}
         title={editLabel}
         onClick={e => onEdit(e.currentTarget)}
-        className="pointer-events-none absolute bottom-0 right-0 flex h-5 w-5 items-center justify-center text-gray-400 opacity-0 transition-opacity hover:bg-primary-500 hover:text-white focus:pointer-events-auto focus:opacity-100 group-hover/cell:pointer-events-auto group-hover/cell:opacity-100"
+        className="pointer-events-none absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center text-gray-400 opacity-0 transition-opacity group-hover/cell:pointer-events-auto group-hover/cell:opacity-100 hover:bg-primary-500 hover:text-white focus:pointer-events-auto focus:opacity-100"
       >
         <FaPencilAlt size={9} />
       </button>
@@ -145,7 +149,8 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
     setPending(null)
     if (current === 'not') await actions.toggleNot(annotation)
     else if (current === 'delete') await actions.deleteAnnotation(annotation)
-    else if (current && typeof current === 'object') await actions.deleteExtension(current.extension)
+    else if (current && typeof current === 'object')
+      await actions.deleteExtension(current.extension)
   }
 
   return (
@@ -166,7 +171,11 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
 
       <Cell
         className={columns.relation.className}
-        onEdit={editIf(EditorCategory.RELATION, annotation.relationChoices.length > 0)}
+        onEdit={editIf(
+          EditorCategory.RELATION,
+          // A relation SAE doesn't know (a root MF `occurs_in` from a GO-CAM) can't be swapped.
+          !!relation.id && annotation.relationChoices.length > 0
+        )}
         editLabel="Edit relation"
         testId="cell-relation"
       >
@@ -218,11 +227,11 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
             key={extension.edge.uid}
             className="group/ext relative flex flex-col border-b border-gray-200 py-1.5 pr-5 last:border-b-0"
           >
-            <span className="text-[10px] italic text-gray-700">{extension.relation.label}</span>
+            <span className="text-[10px] text-gray-700 italic">{extension.relation.label}</span>
             <span>
               {extension.term.label}{' '}
               <a
-                href={getEntityUrl(extension.term.id) ?? undefined}
+                href={getSourceDbUrl(extension.term.id) ?? undefined}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -234,7 +243,7 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
                 type="button"
                 aria-label={`Delete extension ${extension.relation.label} ${extension.term.label}`}
                 onClick={() => setPending({ extension })}
-                className="absolute right-0 top-1 flex h-5 w-5 items-center justify-center text-red-400 opacity-0 hover:bg-red-400 hover:text-white focus:opacity-100 group-hover/ext:opacity-100"
+                className="absolute top-1 right-0 flex h-5 w-5 items-center justify-center text-red-400 opacity-0 group-hover/ext:opacity-100 hover:bg-red-400 hover:text-white focus:opacity-100"
               >
                 <FaRegTrashAlt size={10} />
               </button>
@@ -274,7 +283,7 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
               onClick={openComments}
             >
               <FaComment size={14} />
-              <span className="absolute right-0 top-0 rounded-md bg-green-700 px-1 py-px text-[9px] font-medium text-white">
+              <span className="absolute top-0 right-0 rounded-md bg-green-700 px-1 py-px text-[9px] font-medium text-white">
                 {annotation.comments.length}
               </span>
             </ActionIcon>
@@ -282,7 +291,10 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
         )}
       </Cell>
 
-      <div role="cell" className={`${columns.action.className} flex items-start justify-center pt-1`}>
+      <div
+        role="cell"
+        className={`${columns.action.className} flex items-start justify-center pt-1`}
+      >
         {isLoggedIn && (
           <Menu position="bottom-end" withinPortal shadow="md">
             <Menu.Target>

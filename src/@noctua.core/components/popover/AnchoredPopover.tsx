@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Portal } from '@mantine/core'
 
 interface AnchoredPopoverProps {
@@ -24,6 +24,9 @@ const ANCHOR_GAP = 4
 // from inside the popover still render above us.
 const BACKDROP_Z = 250
 const POPOVER_Z = 260
+
+/** Open popovers, innermost last: Escape belongs to the innermost one only. */
+const openPopovers: symbol[] = []
 
 const AnchoredPopover = ({
   anchorEl,
@@ -106,18 +109,31 @@ const AnchoredPopover = ({
     }
   }, [open, el, anchorEl, updatePosition])
 
+  // Read at key time, so a new onClose doesn't re-register (and reorder) the popover.
+  const escapeRef = useRef({ onClose, closeOnEscape })
+  useEffect(() => {
+    escapeRef.current = { onClose, closeOnEscape }
+  })
+
   useEffect(() => {
     if (!open) return
+    const id = Symbol('popover')
+    openPopovers.push(id)
     // Capture-phase ESC: consume the event so it doesn't reach the parent
     // dialog's keydown handler (otherwise pressing Escape would close both).
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
+      if (e.key !== 'Escape' || openPopovers.at(-1) !== id) return
+      // An open suggestion list inside the popover closes first, not the popover.
+      if (e.target instanceof Element && e.target.closest('[aria-expanded="true"]')) return
       e.stopPropagation()
-      if (closeOnEscape) onClose()
+      if (escapeRef.current.closeOnEscape) escapeRef.current.onClose()
     }
     document.addEventListener('keydown', handleKey, true)
-    return () => document.removeEventListener('keydown', handleKey, true)
-  }, [open, onClose, closeOnEscape])
+    return () => {
+      document.removeEventListener('keydown', handleKey, true)
+      openPopovers.splice(openPopovers.indexOf(id), 1)
+    }
+  }, [open])
 
   if (!open) return null
 

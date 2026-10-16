@@ -15,11 +15,7 @@ interface DatabaseFieldProps {
   type: 'reference' | 'with'
 }
 
-const DatabaseField: React.FC<DatabaseFieldProps> = ({
-  value,
-  onChange,
-  type,
-}) => {
+const DatabaseField: React.FC<DatabaseFieldProps> = ({ value, onChange, type }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [open, setOpen] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
@@ -123,9 +119,12 @@ const DatabaseField: React.FC<DatabaseFieldProps> = ({
             if (trimmed !== e.target.value) onChange(trimmed)
           }}
           rows={2}
+          aria-expanded={open && filtered.length > 0}
           rightSection={
             <button
               type="button"
+              aria-label={type === 'reference' ? 'Pick a reference' : 'Pick with/from'}
+              title={type === 'reference' ? 'Pick a reference' : 'Pick with/from'}
               onMouseDown={e => e.preventDefault()}
               onClick={e => {
                 e.stopPropagation()
@@ -141,7 +140,7 @@ const DatabaseField: React.FC<DatabaseFieldProps> = ({
         {open && filtered.length > 0 && dropdownPos && (
           <Portal>
             <div
-              className="!bg-accent-50 max-h-60 overflow-y-auto rounded-md bg-white shadow-lg"
+              className="max-h-60 overflow-y-auto rounded-md !bg-accent-50 bg-white shadow-lg"
               style={{
                 position: 'fixed',
                 top: dropdownPos.top + 4,

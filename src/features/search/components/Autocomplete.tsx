@@ -50,7 +50,6 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState<string>('')
   const [open, setOpen] = useState<boolean>(false)
-  const [options, setOptions] = useState<GOlrResponse[]>([])
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('')
   const anchorRef = useRef<HTMLDivElement>(null)
@@ -75,47 +74,36 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
   // product is chosen), so there is nothing to search.
   const hasRange = rootTypeIds.length > 0
 
-  const { data, isLoading, isFetching } = useSearchTermsQuery(
+  const searchActive =
+    useAutocomplete && hasRange && debouncedSearchTerm.length >= MIN_SEARCH_LENGTH
+
+  // `currentData` belongs to the current search only: a new search, an empty
+  // result or a failure never leaves the previous term's options on show.
+  const { currentData, isFetching, isError } = useSearchTermsQuery(
     {
       searchText: debouncedSearchTerm,
       closureIds: rootTypeIds,
       excludeClosureIds: excludeRootTypeIds,
       excludeIdspaces,
     },
-    {
-      skip:
-        !useAutocomplete ||
-        !hasRange ||
-        !debouncedSearchTerm ||
-        debouncedSearchTerm.length < MIN_SEARCH_LENGTH,
-      selectFromResult: ({ data, isLoading, isFetching }) => ({
-        data: data || [],
-        isLoading,
-        isFetching,
-      }),
-    }
+    { skip: !searchActive }
   )
 
-  const searching = isLoading || isFetching
+  const searching = searchActive && isFetching
+
+  // The model's own terms (prelookup) until there is something to search, then
+  // exactly what GOlr returned for it (Angular `termPreLookup` / `filteredOptions`).
+  const displayOptions = !open
+    ? []
+    : searchActive
+      ? searching
+        ? []
+        : (currentData ?? [])
+      : initialOptions
 
   useEffect(() => {
-    if (useAutocomplete && data && data.length > 0) {
-      setOptions(data)
-      setHighlightedIndex(-1)
-    }
-  }, [data, useAutocomplete])
-
-  // Clear stale remote options when search becomes inactive so prelookups can show again
-  useEffect(() => {
-    if (!debouncedSearchTerm || debouncedSearchTerm.length < MIN_SEARCH_LENGTH) {
-      setOptions(prev => (prev.length === 0 ? prev : []))
-      setHighlightedIndex(prev => (prev === -1 ? prev : -1))
-    }
-  }, [debouncedSearchTerm])
-
-  // Show initialOptions (prelookups) whenever no remote results are loaded
-  const showInitial = open && options.length === 0 && !searching
-  const displayOptions = showInitial ? initialOptions : options
+    setHighlightedIndex(-1)
+  }, [debouncedSearchTerm, currentData, open])
 
   // Track the anchor's viewport rect so the portaled dropdown can position
   // itself with fixed coordinates. Recompute on scroll/resize.
@@ -166,13 +154,6 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
       setInputValue('')
     }
   }, [value])
-
-  useEffect(() => {
-    if (!open) {
-      setOptions([])
-      setHighlightedIndex(-1)
-    }
-  }, [open])
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (!open) return
@@ -229,7 +210,9 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
     ? 'No terms can be searched here yet'
     : inputValue.length < MIN_SEARCH_LENGTH
       ? `Type at least ${MIN_SEARCH_LENGTH} characters to search`
-      : 'No results found'
+      : searchActive && isError
+        ? 'The term search failed. Try again.'
+        : 'No results found'
 
   return (
     <div className="w-full">
@@ -253,6 +236,7 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
           disabled={disabled}
           rows={2}
           rightSection={searching ? <Loader size={20} /> : null}
+          aria-expanded={open}
           data-pw={`form-input-${name}`}
         />
       </div>

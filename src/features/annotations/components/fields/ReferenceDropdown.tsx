@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { ActionIcon, Autocomplete, Loader, Select } from '@mantine/core'
 import AnchoredPopover from '@/@noctua.core/components/popover/AnchoredPopover'
 import { FaRegTimesCircle, FaRegCheckCircle, FaUser, FaCalendarAlt } from 'react-icons/fa'
@@ -9,6 +9,7 @@ import { useLazyGetPubmedInfoQuery } from '@/features/search/slices/lookupApiSli
 import { PUBMED_LOOKUP_DELAY_MS, MIN_PMID_LENGTH } from '@/@noctua.core/data/uiConstants'
 import { useAppSelector } from '@/app/hooks'
 import { selectModelReferences } from '@/features/gocam/slices/camSlice'
+import { parseReference } from '../../services/databasePickers'
 
 interface ReferenceDropdownProps {
   anchorEl: HTMLElement | null
@@ -19,17 +20,6 @@ interface ReferenceDropdownProps {
 
 const dbOptions = referenceAllowedDBs.map(db => ({ name: db, label: `${db}:` }))
 
-/** Parse "DB:accession" into { dbName, accession } */
-function parseReference(value: string | undefined): { dbName: string; accession: string } {
-  if (!value?.trim()) return { dbName: dbOptions[0].name, accession: '' }
-  const colonIdx = value.indexOf(':')
-  if (colonIdx === -1) return { dbName: dbOptions[0].name, accession: value.trim() }
-  const dbPart = value.slice(0, colonIdx).trim()
-  const accPart = value.slice(colonIdx + 1).trim()
-  const matched = dbOptions.find(d => d.name === dbPart)
-  return { dbName: matched ? dbPart : dbOptions[0].name, accession: accPart }
-}
-
 const ReferenceDropdown: React.FC<ReferenceDropdownProps> = ({
   anchorEl,
   currentValue,
@@ -37,16 +27,24 @@ const ReferenceDropdown: React.FC<ReferenceDropdownProps> = ({
   onSave,
 }) => {
   const [db, setDb] = useState(dbOptions[0])
-  const [accession, setAccession] = useState('')
+  const [accession, setAccessionState] = useState('')
+  const [error, setError] = useState('')
+  // Enter is seen here before the suggestion list acts on it, so the save waits a
+  // tick: by then a highlighted suggestion has been picked, and the pick wins.
+  const accessionRef = useRef('')
+  const pickedRef = useRef(false)
+  const setAccession = (value: string) => {
+    accessionRef.current = value
+    setAccessionState(value)
+    setError('')
+  }
   const [triggerPubmed, { data: pubmedInfo, isFetching: pubmedLoading }] =
     useLazyGetPubmedInfoQuery()
 
   const modelReferences = useAppSelector(selectModelReferences)
   const referenceSuggestions = useMemo(() => {
     const prefix = `${db.name}:`
-    return modelReferences
-      .filter(r => r.startsWith(prefix))
-      .map(r => r.slice(prefix.length))
+    return modelReferences.filter(r => r.startsWith(prefix)).map(r => r.slice(prefix.length))
   }, [modelReferences, db.name])
 
   // Pre-fill when popover opens
@@ -55,7 +53,9 @@ const ReferenceDropdown: React.FC<ReferenceDropdownProps> = ({
       const parsed = parseReference(currentValue)
       const found = dbOptions.find(d => d.name === parsed.dbName) ?? dbOptions[0]
       setDb(found)
-      setAccession(parsed.accession)
+      accessionRef.current = parsed.accession
+      setAccessionState(parsed.accession)
+      setError('')
     }
   }, [anchorEl, currentValue])
 
@@ -68,18 +68,24 @@ const ReferenceDropdown: React.FC<ReferenceDropdownProps> = ({
   }, [db.name, accession, triggerPubmed])
 
   const handleSave = () => {
-    const trimmed = accession.trim()
-    if (!trimmed) return
+    const trimmed = accessionRef.current.trim()
+    if (!trimmed) {
+      setError(`${db.name} accession is required`)
+      return
+    }
     onSave(`${db.name}:${trimmed}`)
     setAccession('')
     onClose()
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      handleSave()
-    }
+    if (e.key !== 'Enter') return
+    e.preventDefault()
+    pickedRef.current = false
+    setTimeout(() => {
+      if (pickedRef.current) pickedRef.current = false
+      else handleSave()
+    })
   }
 
   return (
@@ -89,8 +95,6 @@ const ReferenceDropdown: React.FC<ReferenceDropdownProps> = ({
       onClose={onClose}
       placement="bottom-end"
       className="!bg-accent-50 !shadow-lg"
-      closeOnClickOutside={false}
-      closeOnEscape={false}
     >
       <div
         className="flex w-full flex-col items-stretch justify-start px-2 py-2"
@@ -113,7 +117,12 @@ const ReferenceDropdown: React.FC<ReferenceDropdownProps> = ({
             placeholder="Accession"
             value={accession}
             onChange={setAccession}
+            onOptionSubmit={() => {
+              pickedRef.current = true
+            }}
             onKeyDown={handleKeyDown}
+            error={error || undefined}
+            aria-label="Accession"
             data={referenceSuggestions}
             limit={10}
             autoFocus

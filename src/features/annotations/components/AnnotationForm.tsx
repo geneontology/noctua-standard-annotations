@@ -13,11 +13,7 @@ import type { RootState } from '@/app/store/store'
 import { EVIDENCE_AUTO_POPULATE, ROOT_NODES } from '../data/annotationConfig'
 import type { RootNodeKey } from '../data/annotationConfig'
 import { EVIDENCE_FILTER, GENE_PRODUCT_FILTER } from '../data/termFilters'
-import type {
-  AnnotationFormState,
-  EvidenceRow,
-  ExtensionRow,
-} from '../models/annotationForm'
+import type { AnnotationFormState, EvidenceRow, ExtensionRow } from '../models/annotationForm'
 import {
   createCommentRow,
   createEvidenceRow,
@@ -103,10 +99,15 @@ const AnnotationForm: React.FC = () => {
   const isLoggedIn = !!useAppSelector(selectAuthUser)
   const actions = useAnnotationActions()
   const [form, setFormState] = useState<AnnotationFormState>(createInitialForm)
+  // Remounts the fields on Clear, so text typed but never picked goes too.
+  const [resetKey, setResetKey] = useState(0)
+  // Like Angular, errors are explained only once the curator has started.
+  const [touched, setTouched] = useState(false)
   const [errorsOpen, setErrorsOpen] = useState(false)
 
   /** Every change goes through the form rules, like the Angular valueChanges hook. */
   const setForm = useCallback((update: (current: AnnotationFormState) => AnnotationFormState) => {
+    setTouched(true)
     setFormState(current => applyFormRules(update(current)))
   }, [])
 
@@ -142,7 +143,9 @@ const AnnotationForm: React.FC = () => {
         ...f,
         goTerm: termOption(root.id, root.label, [{ id: root.id, label: root.label }]),
         evidences: evidences.map((row, i) =>
-          i === 0 ? { ...row, evidenceCode: termOption(evidence.id, evidence.label), reference } : row
+          i === 0
+            ? { ...row, evidenceCode: termOption(evidence.id, evidence.label), reference }
+            : row
         ),
       }
     })
@@ -154,7 +157,11 @@ const AnnotationForm: React.FC = () => {
       extensions: f.extensions.map(row => (row.uid === uid ? { ...row, ...patch } : row)),
     }))
 
-  const clearForm = () => setFormState(createInitialForm())
+  const clearForm = () => {
+    setFormState(createInitialForm())
+    setResetKey(key => key + 1)
+    setTouched(false)
+  }
 
   const save = async () => {
     if (errors.length > 0) return
@@ -165,6 +172,7 @@ const AnnotationForm: React.FC = () => {
   return (
     <div className="flex w-full justify-center bg-gradient-to-r from-primary-50 to-accent-50 px-2 py-6">
       <form
+        key={resetKey}
         name="annotationForm"
         aria-label="Create annotation"
         className="relative w-full max-w-[900px] rounded-md bg-white shadow-md"
@@ -301,7 +309,9 @@ const AnnotationForm: React.FC = () => {
         <div className="px-4 py-3">
           <Button
             variant="subtle"
-            onClick={() => setForm(f => ({ ...f, extensions: [...f.extensions, createExtensionRow()] }))}
+            onClick={() =>
+              setForm(f => ({ ...f, extensions: [...f.extensions, createExtensionRow()] }))
+            }
           >
             Add {form.extensions.length > 0 ? 'Another ' : ''}Extension
           </Button>
@@ -347,7 +357,7 @@ const AnnotationForm: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2 border-t border-gray-200 bg-gray-50 px-4 py-4">
-          {errors.length > 0 && (
+          {touched && errors.length > 0 && (
             <Button variant="subtle" color="red" onClick={() => setErrorsOpen(true)}>
               Why is the &quot;Save&quot; button disabled?
             </Button>

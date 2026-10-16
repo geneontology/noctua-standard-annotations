@@ -6,15 +6,8 @@ import { FaPlus, FaRegTrashAlt } from 'react-icons/fa'
 import { withFromAllowedDBs, DB_NONE } from '../../data/allowedDatabases'
 import { useAppSelector } from '@/app/hooks'
 import { selectModelWiths } from '@/features/gocam/slices/camSlice'
-
-interface WithEntity {
-  db: string
-  accession: string
-}
-
-interface WithGroup {
-  entities: WithEntity[]
-}
+import type { WithEntity, WithGroup } from '../../services/databasePickers'
+import { parseWithGroups, serializeWithGroups } from '../../services/databasePickers'
 
 interface WithDropdownProps {
   anchorEl: HTMLElement | null
@@ -31,40 +24,9 @@ const dbOptions = [
     .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
 ]
 
-/** Parse existing with/from value into groups */
-function parseWithValue(value: string): WithGroup[] {
-  if (!value?.trim()) {
-    return [{ entities: [{ db: DB_NONE, accession: '' }] }]
-  }
-
-  const groups = value.split(',').map(groupStr => {
-    const entities = groupStr
-      .trim()
-      .split('|')
-      .filter(s => s.trim())
-      .map(entityStr => {
-        const trimmed = entityStr.trim()
-        const colonIdx = trimmed.indexOf(':')
-        if (colonIdx === -1) return { db: DB_NONE, accession: trimmed }
-        return {
-          db: trimmed.slice(0, colonIdx).trim() || DB_NONE,
-          accession: trimmed.slice(colonIdx + 1).trim(),
-        }
-      })
-
-    return { entities: entities.length > 0 ? entities : [{ db: DB_NONE, accession: '' }] }
-  })
-
-  return groups.length > 0 ? groups : [{ entities: [{ db: DB_NONE, accession: '' }] }]
-}
-
-const WithDropdown: React.FC<WithDropdownProps> = ({
-  anchorEl,
-  currentValue,
-  onClose,
-  onSave,
-}) => {
-  const [groups, setGroups] = useState<WithGroup[]>(() => parseWithValue(currentValue))
+const WithDropdown: React.FC<WithDropdownProps> = ({ anchorEl, currentValue, onClose, onSave }) => {
+  const [groups, setGroups] = useState<WithGroup[]>(() => parseWithGroups(currentValue))
+  const [errors, setErrors] = useState<string[]>([])
 
   const modelWiths = useAppSelector(selectModelWiths)
   const accessionsByDb = useMemo(() => {
@@ -88,11 +50,17 @@ const WithDropdown: React.FC<WithDropdownProps> = ({
   // Re-parse when opened with a different value
   useEffect(() => {
     if (anchorEl) {
-      setGroups(parseWithValue(currentValue))
+      setGroups(parseWithGroups(currentValue))
+      setErrors([])
     }
   }, [anchorEl, currentValue])
 
-  const updateEntity = (groupIdx: number, entityIdx: number, field: keyof WithEntity, value: string) => {
+  const updateEntity = (
+    groupIdx: number,
+    entityIdx: number,
+    field: keyof WithEntity,
+    value: string
+  ) => {
     setGroups(prev => {
       const next = prev.map((g, gi) =>
         gi === groupIdx
@@ -110,9 +78,7 @@ const WithDropdown: React.FC<WithDropdownProps> = ({
   const addEntity = (groupIdx: number) => {
     setGroups(prev =>
       prev.map((g, gi) =>
-        gi === groupIdx
-          ? { entities: [...g.entities, { db: DB_NONE, accession: '' }] }
-          : g
+        gi === groupIdx ? { entities: [...g.entities, { db: DB_NONE, accession: '' }] } : g
       )
     )
   }
@@ -120,9 +86,7 @@ const WithDropdown: React.FC<WithDropdownProps> = ({
   const deleteEntity = (groupIdx: number, entityIdx: number) => {
     setGroups(prev =>
       prev.map((g, gi) =>
-        gi === groupIdx
-          ? { entities: g.entities.filter((_, ei) => ei !== entityIdx) }
-          : g
+        gi === groupIdx ? { entities: g.entities.filter((_, ei) => ei !== entityIdx) } : g
       )
     )
   }
@@ -136,17 +100,11 @@ const WithDropdown: React.FC<WithDropdownProps> = ({
   }
 
   const handleSave = () => {
-    const result = groups
-      .map(group =>
-        group.entities
-          .filter(e => e.db !== DB_NONE && e.accession.trim())
-          .map(e => `${e.db}:${e.accession.trim()}`)
-          .join('|')
-      )
-      .filter(s => s.length > 0)
-      .join(',')
-
-    onSave(result)
+    // Incomplete entries block the save (Angular showed them in its errors dialog).
+    const { value, errors: saveErrors } = serializeWithGroups(groups)
+    setErrors(saveErrors)
+    if (saveErrors.length > 0) return
+    onSave(value)
     onClose()
   }
 
@@ -157,8 +115,6 @@ const WithDropdown: React.FC<WithDropdownProps> = ({
       onClose={onClose}
       placement="bottom-end"
       className="!bg-accent-50 !shadow-lg"
-      closeOnClickOutside={false}
-      closeOnEscape={false}
     >
       <div
         className="flex w-full flex-col items-stretch justify-start px-2 py-2"
@@ -169,15 +125,18 @@ const WithDropdown: React.FC<WithDropdownProps> = ({
             <div key={gi} className="mb-4 px-3">
               <div className="mb-2 flex flex-row items-center justify-start">
                 <strong className="mr-2 text-sm">With/From</strong>
-                <ActionIcon variant="subtle" color="gray" size="md" onClick={() => deleteGroup(gi)} title="Delete Group">
+                <ActionIcon
+                  variant="subtle"
+                  color="gray"
+                  size="md"
+                  onClick={() => deleteGroup(gi)}
+                  title="Delete Group"
+                >
                   <FaRegTrashAlt size={12} />
                 </ActionIcon>
               </div>
               {group.entities.map((entity, ei) => (
-                <div
-                  key={ei}
-                  className="mb-2 flex flex-row items-center justify-start"
-                >
+                <div key={ei} className="mb-2 flex flex-row items-center justify-start">
                   <Select
                     size="xs"
                     value={entity.db}
@@ -196,7 +155,13 @@ const WithDropdown: React.FC<WithDropdownProps> = ({
                     limit={10}
                     className="flex-1"
                   />
-                  <ActionIcon variant="subtle" color="gray" size="md" onClick={() => addEntity(gi)} title="Add Entity">
+                  <ActionIcon
+                    variant="subtle"
+                    color="gray"
+                    size="md"
+                    onClick={() => addEntity(gi)}
+                    title="Add Entity"
+                  >
                     <FaPlus size={12} />
                   </ActionIcon>
                   <ActionIcon
@@ -226,6 +191,13 @@ const WithDropdown: React.FC<WithDropdownProps> = ({
             Add Group
           </Button>
         </div>
+        {errors.length > 0 && (
+          <ul role="alert" className="list-disc px-6 pt-2 text-xs text-red-700">
+            {errors.map(error => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        )}
         <div className="flex w-full flex-row items-center justify-end pt-2">
           <Button variant="subtle" size="xs" onClick={onClose}>
             Cancel

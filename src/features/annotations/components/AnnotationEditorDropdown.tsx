@@ -14,6 +14,7 @@ import type { StandardAnnotation } from '../models/annotation'
 import { termOption } from '../models/annotationForm'
 import { EVIDENCE_FILTER, GENE_PRODUCT_FILTER } from '../data/termFilters'
 import { getObjectRange, getTermRelations, isShapeTerm } from '../services/shapeRules'
+import { getAnnotationEvidence } from '../services/annotationOperations'
 import {
   correctWithFromCase,
   isValidReferenceList,
@@ -158,7 +159,11 @@ const AnnotationEditorDropdown: React.FC<AnnotationEditorDropdownProps> = ({
       }
       case EditorCategory.EVIDENCE_CODE:
         if (!term?.id) return warn('Please select term from autocomplete.')
-        if (term.id === annotation.evidence?.evidenceCode.id) return onClose()
+        // Unchanged only if every evidence already has it — picking the shown code
+        // still unifies an annotation whose facts disagree (as Angular applied it).
+        if (getAnnotationEvidence(annotation).every(ev => ev.evidenceCode.id === term.id)) {
+          return onClose()
+        }
         saved = await actions.editEvidenceCode(annotation, term.id)
         break
       case EditorCategory.REFERENCE: {
@@ -166,7 +171,9 @@ const AnnotationEditorDropdown: React.FC<AnnotationEditorDropdownProps> = ({
         if (!isValidReferenceList(reference)) {
           return warn('Use DB:accession format for reference.')
         }
-        if (reference === annotation.evidence?.reference) return onClose()
+        if (getAnnotationEvidence(annotation).every(ev => ev.reference === reference)) {
+          return onClose()
+        }
         saved = await actions.editReference(annotation, reference)
         break
       }
@@ -215,11 +222,15 @@ const AnnotationEditorDropdown: React.FC<AnnotationEditorDropdownProps> = ({
           <div className="w-[250px] p-1">
             <RelationSelect
               label={
-                category === EditorCategory.RELATION ? 'GP To Term Relation' : 'New Extension Relation'
+                category === EditorCategory.RELATION
+                  ? 'GP To Term Relation'
+                  : 'New Extension Relation'
               }
               value={relation}
               choices={
-                category === EditorCategory.RELATION ? annotation.relationChoices : extensionRelations
+                category === EditorCategory.RELATION
+                  ? annotation.relationChoices
+                  : extensionRelations
               }
               onChange={setRelation}
               clearable={category === EditorCategory.ADD_EXTENSION}
@@ -244,7 +255,9 @@ const AnnotationEditorDropdown: React.FC<AnnotationEditorDropdownProps> = ({
               value={term}
               onChange={value => setTerm(value && typeof value === 'object' ? value : null)}
               initialOptions={
-                category === EditorCategory.EVIDENCE_CODE ? evidenceInitialOptions : termInitialOptions
+                category === EditorCategory.EVIDENCE_CODE
+                  ? evidenceInitialOptions
+                  : termInitialOptions
               }
             />
           </div>

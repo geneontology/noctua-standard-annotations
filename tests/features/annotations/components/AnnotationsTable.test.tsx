@@ -3,7 +3,8 @@ import { screen, within, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '@tests/test-utils'
 import { mockBarista, batchSuccess } from '@tests/fixtures/barista'
 import { stateWith } from '@tests/fixtures/state'
-import { saeModelRaw, saeUid } from '@tests/fixtures/saeModel'
+import { rawFact, rawIndividual, saeModelRaw, saeUid } from '@tests/fixtures/saeModel'
+import { transformGraphData } from '@/features/gocam/services/graphServices'
 import AnnotationsTable from '@/features/annotations/components/AnnotationsTable'
 import { selectSortedAnnotations } from '@/features/annotations/slices/annotationsSlice'
 import { selectSelectedCommentAnnotationId } from '@/features/annotations/slices/annotationsSlice'
@@ -15,10 +16,7 @@ vi.mock('@/features/search/components/Autocomplete', () => import('@tests/mocks/
 
 const renderTable = (options: { loggedIn?: boolean } = {}) => {
   const store: AppStore = makeStore(stateWith({ loggedIn: options.loggedIn ?? true }))
-  const view = renderWithProviders(
-    <TableFromStore store={store} />,
-    { store }
-  )
+  const view = renderWithProviders(<TableFromStore store={store} />, { store })
   return { ...view, store }
 }
 
@@ -84,7 +82,9 @@ describe('AnnotationsTable', () => {
   it('offers edit buttons and the row menu when logged in', () => {
     renderTable()
     expect(screen.getAllByRole('button', { name: 'Annotation actions' })).toHaveLength(9)
-    expect(within(rowFor('ALPHA1 Hsap')).getByRole('button', { name: 'Edit GO term' })).toBeInTheDocument()
+    expect(
+      within(rowFor('ALPHA1 Hsap')).getByRole('button', { name: 'Edit GO term' })
+    ).toBeInTheDocument()
   })
 
   it('sorts by a column header: ascending, descending, then back to default', async () => {
@@ -118,7 +118,9 @@ describe('AnnotationRow actions', () => {
     const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
     const { user } = renderTable()
 
-    await user.click(within(rowFor('BETA2 Hsap')).getByRole('button', { name: 'Annotation actions' }))
+    await user.click(
+      within(rowFor('BETA2 Hsap')).getByRole('button', { name: 'Annotation actions' })
+    )
     await user.click(await screen.findByRole('menuitem', { name: /Delete Annotation/ }))
     expect(await screen.findByText('You are about to delete an annotation.')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Delete' }))
@@ -130,7 +132,9 @@ describe('AnnotationRow actions', () => {
       operation: 'remove',
       arguments: { subject: saeUid('mf2'), predicate: 'RO:0002333', object: saeUid('gp2') },
     })
-    expect(ops.filter(op => op.operation === 'remove' && op.entity === 'individual')).toHaveLength(4)
+    expect(ops.filter(op => op.operation === 'remove' && op.entity === 'individual')).toHaveLength(
+      4
+    )
     expect(ops.at(-1)?.operation).toBe('store')
   })
 
@@ -138,7 +142,9 @@ describe('AnnotationRow actions', () => {
     const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
     const { user } = renderTable()
 
-    await user.click(within(rowFor('ALPHA1 Hsap')).getByRole('button', { name: 'Annotation actions' }))
+    await user.click(
+      within(rowFor('ALPHA1 Hsap')).getByRole('button', { name: 'Annotation actions' })
+    )
     await user.click(await screen.findByRole('menuitem', { name: /Remove NOT Qualifier/ }))
     await user.click(await screen.findByRole('button', { name: 'Update' }))
 
@@ -174,11 +180,39 @@ describe('AnnotationRow actions', () => {
       message: 'org.geneontology.minerva...InsufficientPermissionsException',
     }))
     const { user, store } = renderTable()
-    await user.click(within(rowFor('BETA2 Hsap')).getByRole('button', { name: 'Annotation actions' }))
+    await user.click(
+      within(rowFor('BETA2 Hsap')).getByRole('button', { name: 'Annotation actions' })
+    )
     await user.click(await screen.findByRole('menuitem', { name: /Delete Annotation/ }))
     await user.click(await screen.findByRole('button', { name: 'Delete' }))
 
     await waitFor(() => expect(store.getState().toast.severity).toBe('error'))
     expect(store.getState().toast.message).toMatch(/permission/)
+  })
+})
+
+describe('AnnotationsTable — rows read from other editors', () => {
+  it('does not offer to change a relation SAE cannot name (root MF occurs_in)', async () => {
+    const model = transformGraphData({
+      'modified-p': false,
+      id: 'gomodel:vpe',
+      individuals: [
+        rawIndividual('mf', 'GO:0003674', 'molecular_function', ['GO:0003674']),
+        rawIndividual('gp', 'UniProtKB:P1', 'VPE1 Hsap', ['CHEBI:33695', 'CHEBI:24431']),
+        rawIndividual('cc', 'GO:0005634', 'nucleus', ['UBERON:0001062', 'GO:0005575']),
+      ],
+      facts: [
+        rawFact('mf', 'RO:0002333', 'enabled by', 'gp'),
+        rawFact('mf', 'BFO:0000066', 'occurs in', 'cc'),
+      ],
+      annotations: [],
+    })
+    const store = makeStore(stateWith({ model }))
+    const { user } = renderWithProviders(<TableFromStore store={store} />, { store })
+    const row = rowFor('VPE1 Hsap')
+    expect(within(row).getByTestId('cell-relation')).toHaveTextContent('occurs in')
+    await user.hover(within(row).getByTestId('cell-relation'))
+    expect(within(row).queryByRole('button', { name: 'Edit relation' })).not.toBeInTheDocument()
+    expect(within(row).getByRole('button', { name: 'Edit GO term' })).toBeInTheDocument()
   })
 })

@@ -52,9 +52,15 @@ describe('AnnotationForm', () => {
     expect(screen.getByTestId('autocomplete-range-goterm')).toHaveTextContent('GO:0008150')
   })
 
-  it('explains why Save is disabled', async () => {
+  it('explains why Save is disabled, once the curator has started', async () => {
     const { user } = renderForm()
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
+    // A pristine form doesn't nag (Angular computed errors on the first change).
+    expect(
+      screen.queryByRole('button', { name: /Why is the "Save" button disabled/ })
+    ).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('checkbox', { name: 'NOT' }))
     await user.click(screen.getByRole('button', { name: /Why is the "Save" button disabled/ }))
     const dialog = await screen.findByText('Errors')
     expect(dialog).toBeInTheDocument()
@@ -98,7 +104,9 @@ describe('AnnotationForm', () => {
       },
     })
 
-    await waitFor(() => expect(store.getState().toast.message).toBe('Annotation successfully created.'))
+    await waitFor(() =>
+      expect(store.getState().toast.message).toBe('Annotation successfully created.')
+    )
     // The form is cleared after a save.
     expect(screen.getByTestId('autocomplete-value-gp')).toHaveTextContent('')
   })
