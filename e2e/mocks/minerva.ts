@@ -332,8 +332,13 @@ export class FakeMinerva {
   }
 }
 
-/** Serve every m3Batch request (GET or POST) from `minerva`. */
+/**
+ * Serve every m3Batch request (GET or POST) from `minerva`. Barista's socket has
+ * no fake: it is cut off, so a mocked run never hears a real Barista's relays.
+ */
 export const routeMinerva = async (page: Page, minerva: FakeMinerva): Promise<void> => {
+  await page.route('**/socket.io/**', route => route.abort())
+  await page.routeWebSocket(/\/socket\.io\//, ws => ws.close())
   await page.route('**/m3Batch*', async route => {
     const request = route.request()
     const params =

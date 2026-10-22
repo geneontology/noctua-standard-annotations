@@ -37,7 +37,8 @@ as the Angular app, and lint, type-check, unit tests, and the build all pass.
 | Shape data | Use SAE's own `shapes.json`, `shape-terms.json`, and `gp-to-term.json` (SAE replaced CARO with `UBERON:0001062`; VPE's copy still has CARO). `relations.ts` (known relations) is identical, so VPE's copy is reused. |
 | Features layout | `features/gocam` = model layer (graph parse, m3Batch API, cam toolbar, model details). `features/annotations` = SAE domain (annotation extraction, operation builders, form, table, inline editor, comments, add genes). |
 | Model details | One "Model Details" dialog (title, state, group, comments), because every SAE toolbar affordance opened the single cam-form panel. VPE splits these into separate dialogs. |
-| Announcements / socket / GA | Not ported. The cleanup branch removed announcements, and the old SAE had no socket and no analytics. |
+| Announcements / GA | Not ported. The cleanup branch removed announcements, and the old SAE had no analytics. |
+| Barista socket | Added after the port (geneontology/noctua#1077, #1115): socket.io-client v4 watches the open model as VPE does. The old SAE carried `bbop-client-barista` but never connected. See `.plans/feature/barista-socket.md`. |
 | Env files | `.env.development/.staging/.production` are committed (no secrets, makes builds reproducible). VPE ignores them; this is a conscious difference. |
 
 ## Angular → React map
@@ -268,7 +269,6 @@ Visible differences left on purpose (VPE look): the form's section headings and 
 
 ## Follow-ups to consider
 
-- Live model refresh (VPE's barista socket) — not in the Angular SAE, so not ported.
 - The "editing another group's model" warning (VPE `GroupGuardProvider`) — not in the Angular SAE.
 - A stored-vs-active change review for the Not Saved bar (the Angular `openCamReviewChangesDialog` stats).
 

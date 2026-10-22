@@ -82,6 +82,7 @@ Redux Toolkit with `combineSlices` (`store.ts`): `auth`, `metadata`, `cam`, `ann
 - **Errors:** Minerva and Barista report failures as HTTP 200 with `message-type` / `message_type: "error"`. `getBatchErrorMessage` turns them into RTK Query errors, and `useAnnotationActions` toasts them. A failed refresh keeps the last model on the page.
 - **Minerva rules the builders rely on:** removing a fact deletes its evidence individuals (never remove them again — the batch fails before its `store`); a batch has no rollback; a model with no individuals or no title can't be stored (so the last annotation can't be deleted, and the first create titles the model).
 - **GOlr:** JSONP via `<script>` (no CORS).
+- **Barista socket (socket.io 4.x):** `baristaSocketService` listens for Barista's `relay` (sent to every client for each `intention=action` batch). `useBaristaModelWatch` shows the page's "Model Updated" dialog when another tab or user changes the open model (geneontology/noctua#1077). `updateGraphModel` records its response's `packet-id` so SAE's own writes aren't reported; a relay that beats the response waits 500 ms for it.
 
 ## Enforced Patterns
 
@@ -105,6 +106,7 @@ Vitest + React Testing Library + jsdom. `renderWithProviders` gives an isolated 
 - Stub m3Batch with `mockBarista` (`tests/fixtures/barista.ts`). It records the decoded `operations` of every request, so UI tests can assert the exact batch.
 - e2e: `openModel(page, { model })` (`e2e/helpers.ts`) serves a `FakeMinerva` seeded from `e2e/fixtures/world.ts` and answers GOlr from its catalog. The fake applies batches like Minerva (variables, evidence removed with its fact, unknown ids fail, store/reset), so specs assert both the table and `minerva.factSummaries()` / `evidenceOf()`.
 - Replace the term `Autocomplete` with `vi.mock('@/features/search/components/Autocomplete', () => import('@tests/mocks/autocompleteMock'))`.
+- `tests/setup.ts` replaces `socket.io-client` with `tests/mocks/socketIoMock.ts` everywhere; drive Barista's relays with `lastSocket().receive('relay', …)` and reset with `baristaSocketService.disconnect()`. Mocked e2e runs cut `/socket.io/` off (`routeMinerva`).
 - Prefer `saeModelRaw` / `loadModel` over hand-built graphs.
 
 ## Task Management

@@ -1,4 +1,17 @@
 import '@testing-library/jest-dom/vitest'
+import { vi } from 'vitest'
+
+// The page connects to Barista's socket; tests get a fake one they can drive.
+vi.mock('socket.io-client', () => import('./mocks/socketIoMock'))
+
+// Node 22+ `Request` (undici 7) only takes Node's own AbortSignal, but under jsdom
+// RTK Query passes jsdom's. No test aborts a request, so the signal is left out.
+const NodeRequest = globalThis.Request
+globalThis.Request = class extends NodeRequest {
+  constructor(input: RequestInfo | URL, init?: RequestInit) {
+    super(input, init && { ...init, signal: null })
+  }
+} as typeof Request
 
 // jsdom lacks window.matchMedia; Mantine's MantineProvider color-scheme logic
 // calls it on mount. Provide a stub so component tests can render Mantine

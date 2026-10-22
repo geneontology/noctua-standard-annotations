@@ -3,6 +3,7 @@ import { makeStore } from '@/app/store/store'
 import apiService from '@/app/store/apiService'
 import '@/features/gocam/slices/camApiSlice'
 import { OperationEntity, OperationType } from '@/features/gocam/models/operations'
+import { baristaSocketService } from '@/features/gocam/services/baristaSocketService'
 import type { GraphModelApiResponse } from '@/features/gocam/models/cam'
 import { batchSuccess, mockBarista } from '@tests/fixtures/barista'
 import { saeModelRaw, SAE_MODEL_ID } from '@tests/fixtures/saeModel'
@@ -103,6 +104,20 @@ describe('updateGraphModel', () => {
     expect(request.params.get('intention')).toBe('action')
     expect(request.operations).toEqual(ops)
     expect('data' in result && result.data).toBeTruthy()
+  })
+
+  it("marks an action's packet as its own, so its Barista relay isn't an external change", async () => {
+    const recordOwnPacket = vi.spyOn(baristaSocketService, 'recordOwnPacket')
+    mockBarista(() => ({ ...batchSuccess(saeModelRaw), 'packet-id': 'p-42' }))
+
+    await makeStore(loggedIn).dispatch(endpoints.updateGraphModel.initiate(ops))
+    expect(recordOwnPacket).toHaveBeenCalledWith('p-42')
+
+    // A store-only save is a query, which Barista doesn't relay.
+    recordOwnPacket.mockClear()
+    await makeStore(loggedIn).dispatch(endpoints.updateGraphModel.initiate([store]))
+    expect(recordOwnPacket).not.toHaveBeenCalled()
+    recordOwnPacket.mockRestore()
   })
 
   it('surfaces a Barista bad-token error', async () => {

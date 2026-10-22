@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { act, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { renderWithProviders } from '@tests/test-utils'
 import { mockBarista, batchSuccess } from '@tests/fixtures/barista'
@@ -8,6 +8,8 @@ import { CURATOR } from '@tests/fixtures/state'
 import StandardAnnotations from '@/app/StandardAnnotations'
 import NotSavedBar from '@/app/layout/NotSavedBar'
 import apiService from '@/app/store/apiService'
+import { baristaSocketService } from '@/features/gocam/services/baristaSocketService'
+import { lastSocket } from '@tests/mocks/socketIoMock'
 
 vi.mock('@/features/search/components/Autocomplete', () => import('@tests/mocks/autocompleteMock'))
 
@@ -28,7 +30,10 @@ const renderPage = (search: string, loggedIn = true, userChecked = true) =>
     }
   )
 
-afterEach(() => vi.unstubAllGlobals())
+afterEach(() => {
+  vi.unstubAllGlobals()
+  baristaSocketService.disconnect()
+})
 
 describe('StandardAnnotations page', () => {
   it('asks for a model when there is no model_id', () => {
@@ -96,5 +101,21 @@ describe('StandardAnnotations page', () => {
     )
     expect(screen.getAllByTestId('annotation-row')).toHaveLength(9)
     expect(screen.queryByText(/Could not load/)).not.toBeInTheDocument()
+  })
+
+  it('asks for a refresh when another window or user changes the model', async () => {
+    const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
+    const { user } = renderPage(`?model_id=${SAE_MODEL_ID}`)
+    expect(await screen.findAllByTestId('annotation-row')).toHaveLength(9)
+    const reads = requests.length
+
+    act(() => lastSocket().receive('relay', { class: 'rebuild', model_id: SAE_MODEL_ID }))
+
+    expect(await screen.findByText('Model Updated')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Refresh' }))
+
+    await waitFor(() => expect(requests).toHaveLength(reads + 1))
+    expect(requests[reads].operations[0].operation).toBe('get')
+    await waitFor(() => expect(screen.queryByText('Model Updated')).not.toBeInTheDocument())
   })
 })

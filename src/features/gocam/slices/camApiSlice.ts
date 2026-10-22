@@ -6,8 +6,16 @@ import type { RootState } from '@/app/store/store'
 import { getBaristaApiUrl } from '@/@noctua.core/services/linksService'
 import { OperationEntity, OperationType } from '../models/operations'
 import type { Operation } from '../models/operations'
+import { baristaSocketService } from '../services/baristaSocketService'
 
 const addTagTypes = ['graph'] as const
+
+/** The m3Batch response's `packet-id`, which Barista's relay of the write carries. */
+const packetIdOf = (body: unknown): string | undefined => {
+  if (!body || typeof body !== 'object') return undefined
+  const packetId = (body as Record<string, unknown>)['packet-id']
+  return typeof packetId === 'string' ? packetId : undefined
+}
 
 interface GraphQueryArg {
   modelId: string
@@ -97,6 +105,9 @@ const graphApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
 
         const errorMessage = getBatchErrorMessage(result.data)
         if (errorMessage) return { error: { status: 'CUSTOM_ERROR', error: errorMessage } }
+
+        // Barista relays actions to every client, this one included: mark it as ours.
+        if (!storeOnly) baristaSocketService.recordOwnPacket(packetIdOf(result.data))
 
         const responseBody = result.data as { data?: unknown } | undefined
         return {
