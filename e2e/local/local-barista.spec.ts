@@ -187,3 +187,45 @@ test('copies the annotation to another gene, then deletes the original', async (
   expect(facts(model)).toEqual(['UniProtKB:P12931 RO:0002432 GO:0005634'])
   expect(model['modified-p']).toBe(false)
 })
+
+test('tells the other tab about an edit through the Barista socket, not the tab that made it', async ({
+  page,
+  browser,
+  request,
+}) => {
+  const MODEL_UPDATED = 'This model has been modified'
+  // A second window: its own context, so its own socket connection.
+  const otherWindow = await browser.newContext({ baseURL: test.info().project.use.baseURL })
+  const other = await otherWindow.newPage()
+  await open(page)
+  await open(other)
+
+  await page.getByRole('button', { name: 'Annotation actions' }).first().click()
+  await page.getByRole('menuitem', { name: 'Add Comment' }).click()
+  const editor = page.getByTestId('annotation-editor')
+  await editor.getByRole('textbox', { name: 'Comment' }).fill('from the first tab')
+  await editor.getByRole('button', { name: 'Save' }).click()
+  await expect(page.getByText('Comment successfully added.')).toBeVisible({ timeout: 30_000 })
+
+  await expect(other.getByText(MODEL_UPDATED)).toBeVisible({ timeout: 10_000 })
+  // Barista relays the write to the writer too; SAE knows its own packet.
+  await page.waitForTimeout(1_500)
+  await expect(page.getByText(MODEL_UPDATED)).toHaveCount(0)
+
+  await other.getByRole('button', { name: 'Refresh' }).click()
+  await expect(other.getByText(MODEL_UPDATED)).toHaveCount(0)
+  await expect(other.getByRole('button', { name: 'Comments (1)' })).toBeVisible()
+
+  // Another client's write (here the API) reaches both tabs.
+  await m3Batch(request, [
+    {
+      entity: 'model',
+      operation: 'add-annotation',
+      arguments: { 'model-id': modelId, values: [{ key: 'comment', value: 'from another tool' }] },
+    },
+    { entity: 'model', operation: 'store', arguments: { 'model-id': modelId } },
+  ])
+  await expect(page.getByText(MODEL_UPDATED)).toBeVisible({ timeout: 10_000 })
+  await expect(other.getByText(MODEL_UPDATED)).toBeVisible({ timeout: 10_000 })
+  await otherWindow.close()
+})
