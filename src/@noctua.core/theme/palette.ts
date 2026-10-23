@@ -1,4 +1,6 @@
 export const noctuaColors = {
+  /** Dropdown panels (term search, inline editors), the Angular app's #fbf9de. */
+  cream: '#fbf9de',
   noctuadark: {
     50: '#e4e7ec',
     100: '#bbc3d0',

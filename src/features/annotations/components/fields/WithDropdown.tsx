@@ -114,7 +114,6 @@ const WithDropdown: React.FC<WithDropdownProps> = ({ anchorEl, currentValue, onC
       anchorEl={anchorEl}
       onClose={onClose}
       placement="bottom-end"
-      className="!bg-accent-50 !shadow-lg"
     >
       <div
         className="flex w-full flex-col items-stretch justify-start px-2 py-2"

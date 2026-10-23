@@ -101,12 +101,6 @@ const CommentsPanel: React.FC = () => {
         })}
       </div>
 
-      <footer className="flex justify-end border-t border-gray-200 bg-white p-4">
-        <Button variant="filled" onClick={close}>
-          Close
-        </Button>
-      </footer>
-
       <CommentsDialog
         open={editing !== null}
         comments={editing?.comments ?? []}

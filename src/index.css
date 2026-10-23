@@ -29,6 +29,9 @@
   --color-accent-800: #dc9209;
   --color-accent-900: #ab7207;
 
+  /* Dropdown panels (term search, inline editors), the Angular app's #fbf9de. */
+  --color-cream: #fbf9de;
+
   --text-2xs: 0.625rem;
   --text-2xs--line-height: 0.875rem;
   --text-3xs: 0.5rem;
@@ -45,8 +48,10 @@
    bbop.css, and amigo.css cascade into our DOM. The `important` flag on
    the Tailwind import handles utility conflicts; the rules below reset
    non-utility cascades that still bleed through. Scoped to `#root` so
-   we don't fight the parent navbar's own styling. */
-#root {
+   we don't fight the parent navbar's own styling, but through `:where`
+   so the scope adds no specificity: a bare `#root button` outranks
+   Mantine's button classes and strips every filled button's background. */
+:where(#root) {
   a:hover {
     text-decoration: none;
   }

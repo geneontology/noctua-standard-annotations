@@ -212,7 +212,7 @@ const AnnotationEditorDropdown: React.FC<AnnotationEditorDropdownProps> = ({
       anchorEl={anchorEl}
       onClose={onClose}
       placement="bottom-end"
-      className="!min-w-[420px] !bg-accent-50 !shadow-lg"
+      className="!min-w-[420px]"
     >
       <div
         className="flex w-full flex-row items-end justify-start gap-1 p-2"

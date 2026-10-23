@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { ActionIcon, Menu, Tooltip } from '@mantine/core'
 import { FaCalendarDay, FaComment, FaEllipsisV, FaPencilAlt, FaRegTrashAlt } from 'react-icons/fa'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -23,6 +23,21 @@ import AnnotationEditorDropdown, { EditorCategory } from './AnnotationEditorDrop
 import AddGenesDialog from './dialogs/AddGenesDialog'
 import { ANNOTATION_COLUMNS } from './annotationColumns'
 
+/**
+ * An identifier that wraps after its prefix and separators (`UniProtKB:` / `P07948`),
+ * not inside an accession; the cell breaks anywhere only when a piece still won't fit.
+ */
+const IdText: React.FC<{ id: string }> = ({ id }) => (
+  <>
+    {id.split(/(?<=[:|,])/).map((piece, i) => (
+      <Fragment key={i}>
+        {i > 0 && <wbr />}
+        {piece}
+      </Fragment>
+    ))}
+  </>
+)
+
 const TermLink: React.FC<{ id: string; label?: string; url?: string | null }> = ({
   id,
   label,
@@ -30,7 +45,7 @@ const TermLink: React.FC<{ id: string; label?: string; url?: string | null }> = 
 }) => {
   const href = url === undefined ? getSourceDbUrl(id) : url
   return (
-    <span className="break-words">
+    <span>
       {label && (
         <>
           {label}
@@ -39,41 +54,33 @@ const TermLink: React.FC<{ id: string; label?: string; url?: string | null }> = 
       )}
       {href ? (
         <a href={href} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
-          {id}
+          <IdText id={id} />
         </a>
       ) : (
-        <span>{id}</span>
+        <IdText id={id} />
       )}
     </span>
   )
 }
 
-/** Each reference as its own link, in Noctua's display order (`B| A`). */
+/** Each reference (also each part of an `A|B` one) as its own link, in Noctua's display order. */
 const References: React.FC<{ sources: string[] }> = ({ sources }) => (
   <span className="flex flex-col">
-    {[...sources]
+    {sources
+      .flatMap(source => source.split('|'))
+      .map(source => source.trim())
+      .filter(Boolean)
       .sort((a, b) => (a > b ? -1 : 1))
-      .map(source => (
-        <TermLink key={source} id={source} />
+      .map((source, i) => (
+        <TermLink key={`${source}-${i}`} id={source} />
       ))}
   </span>
 )
 
 /** A with/from list that wraps between its identifiers rather than inside them. */
 const WithFrom: React.FC<{ value: string }> = ({ value }) => (
-  <span className="[overflow-wrap:anywhere]">
-    {value.split(/([,|])/).map((part, i) =>
-      part === ',' || part === '|' ? (
-        <span key={i}>
-          {part}
-          <wbr />
-        </span>
-      ) : (
-        <span key={i} className="whitespace-nowrap">
-          {part}
-        </span>
-      )
-    )}
+  <span>
+    <IdText id={value} />
   </span>
 )
 
@@ -90,7 +97,7 @@ const Cell: React.FC<CellProps> = ({ className, onEdit, editLabel, testId, child
   <div
     role="cell"
     data-testid={testId}
-    className={`group/cell relative flex min-w-0 flex-col justify-center border-r border-gray-300 px-1.5 py-2 text-xs text-black ${className}`}
+    className={`group/cell relative flex min-w-0 flex-col justify-center border-r border-gray-300 px-1.5 py-2 text-xs [overflow-wrap:anywhere] text-black ${className}`}
   >
     {children}
     {onEdit && (

@@ -245,7 +245,7 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
         <Portal>
           <div
             ref={listRef}
-            className="max-h-60 overflow-y-auto rounded-md !bg-accent-50 bg-white shadow-lg"
+            className="max-h-60 overflow-y-auto rounded-md !bg-cream shadow-lg"
             style={{
               position: 'fixed',
               top: dropdownPos.top + 4,
@@ -265,7 +265,7 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
                 ? 'bg-red-200'
                 : index === highlightedIndex
                   ? 'bg-primary-100'
-                  : 'bg-accent-50 hover:bg-primary-50'
+                  : 'bg-cream hover:bg-primary-50'
               return (
                 <div
                   key={option.id}

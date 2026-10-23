@@ -139,10 +139,10 @@ const AnchoredPopover = ({
 
   return (
     <Portal>
-      {/* Backdrop: blocks pointer events to everything underneath. Click
-          dismisses when allowed, otherwise just absorbs the event. */}
+      {/* Backdrop, clear as Angular's menus: blocks pointer events to everything
+          underneath. Click dismisses when allowed, otherwise just absorbs the event. */}
       <div
-        className="fixed inset-0 bg-blue-950/10"
+        className="fixed inset-0"
         style={{ zIndex: BACKDROP_Z }}
         onMouseDown={e => {
           e.stopPropagation()
@@ -151,7 +151,7 @@ const AnchoredPopover = ({
       />
       <div
         ref={setEl}
-        className={`rounded-md border border-gray-200 bg-primary-100 text-gray-900 shadow-lg ${className ?? ''}`}
+        className={`rounded-md border border-gray-200 bg-cream text-gray-900 shadow-lg ${className ?? ''}`}
         style={{ position: 'fixed', visibility: 'hidden', zIndex: POPOVER_Z }}
       >
         {children}

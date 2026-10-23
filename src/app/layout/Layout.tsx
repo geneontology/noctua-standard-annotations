@@ -17,7 +17,7 @@ interface LayoutProps {
 
 /**
  * App frame: top toolbar, the not-logged-in notice, the model toolbar, then the
- * scrolling page with the right drawer (comments) sliding over it.
+ * scrolling page with the right drawer (comments) beside it (over it on phones).
  */
 const Layout: React.FC<LayoutProps> = ({ rightDrawerContent }) => {
   const isMobile = useMediaQuery('(max-width: 36em)')
@@ -49,15 +49,27 @@ const Layout: React.FC<LayoutProps> = ({ rightDrawerContent }) => {
           <Outlet />
         </main>
 
-        {rightDrawerContent && (
-          <aside
-            aria-hidden={!rightDrawerOpen}
-            className={`absolute inset-y-0 right-0 overflow-hidden border-l border-gray-300 bg-white shadow-lg transition-transform duration-300 ease-out ${rightDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}
-            style={{ width: isMobile ? '100%' : RIGHT_DRAWER_WIDTH }}
-          >
-            {rightDrawerContent}
-          </aside>
-        )}
+        {rightDrawerContent &&
+          (isMobile ? (
+            <aside
+              aria-hidden={!rightDrawerOpen}
+              className={`absolute inset-y-0 right-0 w-full overflow-hidden bg-white shadow-lg transition-transform duration-300 ease-out ${rightDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}
+            >
+              {rightDrawerContent}
+            </aside>
+          ) : (
+            // Side by side, as the Angular `mat-drawer mode="side"`: the page narrows
+            // instead of being covered, so the table's comment buttons stay reachable.
+            <aside
+              aria-hidden={!rightDrawerOpen}
+              className={`shrink-0 overflow-hidden bg-white transition-[width] duration-300 ease-out ${rightDrawerOpen ? 'border-l border-gray-300' : ''}`}
+              style={{ width: rightDrawerOpen ? RIGHT_DRAWER_WIDTH : 0 }}
+            >
+              <div className="h-full" style={{ width: RIGHT_DRAWER_WIDTH }}>
+                {rightDrawerContent}
+              </div>
+            </aside>
+          ))}
       </div>
     </div>
   )

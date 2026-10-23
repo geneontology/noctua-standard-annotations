@@ -4,6 +4,7 @@ import {
   TextInput,
   Textarea,
   Select,
+  Autocomplete,
   Checkbox,
   Menu,
   Modal,
@@ -86,6 +87,14 @@ export const mantineTheme = createTheme({
         size: 'xs',
         allowDeselect: false,
         comboboxProps: { withinPortal: true },
+      },
+      styles: {
+        dropdown: { backgroundColor: noctuaColors.cream },
+      },
+    }),
+    Autocomplete: Autocomplete.extend({
+      styles: {
+        dropdown: { backgroundColor: noctuaColors.cream },
       },
     }),
     Checkbox: Checkbox.extend({

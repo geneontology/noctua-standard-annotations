@@ -140,7 +140,7 @@ const DatabaseField: React.FC<DatabaseFieldProps> = ({ value, onChange, type }) 
         {open && filtered.length > 0 && dropdownPos && (
           <Portal>
             <div
-              className="max-h-60 overflow-y-auto rounded-md !bg-accent-50 bg-white shadow-lg"
+              className="max-h-60 overflow-y-auto rounded-md !bg-cream shadow-lg"
               style={{
                 position: 'fixed',
                 top: dropdownPos.top + 4,
@@ -152,7 +152,7 @@ const DatabaseField: React.FC<DatabaseFieldProps> = ({ value, onChange, type }) 
               {filtered.map((option, index) => (
                 <div
                   key={option}
-                  className={`flex min-h-[40px] cursor-pointer items-center border-b border-primary-100 bg-accent-50 px-4 py-2 text-xs hover:bg-primary-50 ${index === highlightedIndex ? 'bg-primary-100' : ''}`}
+                  className={`flex min-h-[40px] cursor-pointer items-center border-b border-primary-100 bg-cream px-4 py-2 text-xs hover:bg-primary-50 ${index === highlightedIndex ? 'bg-primary-100' : ''}`}
                   onMouseDown={e => e.preventDefault()}
                   onClick={() => handleSelect(option)}
                   onMouseEnter={() => setHighlightedIndex(index)}

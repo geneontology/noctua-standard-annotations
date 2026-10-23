@@ -3,7 +3,7 @@ import { screen, within, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '@tests/test-utils'
 import { mockBarista, batchSuccess } from '@tests/fixtures/barista'
 import { stateWith } from '@tests/fixtures/state'
-import { rawFact, rawIndividual, saeModelRaw, saeUid } from '@tests/fixtures/saeModel'
+import { rawEvidence, rawFact, rawIndividual, saeModelRaw, saeUid } from '@tests/fixtures/saeModel'
 import { transformGraphData } from '@/features/gocam/services/graphServices'
 import AnnotationsTable from '@/features/annotations/components/AnnotationsTable'
 import { selectSortedAnnotations } from '@/features/annotations/slices/annotationsSlice'
@@ -214,5 +214,29 @@ describe('AnnotationsTable — rows read from other editors', () => {
     await user.hover(within(row).getByTestId('cell-relation'))
     expect(within(row).queryByRole('button', { name: 'Edit relation' })).not.toBeInTheDocument()
     expect(within(row).getByRole('button', { name: 'Edit GO term' })).toBeInTheDocument()
+  })
+
+  it('links each part of a pipe-joined reference on its own', () => {
+    const model = transformGraphData({
+      'modified-p': false,
+      id: 'gomodel:pipe',
+      individuals: [
+        rawIndividual('mf', 'GO:0016301', 'kinase activity', ['GO:0003674']),
+        rawIndividual('gp', 'PomBase:SPAC1F5.04c', 'cdc42 Spom', ['CHEBI:33695', 'CHEBI:24431']),
+        rawEvidence('ev', 'ECO:0000318', 'biological aspect of ancestor', [
+          'PANTHER:PTN005332947|PomBase:SPAC1F5.04c',
+        ]),
+      ],
+      facts: [rawFact('mf', 'RO:0002333', 'enabled by', 'gp', { evidence: ['ev'] })],
+      annotations: [],
+    })
+    const store = makeStore(stateWith({ model }))
+    renderWithProviders(<TableFromStore store={store} />, { store })
+    const cell = within(rowFor('cdc42 Spom')).getByTestId('cell-reference')
+    expect(
+      within(cell)
+        .getAllByRole('link')
+        .map(link => link.textContent)
+    ).toEqual(['PomBase:SPAC1F5.04c', 'PANTHER:PTN005332947'])
   })
 })
