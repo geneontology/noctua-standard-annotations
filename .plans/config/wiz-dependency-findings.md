@@ -46,3 +46,9 @@ Advisories on the React tree (GitHub advisory DB; `npm audit`'s endpoint timed o
 - vitest 4.1.12 is a week old (under the two-week rule) but is the only fix for GHSA-qxg6-89mg-rqv8;
   `npm audit signatures`: 385/385 verified registry signatures, 123 attestations.
 - Verified: 227 unit tests, 27 mocked e2e, lint, both type-checks, production build (temp dir).
+
+## Round 3 (2026-10-24, OSV)
+
+- `zod` 4.6.5 → 4.6.6 (GHSA-mrhx-c7xc-m3w5 / CVE-2023-54404, high: memory exhaustion on oversized
+  constrained collections). Dev only, via `eslint-plugin-react-hooks` (`^3.25.0 || ^4.0.0`), so a
+  lockfile update. Verified: lint, 228 unit tests, `npm audit signatures`.
