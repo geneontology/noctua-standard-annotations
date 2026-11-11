@@ -1,20 +1,6 @@
 import { AnnotationKey, OperationEntity, OperationType } from '../models/operations'
 import type { Operation } from '../models/operations'
 
-/** What the model carries now: every title, state and comment annotation. */
-export interface CurrentModelDetails {
-  titles: string[]
-  states: string[]
-  comments: string[]
-}
-
-/** What Model Details saves. */
-export interface ModelDetails {
-  title?: string
-  state?: string
-  comments: string[]
-}
-
 const modelAnnotation = (
   operation: OperationType.ADD_ANNOTATION | OperationType.REMOVE_ANNOTATION,
   modelId: string,
@@ -27,42 +13,49 @@ const modelAnnotation = (
 })
 
 /**
- * Save the Model Details form (Angular `saveCamAnnotations`): remove every
- * current title, state and comment, add the new ones, then store. Empty values
- * are left out rather than written as blank annotations.
+ * Replace one kind of model annotation (Angular `saveCamAnnotations`, one field
+ * at a time): remove every current value of `key`, add the new ones, then store.
+ * Values are trimmed, blanks dropped and duplicates written once. The model's
+ * other annotations are left alone.
  */
-export const buildSaveModelDetailsOperations = (
+const buildReplaceModelAnnotationOperations = (
   modelId: string,
-  current: CurrentModelDetails,
-  updated: ModelDetails
+  key: AnnotationKey,
+  current: string[],
+  updated: string[]
 ): Operation[] => {
-  const operations: Operation[] = []
-  const remove = OperationType.REMOVE_ANNOTATION
-  const add = OperationType.ADD_ANNOTATION
-
-  for (const title of current.titles) {
-    operations.push(modelAnnotation(remove, modelId, AnnotationKey.TITLE, title))
-  }
-  for (const state of current.states) {
-    operations.push(modelAnnotation(remove, modelId, AnnotationKey.STATE, state))
-  }
-  for (const comment of current.comments) {
-    operations.push(modelAnnotation(remove, modelId, AnnotationKey.COMMENT, comment))
-  }
-
-  const title = updated.title?.trim()
-  if (title) operations.push(modelAnnotation(add, modelId, AnnotationKey.TITLE, title))
-  if (updated.state) operations.push(modelAnnotation(add, modelId, AnnotationKey.STATE, updated.state))
-  const comments = Array.from(new Set(updated.comments.map(c => c.trim()).filter(Boolean)))
-  for (const comment of comments) {
-    operations.push(modelAnnotation(add, modelId, AnnotationKey.COMMENT, comment))
-  }
-
-  operations.push({
-    entity: OperationEntity.MODEL,
-    operation: OperationType.STORE,
-    arguments: { 'model-id': modelId },
-  })
-
-  return operations
+  const values = Array.from(new Set(updated.map(v => v.trim()).filter(Boolean)))
+  return [
+    ...current.map(value => modelAnnotation(OperationType.REMOVE_ANNOTATION, modelId, key, value)),
+    ...values.map(value => modelAnnotation(OperationType.ADD_ANNOTATION, modelId, key, value)),
+    {
+      entity: OperationEntity.MODEL,
+      operation: OperationType.STORE,
+      arguments: { 'model-id': modelId },
+    },
+  ]
 }
+
+/** Edit Title: replace every `title` annotation with `title`. */
+export const buildSaveModelTitleOperations = (
+  modelId: string,
+  currentTitles: string[],
+  title: string
+): Operation[] =>
+  buildReplaceModelAnnotationOperations(modelId, AnnotationKey.TITLE, currentTitles, [title])
+
+/** Change State: replace every `state` annotation with `state`. */
+export const buildSaveModelStateOperations = (
+  modelId: string,
+  currentStates: string[],
+  state: string
+): Operation[] =>
+  buildReplaceModelAnnotationOperations(modelId, AnnotationKey.STATE, currentStates, [state])
+
+/** Model Comments: replace every model `comment` annotation with `comments`. */
+export const buildSaveModelCommentsOperations = (
+  modelId: string,
+  currentComments: string[],
+  comments: string[]
+): Operation[] =>
+  buildReplaceModelAnnotationOperations(modelId, AnnotationKey.COMMENT, currentComments, comments)

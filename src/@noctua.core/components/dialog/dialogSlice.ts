@@ -3,6 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export enum DialogComponent {
   CAM_DETAILS_FORM = 'CamDetailsForm',
+  CAM_TITLE_FORM = 'CamTitleForm',
+  CAM_STATE_FORM = 'CamStateForm',
+  CAM_COMMENTS_FORM = 'CamCommentsForm',
 }
 
 interface DialogState {

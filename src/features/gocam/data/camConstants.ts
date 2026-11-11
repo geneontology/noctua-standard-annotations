@@ -1,4 +1,4 @@
-/** Model lifecycle states offered in Model Details (Angular `noctuaFormConfig.modelState`). */
+/** Model lifecycle states offered in Change State (Angular `noctuaFormConfig.modelState`). */
 export const MODEL_STATES = [
   { value: 'development', label: 'Development' },
   { value: 'production', label: 'Production' },

@@ -7,6 +7,7 @@ import { selectRightDrawerOpen } from '@/@noctua.core/components/drawer/drawerSl
 import LoadingOverlay from '@/@noctua.core/components/loading-overlay/LoadingOverlay'
 import { selectAuthUser } from '@/features/auth/slices/authSlice'
 import CamToolbar from '@/features/gocam/components/CamToolbar'
+import GroupGuardProvider from '@/features/gocam/components/GroupGuardProvider'
 import { useAppSelector } from '../hooks'
 
 const RIGHT_DRAWER_WIDTH = 500
@@ -41,7 +42,9 @@ const Layout: React.FC<LayoutProps> = ({ rightDrawerContent }) => {
       <NotSavedBar />
 
       <div className="z-40 w-full shrink-0">
-        <CamToolbar />
+        <GroupGuardProvider>
+          <CamToolbar />
+        </GroupGuardProvider>
       </div>
 
       <div className="relative flex min-h-0 w-full flex-1">

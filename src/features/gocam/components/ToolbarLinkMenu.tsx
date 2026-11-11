@@ -19,8 +19,10 @@ const ToolbarLinkMenu: React.FC<ToolbarLinkMenuProps> = ({ label, items }) => {
 
   return (
     <>
+      {/* Plain text and chevron, as the VPE shows them: its `#root button` shell
+          reset strips the outline there. */}
       <Button
-        variant="outline"
+        variant="transparent"
         size="xs"
         onClick={e => menu.open(e.currentTarget)}
         rightSection={<IoChevronDown size={12} />}

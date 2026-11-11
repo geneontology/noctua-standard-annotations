@@ -4,28 +4,75 @@ import { openModel, rows } from './helpers'
 
 /** Model-level features: details, the Not Saved bar, sorting and the toolbar links. */
 
-test('edits the model title, state and comments in Model Details', async ({ page }) => {
+const modelValues =
+  (minerva: { model: { annotations: { key: string; value: string }[] } }) => (key: string) =>
+    minerva.model.annotations.filter(a => a.key === key).map(a => a.value)
+
+// #94: each toolbar control opens its own form, as in the VPE.
+test('edits the model title in Edit Title', async ({ page }) => {
   const minerva = await openModel(page)
   await page.getByTestId('edit-model-title').click()
-  const dialog = page.getByRole('dialog').filter({ hasText: 'Model Details' })
+  const dialog = page.getByRole('dialog').filter({ hasText: 'Edit Title' })
+  await expect(dialog.getByRole('combobox', { name: 'State' })).toHaveCount(0)
 
   await dialog.getByLabel('Title').fill('LYN kinase annotations')
-  await dialog.getByRole('combobox', { name: 'State' }).click()
-  await page.getByRole('option', { name: 'Production' }).click()
-  await dialog.getByRole('button', { name: /Add (Another )?Comment/ }).click()
-  await dialog.getByRole('textbox', { name: 'Comment' }).last().fill('model note')
-  await expect(dialog.getByTestId('model-summary')).toContainText('Open In:')
   await dialog.getByRole('button', { name: 'Save' }).click()
 
   await expect(page.getByTestId('model-title')).toContainText('LYN kinase annotations')
+  const values = modelValues(minerva)
+  expect(values('title')).toEqual(['LYN kinase annotations'])
+  expect(values('state')).toEqual(['development'])
+})
+
+test('changes the model state in Change State', async ({ page }) => {
+  const minerva = await openModel(page)
+  await page.getByRole('button', { name: /development/i }).click()
+  const dialog = page.getByRole('dialog').filter({ hasText: 'Change State' })
+  await expect(dialog.getByLabel('Title')).toHaveCount(0)
+
+  await dialog.getByRole('combobox', { name: 'State' }).click()
+  await page.getByRole('option', { name: 'Production' }).click()
+  await dialog.getByRole('button', { name: 'Save' }).click()
+
+  await expect(page.getByRole('button', { name: /production/i })).toBeVisible()
+  const values = modelValues(minerva)
+  expect(values('state')).toEqual(['production'])
+  expect(values('title')).toEqual(['e2e model'])
+})
+
+test('adds a model comment in Model Comments', async ({ page }) => {
+  const minerva = await openModel(page)
+  await page.getByRole('button', { name: 'Model comments' }).click()
+  const dialog = page.getByRole('dialog').filter({ hasText: 'Model Comments' })
+
+  await dialog.getByRole('button', { name: /Add (Another )?Comment/ }).click()
+  await dialog.getByRole('textbox', { name: 'Comment' }).last().fill('model note')
+  await dialog.getByRole('button', { name: 'Save' }).click()
+
   await expect(page.getByRole('button', { name: 'Model comments' })).toContainText('1')
-  expect(minerva.model.annotations).toEqual(
-    expect.arrayContaining([
-      { key: 'title', value: 'LYN kinase annotations' },
-      { key: 'state', value: 'production' },
-      { key: 'comment', value: 'model note' },
-    ])
+  expect(modelValues(minerva)('comment')).toEqual(['model note'])
+})
+
+test('shows the group and summary in Model Details', async ({ page }) => {
+  await openModel(page)
+  await page.getByRole('button', { name: /2025-01-10/ }).click()
+  const dialog = page.getByRole('dialog').filter({ hasText: 'Model Details' })
+  await expect(dialog.getByRole('combobox', { name: 'Group' })).toBeVisible()
+  await expect(dialog.getByTestId('model-summary')).toContainText('Open In:')
+})
+
+test("warns before editing another group's model", async ({ page }) => {
+  const model = seededModel()
+  model.annotations = model.annotations.map(a =>
+    a.key === 'providedBy' ? { ...a, value: 'http://other.example.org' } : a
   )
+  await openModel(page, { model })
+  await page.getByTestId('edit-model-title').click()
+
+  const warning = page.getByRole('dialog').filter({ hasText: "Editing another group's model" })
+  await expect(warning).toBeVisible()
+  await warning.getByRole('button', { name: 'Continue and edit anyway' }).click()
+  await expect(page.getByRole('dialog').filter({ hasText: 'Edit Title' })).toBeVisible()
 })
 
 test('resets a model with unsaved changes', async ({ page }) => {

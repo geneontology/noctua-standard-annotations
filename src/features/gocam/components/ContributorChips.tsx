@@ -12,7 +12,7 @@ const SLATE_CIRCLE = 'border-slate-300 bg-slate-200 text-slate-600'
 
 interface ContributorChipsProps {
   contributors: Contributor[]
-  /** Each chip opens the Model Details form, as in the Angular cam toolbar. */
+  /** Each chip opens the Model Details form (group and summary). */
   onClick?: () => void
 }
 

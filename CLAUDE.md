@@ -36,7 +36,7 @@ Environment modes: `development`, `staging`, `production` (`.env.<mode>`, commit
 - `src/@noctua.core/` — shared library: dialogs (`SimpleDialog`, `ConfirmDialog`, `GlobalDialog`), drawer/toast/loading-overlay slices, popover/menu, chip, `CommentListEditor`, theme, constants, GO linker, date formatting, and the shape data (`shapes.json`, `shape-terms.json`, `gp-to-term.json`, known `relations.ts`).
 - `src/app/` — store (`store/store.ts`, `store/apiService.ts`), typed hooks (`hooks.ts`), layout (`Layout`, `Toolbar`, `RightDrawer`), and the page `StandardAnnotations.tsx`.
 - `src/features/`
-  - `gocam/` — model layer: Minerva graph parsing (`services/graphServices.ts`), m3Batch API (`slices/camApiSlice.ts`: get / update / reset), the model slice and prelookup selectors (`slices/camSlice.ts`), the cam toolbar and the Model Details form.
+  - `gocam/` — model layer: Minerva graph parsing (`services/graphServices.ts`), m3Batch API (`slices/camApiSlice.ts`: get / update / reset), the model slice and prelookup selectors (`slices/camSlice.ts`), the cam toolbar, its per-field forms (Edit Title, Change State, Model Comments, Model Details for the group and summary) and the `GroupGuardProvider` warning before editing another group's model.
   - `annotations/` — the SAE domain:
     - `services/annotationExtraction.ts` — reads standard annotations out of a `GraphModel`
     - `services/annotationOperations.ts` — builds the m3Batch operations for every edit

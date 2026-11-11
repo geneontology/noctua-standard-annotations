@@ -10,12 +10,15 @@ import Chip from '@/@noctua.core/components/chip/Chip'
 import { useModelUrls } from '../hooks/useModelUrls'
 import { getStateColor } from '../data/stateColors'
 import ContributorChips from './ContributorChips'
+import { useGroupGuard } from './GroupGuardProvider'
 import ToolbarLinkMenu from './ToolbarLinkMenu'
 
 /**
  * Model header: title, model comments, state, date, contributors, and the
- * VIEW IN / EXPORT AS link menus. Title, comments and state all open the one
- * Model Details form, as the Angular cam toolbar did.
+ * VIEW IN / EXPORT AS link menus. As in the VPE (#94), each control opens its
+ * own form: Edit Title, Model Comments, Change State; the date and contributor
+ * chips open Model Details (group and summary). Edits go through the group guard.
+ * Logged out, the title and state can't be edited and the comments open read-only.
  */
 const CamToolbar: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -23,17 +26,22 @@ const CamToolbar: React.FC = () => {
   const baristaToken = useAppSelector(selectBaristaToken)
   const isLoggedIn = !!useAppSelector(selectAuthUser)
   const urls = useModelUrls(cam?.id, baristaToken)
+  const checkGroup = useGroupGuard()
 
-  const openDetails = () => {
-    dispatch(
-      openDialog({
-        component: DialogComponent.CAM_DETAILS_FORM,
-        title: 'Model Details',
-        size: 'sm',
-        bodyScroll: 'none',
-      })
-    )
-  }
+  const open = (
+    component: DialogComponent,
+    title: string,
+    size: 'xs' | 'sm',
+    bodyScroll: 'auto' | 'none' = 'auto'
+  ) => dispatch(openDialog({ component, title, size, bodyScroll }))
+
+  const openTitleForm = () =>
+    checkGroup(() => open(DialogComponent.CAM_TITLE_FORM, 'Edit Title', 'sm'))
+  const openStateForm = () =>
+    checkGroup(() => open(DialogComponent.CAM_STATE_FORM, 'Change State', 'xs'))
+  const openCommentsForm = () =>
+    checkGroup(() => open(DialogComponent.CAM_COMMENTS_FORM, 'Model Comments', 'sm', 'none'))
+  const openDetails = () => open(DialogComponent.CAM_DETAILS_FORM, 'Model Details', 'sm', 'none')
 
   const viewInItems = useMemo(
     () => [
@@ -65,14 +73,16 @@ const CamToolbar: React.FC = () => {
             <span className="mr-1 font-semibold text-gray-900">Title:</span>
             {cam.title || <span className="text-gray-400 italic">Untitled</span>}
           </span>
-          <button
-            data-testid="edit-model-title"
-            aria-label={isLoggedIn ? 'Edit model details' : 'View model details'}
-            className="text-gray-500 hover:text-gray-800 focus:outline-hidden"
-            onClick={openDetails}
-          >
-            <FaPen size={12} />
-          </button>
+          {isLoggedIn && (
+            <button
+              data-testid="edit-model-title"
+              aria-label="Edit model title"
+              className="text-gray-500 hover:text-gray-800 focus:outline-hidden"
+              onClick={openTitleForm}
+            >
+              <FaPen size={12} />
+            </button>
+          )}
         </div>
       </Tooltip>
 
@@ -91,7 +101,7 @@ const CamToolbar: React.FC = () => {
             color="gray"
             size="lg"
             className="text-gray-600 hover:text-gray-900"
-            onClick={openDetails}
+            onClick={openCommentsForm}
             aria-label="Model comments"
           >
             <FaComment size={16} />
@@ -108,7 +118,7 @@ const CamToolbar: React.FC = () => {
           icon={<FaTasks size={12} />}
           chipClass={`${stateColor.chip} capitalize`}
           circleClass={stateColor.circle}
-          onClick={openDetails}
+          onClick={isLoggedIn ? openStateForm : undefined}
           trailing={isLoggedIn ? <FaPen size={9} className="mr-1 opacity-60" /> : undefined}
         >
           {cam.state.replace(/_/g, ' ')}

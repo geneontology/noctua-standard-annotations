@@ -12,9 +12,15 @@ import GlobalDialog from './@noctua.core/components/dialog/GlobalDialog'
 import { DialogComponent } from './@noctua.core/components/dialog/dialogSlice'
 import GlobalToast from './@noctua.core/components/toast/GlobalToast'
 import CamDetailsForm from './features/gocam/components/CamDetailsForm'
+import CamTitleForm from './features/gocam/components/CamTitleForm'
+import CamStateForm from './features/gocam/components/CamStateForm'
+import CamCommentsForm from './features/gocam/components/CamCommentsForm'
 
 const DIALOG_COMPONENTS: Partial<Record<DialogComponent, React.ComponentType<any>>> = {
   [DialogComponent.CAM_DETAILS_FORM]: CamDetailsForm,
+  [DialogComponent.CAM_TITLE_FORM]: CamTitleForm,
+  [DialogComponent.CAM_STATE_FORM]: CamStateForm,
+  [DialogComponent.CAM_COMMENTS_FORM]: CamCommentsForm,
 }
 
 const routes = [
