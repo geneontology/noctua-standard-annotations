@@ -114,8 +114,7 @@ const AnnotationEditorDropdown: React.FC<AnnotationEditorDropdownProps> = ({
   }, [annotation])
 
   // Extensions follow the GO term's ancestry, as in the create form: Minerva's root
-  // types alone miss the rules of a subclass, e.g. `results in development of`
-  // for `GO:0048856` anatomical structure development (issue #85).
+  // types alone miss the shape rules of the term's ancestors below the root (issue #85).
   const { data: goTermClosure } = useGetTermClosureQuery(annotation.goTerm.id, {
     skip: !open || category !== EditorCategory.ADD_EXTENSION || !annotation.goTerm.id,
   })

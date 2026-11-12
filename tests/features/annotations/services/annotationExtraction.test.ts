@@ -17,6 +17,16 @@ import {
   singleMfRaw,
 } from '@tests/fixtures/models'
 import { rawEvidence, rawFact, rawIndividual, saeUid } from '@tests/fixtures/saeModel'
+import { RootTypes } from '@/features/gocam/models/cam'
+import { InverseRelations, Relations } from '@/@noctua.core/models/relations'
+import {
+  EPITHELIAL_CELL,
+  EPITHELIAL_CELL_DIFFERENTIATION,
+  MYOBLAST,
+  MYOBLAST_MIGRATION,
+  THYMUS_DEVELOPMENT,
+  THYMUS_PRIMORDIUM,
+} from '@tests/fixtures/terms'
 
 const summarize = (raw: unknown) =>
   extractAnnotations(loadModel(raw)).map(a => ({
@@ -160,30 +170,37 @@ describe('extractAnnotations — real barista-dev models', () => {
     ])
   })
 
-  // Issue #85: the shapes key these relations on a BP subclass (e.g. GO:0048856),
-  // but Minerva gives the BP only the root type GO:0008150.
+  // Issue #85: the shapes key these relations on a BP subclass, but Minerva gives
+  // the BP only the BP root type.
   it("shows a BP's extensions that the shapes allow only for a subclass", () => {
     const annotations = extractAnnotations(loadModel(bpOneHopExtensionsRaw))
     expect(
       annotations.map(a => [
-        a.relation.label,
-        a.goTerm.label,
-        a.extensions.map(e => `${e.relation.label} ${e.term.label}`),
+        a.relation.id,
+        a.goTerm.id,
+        a.extensions.map(e => [e.relation.id, e.term.id]),
       ])
     ).toEqual([
       [
-        'acts upstream of or within',
-        'thymus development',
-        ['results in development of thymus primordium'],
+        InverseRelations.ACTS_UPSTREAM_OF_OR_WITHIN,
+        THYMUS_DEVELOPMENT.id,
+        [[Relations.RESULTS_IN_DEVELOPMENT_OF, THYMUS_PRIMORDIUM.id]],
       ],
       [
-        'acts upstream of or within',
-        'epithelial cell differentiation',
-        ['results in acquisition of features of epithelial cell'],
+        InverseRelations.ACTS_UPSTREAM_OF_OR_WITHIN,
+        EPITHELIAL_CELL_DIFFERENTIATION.id,
+        [[Relations.RESULTS_IN_ACQUISITION_OF_FEATURES_OF, EPITHELIAL_CELL.id]],
       ],
-      ['acts upstream of or within', 'myoblast migration', ['results in movement of myoblast']],
+      [
+        InverseRelations.ACTS_UPSTREAM_OF_OR_WITHIN,
+        MYOBLAST_MIGRATION.id,
+        [[Relations.RESULTS_IN_MOVEMENT_OF, MYOBLAST.id]],
+      ],
     ])
-    expect(annotations.every(a => a.goTerm.rootTypes.join() === 'GO:0008150')).toBe(true)
+    expect(annotations[0].extensions[0].term.label).toBe(THYMUS_PRIMORDIUM.label)
+    expect(annotations.every(a => a.goTerm.rootTypes.join() === RootTypes.BIOLOGICAL_PROCESS)).toBe(
+      true
+    )
   })
 
   it('keeps GO-CAM activities apart', () => {

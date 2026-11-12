@@ -9,7 +9,9 @@ import {
   rowMenu,
   rows,
 } from './helpers'
-import { subclassExtensionModel } from './fixtures/world'
+import { RELATION_LABELS, subclassExtensionModel } from './fixtures/world'
+import { Relations } from '../src/@noctua.core/models/relations'
+import { THYMUS, THYMUS_DEVELOPMENT, THYMUS_PRIMORDIUM } from '../tests/fixtures/terms'
 
 /**
  * Inline edits against a fake Minerva that behaves like the real one: a removed
@@ -139,33 +141,35 @@ test('adds and deletes an extension', async ({ page }) => {
   expect(minerva.model.individuals.some(i => minerva.classOf(i.id) === 'GO:0005737')).toBe(false)
 })
 
-// Issue #85: the shapes give `results in development of` to GO:0048856 anatomical
-// structure development, but Minerva gives thymus development only GO:0008150.
+// Issue #85: the shapes give `results in development of` to an ancestor of thymus
+// development, but Minerva gives thymus development only the BP root type.
 test("shows and adds a BP extension the shapes allow for the BP's ancestor", async ({ page }) => {
+  const relation = Relations.RESULTS_IN_DEVELOPMENT_OF
+  const relationLabel = RELATION_LABELS[relation]
   const minerva = await openModel(page, { model: subclassExtensionModel() })
-  const target = () => row(page, 'HCK Hsap', 'thymus development')
+  const target = () => row(page, 'HCK Hsap', THYMUS_DEVELOPMENT.label)
   const extensions = () => target().getByTestId('cell-extensions')
 
-  await expect(extensions()).toContainText('results in development of')
-  await expect(extensions()).toContainText('thymus primordium')
+  await expect(extensions()).toContainText(relationLabel)
+  await expect(extensions()).toContainText(THYMUS_PRIMORDIUM.label)
 
   await rowMenu(page, target(), 'Add Extension')
   const editor = page.getByTestId('annotation-editor')
-  await pickRelation(page, editor, 'New Extension Relation', 'results in development of')
-  await pickTerm(page, editor, 'New Extension Term', 'thymus', 'UBERON:0002370')
+  await pickRelation(page, editor, 'New Extension Relation', relationLabel)
+  await pickTerm(page, editor, 'New Extension Term', THYMUS.label, THYMUS.id)
   await editor.getByRole('button', { name: 'Save' }).click()
 
   await expect(
     extensions().getByRole('button', {
-      name: 'Delete extension results in development of thymus',
+      name: `Delete extension ${relationLabel} ${THYMUS.label}`,
       exact: true,
     })
   ).toHaveCount(1)
-  await expect(extensions()).toContainText('UBERON:0002370')
+  await expect(extensions()).toContainText(THYMUS.id)
   expect(minerva.factSummaries()).toEqual(
     expect.arrayContaining([
-      'GO:0048538 RO:0002296 EMAPA:17523',
-      'GO:0048538 RO:0002296 UBERON:0002370',
+      `${THYMUS_DEVELOPMENT.id} ${relation} ${THYMUS_PRIMORDIUM.id}`,
+      `${THYMUS_DEVELOPMENT.id} ${relation} ${THYMUS.id}`,
     ])
   )
   expect(minerva.batches.at(-1)?.error).toBeUndefined()

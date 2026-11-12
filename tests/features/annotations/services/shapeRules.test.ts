@@ -8,10 +8,16 @@ import {
   SHAPE_PREDICATES,
   SHAPES,
 } from '@/features/annotations/services/shapeRules'
+import { RootTypes } from '@/features/gocam/models/cam'
+import { Relations } from '@/@noctua.core/models/relations'
+import { THYMUS_DEVELOPMENT, isaClosure } from '@tests/fixtures/terms'
 
 const GP = ['CHEBI:33695', 'CHEBI:24431']
 const COMPLEX = ['GO:0032991']
+const BP = RootTypes.BIOLOGICAL_PROCESS
+const MF = RootTypes.MOLECULAR_FUNCTION
 const labels = (entities: { label: string }[]) => entities.map(e => e.label)
+const ids = (entities: { id: string }[]) => entities.map(e => e.id)
 
 describe('getTermRelations — gene product to GO term', () => {
   it('offers enables / contributes to for a molecular function', () => {
@@ -80,37 +86,41 @@ describe('extension relations', () => {
 
   // Issue #85: these rules belong to a BP subclass, which root types alone never match.
   it('offers a subclass rule only with the GO term ancestry', () => {
-    const development = ['GO:0048538', 'GO:0048856', 'GO:0032502', 'GO:0008150']
-    expect(labels(getTermRelations(['GO:0008150'], []))).not.toContain('results in development of')
-    expect(labels(getTermRelations(development, []))).toContain('results in development of')
-    expect(labels(getTermRelations(development, []))).not.toContain('results in movement of')
+    const fromRoot = ids(getTermRelations(THYMUS_DEVELOPMENT.rootTypes, []))
+    const fromAncestry = ids(getTermRelations(isaClosure(THYMUS_DEVELOPMENT), []))
+    expect(fromRoot).not.toContain(Relations.RESULTS_IN_DEVELOPMENT_OF)
+    expect(fromAncestry).toContain(Relations.RESULTS_IN_DEVELOPMENT_OF)
+    // Another subclass's rule (locomotion) stays out.
+    expect(fromAncestry).not.toContain(Relations.RESULTS_IN_MOVEMENT_OF)
   })
 })
 
 describe('getExtensionPredicatesForRoots', () => {
   it("includes the extension rules of a BP's subclasses", () => {
-    const predicates = getExtensionPredicatesForRoots(['GO:0008150'])
+    const predicates = getExtensionPredicatesForRoots([BP])
     for (const id of [
-      'RO:0002296', // results in development of (GO:0048856)
-      'RO:0002315', // results in acquisition of features of (GO:0030154)
-      'RO:0002565', // results in movement of (GO:0040011)
-      'RO:0002588', // results in assembly of (GO:0022607)
-      'BFO:0000050', // part of (the root itself)
+      Relations.RESULTS_IN_DEVELOPMENT_OF,
+      Relations.RESULTS_IN_ACQUISITION_OF_FEATURES_OF,
+      Relations.RESULTS_IN_MOVEMENT_OF,
+      Relations.RESULTS_IN_ASSEMBLY_OF,
+      Relations.PART_OF, // a rule of the root itself
     ]) {
       expect(predicates.has(id), id).toBe(true)
     }
   })
 
   it("includes an MF subclass's rules but never the excluded ones", () => {
-    const predicates = getExtensionPredicatesForRoots(['GO:0003674'])
-    expect(predicates.has('RO:0002313')).toBe(true) // transports or maintains localization of
-    expect(predicates.has('RO:0002333')).toBe(false) // enabled by
-    expect(predicates.has('BFO:0000051')).toBe(false) // has part
-    expect(predicates.has('RO:0002411')).toBe(false) // causally upstream of
+    const predicates = getExtensionPredicatesForRoots([MF])
+    expect(predicates.has(Relations.TRANSPORTS_OR_MAINTAINS_LOCALIZATION_OF)).toBe(true)
+    expect(predicates.has(Relations.ENABLED_BY)).toBe(false)
+    expect(predicates.has(Relations.HAS_PART)).toBe(false)
+    expect(predicates.has(Relations.CAUSALLY_UPSTREAM_OF)).toBe(false)
   })
 
   it("keeps to the term's own roots", () => {
-    expect(getExtensionPredicatesForRoots(['GO:0003674']).has('RO:0002296')).toBe(false)
+    expect(getExtensionPredicatesForRoots([MF]).has(Relations.RESULTS_IN_DEVELOPMENT_OF)).toBe(
+      false
+    )
     expect(getExtensionPredicatesForRoots([]).size).toBe(0)
   })
 })

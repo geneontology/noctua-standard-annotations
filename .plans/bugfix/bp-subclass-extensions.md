@@ -57,6 +57,16 @@ root in `root_subject`.
 - **Last completed action:** all checks green (type-check, lint, vitest 280, e2e 34 + 7 skipped)
 - ✅ TASK COMPLETE — merged into `dev`
 
+## Follow-up: no literal ids in the tests
+
+- `Relations` gains the subclass-rule relations (`RESULTS_IN_*`, `HAS_PRIMARY_INPUT/OUTPUT`,
+  `HAS_TARGET_START/END_LOCATION`, `TRANSPORTS_OR_MAINTAINS_LOCALIZATION_OF`).
+- `tests/fixtures/terms.ts`: the example terms (id, label, GOlr ancestors, Minerva root
+  types) for unit **and** e2e tests — the one place to update when ShEx changes. Relative
+  imports, since e2e has no `@/` alias; `tsconfig.node.json` includes it and the three
+  model files it pulls in, with an `@/` path for `cam.ts`'s type import.
+- `src` comments describe the subclass rules in words; no example ids.
+
 ## Notes
 
 - Out of scope: a "two-hop" extension, e.g. `regulation of neuron differentiation` →

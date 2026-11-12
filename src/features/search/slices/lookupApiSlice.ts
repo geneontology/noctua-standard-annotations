@@ -149,9 +149,8 @@ const lookupApi = apiService
 
       /**
        * A class's `isa_closure` (its ancestors and itself). Minerva's root types are
-       * only the top categories, but some shape rules belong to a subclass, e.g.
-       * `results in development of` to `GO:0048856` (issue #85). Empty when GOlr
-       * doesn't know the id.
+       * only the top categories, but some shape rules belong to a subclass of a root
+       * (issue #85). Empty when GOlr doesn't know the id.
        */
       getTermClosure: builder.query<string[], string>({
         queryFn: async id => {

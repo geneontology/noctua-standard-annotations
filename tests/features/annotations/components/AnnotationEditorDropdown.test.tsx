@@ -11,6 +11,10 @@ import AnnotationEditorDropdown, {
 } from '@/features/annotations/components/AnnotationEditorDropdown'
 import { extractAnnotations } from '@/features/annotations/services/annotationExtraction'
 import { termOption } from '@/features/annotations/models/annotationForm'
+import { findRelation } from '@/features/annotations/services/shapeRules'
+import { RootTypes } from '@/features/gocam/models/cam'
+import { Relations } from '@/@noctua.core/models/relations'
+import { ANATOMICAL_STRUCTURE_DEVELOPMENT, THYMUS, isaClosure } from '@tests/fixtures/terms'
 
 vi.mock('@/features/search/components/Autocomplete', () => import('@tests/mocks/autocompleteMock'))
 
@@ -27,7 +31,8 @@ vi.mock('@/features/search/slices/lookupApiSlice', async importOriginal => ({
   },
 }))
 
-const DEVELOPMENT_CLOSURE = ['GO:0048856', 'GO:0032502', 'GO:0008150']
+/** Relation options read "label id"; match on the label. */
+const relationOption = (id: string) => ({ name: new RegExp(`^${findRelation(id).label}`) })
 
 const model = loadModel(saeModelRaw)
 const annotations = extractAnnotations(model)
@@ -175,49 +180,60 @@ describe('AnnotationEditorDropdown', () => {
     expect(requests).toHaveLength(0)
   })
 
-  // Issue #85: `results in development of` is a rule of GO:0048856, but Minerva
-  // gives the BP only its root type GO:0008150.
+  // Issue #85: `results in development of` is a rule of anatomical structure
+  // development, but Minerva gives the BP only the BP root type.
   describe('extension relations of a BP subclass', () => {
+    // Its GO term is anatomical structure development (saeModel `bp3`).
+    const DEVELOPMENT_GP = 'gamma3 Drer'
+
     const openRelations = async (user: ReturnType<typeof renderEditor>['user']) => {
       await user.click(screen.getByRole('combobox', { name: 'New Extension Relation' }))
-      return screen.findByRole('option', { name: /^has input/ })
+      return screen.findByRole('option', relationOption(Relations.HAS_INPUT))
     }
 
     it("looks up the GO term's ancestry for Add Extension only", () => {
-      renderEditor(EditorCategory.ADD_EXTENSION, 'gamma3 Drer').unmount()
-      expect(closure.calls.at(-1)).toEqual({ id: 'GO:0048856', skip: false })
+      renderEditor(EditorCategory.ADD_EXTENSION, DEVELOPMENT_GP).unmount()
+      expect(closure.calls.at(-1)).toEqual({ id: ANATOMICAL_STRUCTURE_DEVELOPMENT.id, skip: false })
       closure.calls = []
-      renderEditor(EditorCategory.TERM, 'gamma3 Drer')
+      renderEditor(EditorCategory.TERM, DEVELOPMENT_GP)
       expect(closure.calls.every(call => call.skip)).toBe(true)
     })
 
     it('offers them once the ancestry is known', async () => {
-      closure.data = DEVELOPMENT_CLOSURE
-      const { user } = renderEditor(EditorCategory.ADD_EXTENSION, 'gamma3 Drer')
+      closure.data = isaClosure(ANATOMICAL_STRUCTURE_DEVELOPMENT)
+      const { user } = renderEditor(EditorCategory.ADD_EXTENSION, DEVELOPMENT_GP)
       await openRelations(user)
-      expect(screen.getByRole('option', { name: /^results in development of/ })).toBeInTheDocument()
+      expect(
+        screen.getByRole('option', relationOption(Relations.RESULTS_IN_DEVELOPMENT_OF))
+      ).toBeInTheDocument()
       // Another subclass's rule stays out.
-      expect(screen.queryByRole('option', { name: /^results in movement of/ })).toBeNull()
+      expect(
+        screen.queryByRole('option', relationOption(Relations.RESULTS_IN_MOVEMENT_OF))
+      ).toBeNull()
     })
 
     it('keeps to the root rules while the ancestry is unknown', async () => {
-      const { user } = renderEditor(EditorCategory.ADD_EXTENSION, 'gamma3 Drer')
+      const { user } = renderEditor(EditorCategory.ADD_EXTENSION, DEVELOPMENT_GP)
       await openRelations(user)
-      expect(screen.queryByRole('option', { name: /^results in development of/ })).toBeNull()
+      expect(
+        screen.queryByRole('option', relationOption(Relations.RESULTS_IN_DEVELOPMENT_OF))
+      ).toBeNull()
     })
 
     it('limits the term to the relation range and saves the extension', async () => {
-      closure.data = DEVELOPMENT_CLOSURE
-      autocompleteOptions['editor-term'] = [termOption('UBERON:0002370', 'thymus')]
+      closure.data = isaClosure(ANATOMICAL_STRUCTURE_DEVELOPMENT)
+      autocompleteOptions['editor-term'] = [termOption(THYMUS.id, THYMUS.label)]
       const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
-      const { user, onClose } = renderEditor(EditorCategory.ADD_EXTENSION, 'gamma3 Drer')
+      const { user, onClose } = renderEditor(EditorCategory.ADD_EXTENSION, DEVELOPMENT_GP)
 
       await openRelations(user)
-      await user.click(screen.getByRole('option', { name: /^results in development of/ }))
-      expect(screen.getByTestId('autocomplete-range-editor-term')).toHaveTextContent(
-        '["UBERON:0001062"]'
+      await user.click(
+        screen.getByRole('option', relationOption(Relations.RESULTS_IN_DEVELOPMENT_OF))
       )
-      await user.click(screen.getByTestId('pick-editor-term-UBERON:0002370'))
+      expect(screen.getByTestId('autocomplete-range-editor-term')).toHaveTextContent(
+        JSON.stringify([RootTypes.ANATOMICAL_ENTITY])
+      )
+      await user.click(screen.getByTestId(`pick-editor-term-${THYMUS.id}`))
       await user.click(screen.getByRole('button', { name: 'Save' }))
 
       await waitFor(() => expect(onClose).toHaveBeenCalled())
@@ -227,7 +243,7 @@ describe('AnnotationEditorDropdown', () => {
           operation: 'add',
           arguments: expect.objectContaining({
             subject: saeUid('bp3'),
-            predicate: 'RO:0002296',
+            predicate: Relations.RESULTS_IN_DEVELOPMENT_OF,
           }),
         })
       )
