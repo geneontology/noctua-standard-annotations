@@ -44,3 +44,6 @@ playwright/.cache/
 # System Files
 .DS_Store
 Thumbs.db
+
+# TypeScript build info (tsc -p tsconfig.node.json)
+*.tsbuildinfo
