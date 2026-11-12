@@ -9,6 +9,8 @@ export interface AnnotationColumn {
 
 /** The standard-annotations table columns (Angular `TABLE_HEADERS`). */
 export const ANNOTATION_COLUMNS = {
+  // Row checkboxes for "delete selected" (#96); shown to logged-in editors only.
+  select: { label: '', className: 'w-[32px] shrink-0' },
   gp: {
     label: 'Gene Product',
     className: 'w-[150px] shrink-0',

@@ -14,6 +14,7 @@ import type { Operation } from '@/features/gocam/models/operations'
 import type { AnnotationExtension, StandardAnnotation } from '../models/annotation'
 import type { AnnotationFormState } from '../models/annotationForm'
 import { selectAnnotations } from '../slices/annotationsSlice'
+import { MAX_BULK_DELETE } from '../data/selectionLimits'
 import {
   canRemoveExtensionTerm,
   getDeletableNodeUids,
@@ -235,28 +236,44 @@ export function useAnnotationActions() {
     [run, modelId]
   )
 
-  const deleteAnnotation = useCallback(
-    async (annotation: StandardAnnotation) => {
-      const nodeUids = getDeletableNodeUids(annotation, annotations)
+  const warn = useCallback(
+    (message: string) => dispatch(showToast({ message, severity: 'warning', duration: 8000 })),
+    [dispatch]
+  )
+
+  /** Delete one annotation, or a selection of them in one batch (#96). */
+  const deleteAnnotations = useCallback(
+    async (selection: StandardAnnotation[]) => {
+      const count = selection.length
+      if (count === 0) return false
+      // The Delete button is disabled past the cap; this holds for any other path.
+      if (count > MAX_BULK_DELETE) {
+        warn(`Select ${MAX_BULK_DELETE} or fewer annotations to delete.`)
+        return false
+      }
+      const nodeUids = getDeletableNodeUids(selection, annotations)
       // Minerva won't store a model with no individuals left; the delete would
       // fail at its store and leave an unsaved, emptied model behind.
-      if (model && leavesModelEmpty(model, annotation, nodeUids)) {
-        dispatch(
-          showToast({
-            message:
-              "This is the model's last annotation, and Minerva can't save an empty model. Delete the model from Noctua instead.",
-            severity: 'warning',
-            duration: 8000,
-          })
+      if (model && leavesModelEmpty(model, selection, nodeUids)) {
+        warn(
+          count === 1
+            ? "This is the model's last annotation, and Minerva can't save an empty model. Delete the model from Noctua instead."
+            : "These are all of the model's annotations, and Minerva can't save an empty model. Leave at least one, or delete the model from Noctua instead."
         )
         return false
       }
+      // The refetch after the write drops the deleted rows from the selection.
       return run(
-        buildDeleteAnnotationOperations(annotation, nodeUids, modelId),
-        'Annotation successfully deleted.'
+        buildDeleteAnnotationOperations(selection, nodeUids, modelId),
+        count === 1 ? 'Annotation successfully deleted.' : `Deleted ${count} annotations.`
       )
     },
-    [run, modelId, annotations, model, dispatch]
+    [run, modelId, annotations, model, warn]
+  )
+
+  const deleteAnnotation = useCallback(
+    (annotation: StandardAnnotation) => deleteAnnotations([annotation]),
+    [deleteAnnotations]
   )
 
   const storeModel = useCallback(
@@ -291,6 +308,7 @@ export function useAnnotationActions() {
     replaceComments,
     toggleNot,
     deleteAnnotation,
+    deleteAnnotations,
     storeModel,
     resetModel,
   }

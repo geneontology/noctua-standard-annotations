@@ -1,6 +1,6 @@
 import type React from 'react'
 import { Fragment, useCallback, useState } from 'react'
-import { ActionIcon, Menu, Tooltip } from '@mantine/core'
+import { ActionIcon, Checkbox, Menu, Tooltip } from '@mantine/core'
 import {
   FaCalendarDay,
   FaComment,
@@ -24,7 +24,9 @@ import { contributorName } from '@/features/users/services/contributorName'
 import type { AnnotationExtension, StandardAnnotation } from '../models/annotation'
 import {
   selectCommentAnnotation,
+  selectSelectedAnnotationIds,
   selectSelectedCommentAnnotationId,
+  toggleAnnotationSelected,
 } from '../slices/annotationsSlice'
 import { useAnnotationActions } from '../hooks/useAnnotationActions'
 import AnnotationEditorDropdown, { EditorCategory } from './AnnotationEditorDropdown'
@@ -133,6 +135,7 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
   const dispatch = useAppDispatch()
   const isLoggedIn = !!useAppSelector(selectAuthUser)
   const selectedCommentId = useAppSelector(selectSelectedCommentAnnotationId)
+  const isSelected = useAppSelector(selectSelectedAnnotationIds).includes(annotation.uid)
   const actions = useAnnotationActions()
   const editor = usePopover<{ category: EditorCategory }>()
   const [actionAnchor, setActionAnchor] = useState<HTMLElement | null>(null)
@@ -175,8 +178,25 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
       role="row"
       data-testid="annotation-row"
       data-annotation-id={annotation.uid}
-      className="flex w-full items-stretch border-b border-gray-300 bg-white hover:bg-accent-50"
+      aria-selected={isLoggedIn ? isSelected : undefined}
+      className={`flex w-full items-stretch border-b border-gray-300 hover:bg-accent-50 ${
+        isSelected ? 'bg-blue-50' : 'bg-white'
+      }`}
     >
+      {isLoggedIn && (
+        <div
+          role="cell"
+          className={`${columns.select.className} flex items-center justify-center border-r border-gray-300`}
+        >
+          <Checkbox
+            size="xs"
+            aria-label={`Select annotation ${gp.label || gp.id} ${goTerm.label || goTerm.id}`}
+            checked={isSelected}
+            onChange={() => dispatch(toggleAnnotationSelected(annotation.uid))}
+          />
+        </div>
+      )}
+
       <Cell
         className={columns.gp.className}
         onEdit={editIf(EditorCategory.GP)}

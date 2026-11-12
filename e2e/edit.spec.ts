@@ -298,3 +298,47 @@ test('shows the Minerva error when a write fails, and keeps the table', async ({
   await expectToast(page, /do not have permission/)
   await expect(rows(page)).toHaveCount(4)
 })
+
+// #96: tick rows, then delete them in one batch.
+test('deletes the selected annotations in one batch', async ({ page }) => {
+  const minerva = await openModel(page)
+  const tick = (...parts: string[]) =>
+    row(page, ...parts)
+      .getByRole('checkbox')
+      .check()
+  const bar = page.getByRole('toolbar', { name: 'Selected annotations' })
+
+  await tick('apoptotic process')
+  await tick('LYN Hsap', 'located in')
+  await expect(bar).toContainText('2 selected')
+  await bar.getByRole('button', { name: 'Delete' }).click()
+
+  const dialog = page.getByRole('dialog')
+  await expect(dialog.getByRole('listitem')).toHaveCount(2)
+  await dialog.getByRole('button', { name: 'Delete 2' }).click()
+
+  await expectToast(page, 'Deleted 2 annotations.')
+  await expect(rows(page)).toHaveCount(2)
+  await expect(bar).toBeHidden()
+  expect(minerva.batches).toHaveLength(1)
+  expect(minerva.batches[0].error).toBeUndefined()
+  expect(minerva.factSummaries()).toEqual([
+    'GO:0004713 RO:0002333 UniProtKB:P07948',
+    'GO:0004713 BFO:0000066 GO:0005634',
+    'GO:0003674 RO:0002333 UniProtKB:P12931',
+    'GO:0003674 RO:0002418 GO:0016477',
+  ])
+})
+
+test('will not delete every annotation of the model', async ({ page }) => {
+  const minerva = await openModel(page)
+  await page.getByRole('checkbox', { name: 'Select all annotations' }).check()
+  const bar = page.getByRole('toolbar', { name: 'Selected annotations' })
+  await expect(bar).toContainText('4 selected')
+  await bar.getByRole('button', { name: 'Delete' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Delete 4' }).click()
+
+  await expectToast(page, /all of the model's annotations/)
+  await expect(rows(page)).toHaveCount(4)
+  expect(minerva.batches).toHaveLength(0)
+})
