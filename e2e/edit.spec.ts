@@ -206,6 +206,41 @@ test('Add More Gene(s) copies an annotation onto other genes', async ({ page }) 
   expect(minerva.factSummaries()).toContain('GO:0003674 RO:0002333 UniProtKB:P06241')
 })
 
+test('Add More Reference(s) copies an annotation onto other papers (#93)', async ({ page }) => {
+  const minerva = await openModel(page)
+  const source = row(page, 'apoptotic process')
+  const before = await rows(page).count()
+  const citedRef = (await source.getByTestId('cell-reference').innerText()).trim()
+
+  await rowMenu(page, source, 'Add More Reference(s)')
+  const dialog = page.getByRole('dialog')
+  // Two papers, one PubMed doesn't have, and the reference the row already cites.
+  await dialog.getByRole('textbox').fill(`PMID:1001\n1002, 9999999 ${citedRef}`)
+  await dialog.getByRole('button', { name: 'Load References' }).click()
+  await expect(dialog.getByRole('tab', { name: 'Found (2)' })).toBeVisible()
+  await expect(dialog.getByRole('tab', { name: 'Not Found (1)' })).toBeVisible()
+  await expect(dialog.getByRole('tab', { name: 'Already Cited (1)' })).toBeVisible()
+  await expect(dialog.getByText('Paper 1001')).toBeVisible()
+  await dialog.getByRole('button', { name: 'Save' }).click()
+
+  await expectToast(page, '2 Annotation(s) successfully created.')
+  await expect(rows(page)).toHaveCount(before + 2)
+  const copies = rows(page).filter({ hasText: 'apoptotic process' })
+  for (const pmid of ['PMID:1001', 'PMID:1002']) {
+    await expect(copies.filter({ hasText: pmid })).toHaveCount(1)
+  }
+  // Each copy's evidence: that paper alone, the original's evidence code and with/from.
+  const evidence = minerva.model.facts.flatMap(f => minerva.evidenceOf(f))
+  const original = evidence.find(e => e.sources.join('| ') === citedRef)!
+  for (const pmid of ['PMID:1001', 'PMID:1002']) {
+    const copied = evidence.filter(e => e.sources.includes(pmid))
+    expect(copied.length).toBeGreaterThan(0)
+    for (const e of copied) {
+      expect(e).toEqual({ code: original.code, sources: [pmid], with: original.with })
+    }
+  }
+})
+
 test('Escape closes the term suggestions before the inline editor', async ({ page }) => {
   await openModel(page)
   const editor = await editCell(page, row(page, 'apoptotic process'), 'cell-term', 'Edit GO term')

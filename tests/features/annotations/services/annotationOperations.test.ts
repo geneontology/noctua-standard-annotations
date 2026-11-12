@@ -10,6 +10,7 @@ import { transformGraphData } from '@/features/gocam/services/graphServices'
 import {
   buildAddExtensionOperations,
   buildCopyAnnotationToGenesOperations,
+  buildCopyAnnotationToReferencesOperations,
   buildCreateAnnotationsOperations,
   buildDeleteAnnotationOperations,
   buildDeleteExtensionOperations,
@@ -221,6 +222,48 @@ describe('buildCopyAnnotationToGenesOperations', () => {
     )
     // No title for copies.
     expect(ofKind(ops, OperationEntity.MODEL, OperationType.ADD_ANNOTATION)).toHaveLength(0)
+  })
+})
+
+describe('buildCopyAnnotationToReferencesOperations', () => {
+  /** Every evidence individual's annotation values, in order. */
+  const evidenceValues = (ops: Operation[]) =>
+    ofKind(ops, OperationEntity.INDIVIDUAL, OperationType.ADD_ANNOTATION).map(
+      op => op.arguments.values
+    )
+
+  it('copies the annotation once per reference, on the same gene, with that reference alone', () => {
+    const source = byGp('ALPHA1 Hsap')
+    const ops = buildCopyAnnotationToReferencesOperations(source, ['PMID:900', 'PMID:901'], MODEL)
+
+    // Same gene product and NOT GO term on both copies.
+    const enabledBy = addedEdges(ops).filter(e => e.predicate === 'RO:0002333')
+    expect(enabledBy.map(e => classOf(ops, e.object))).toEqual([
+      { type: 'class', id: 'UniProtKB:P00001' },
+      { type: 'class', id: 'UniProtKB:P00001' },
+    ])
+    expect(classOf(ops, enabledBy[1].subject)).toEqual({
+      type: 'complement',
+      filler: { type: 'class', id: 'GO:0004672' },
+    })
+    // Each fact's evidence: the one new PMID, the original evidence code and with/from.
+    const values = evidenceValues(ops)
+    expect(values.filter(v => JSON.stringify(v).includes('PMID:900'))).toHaveLength(3)
+    expect(values.filter(v => JSON.stringify(v).includes('PMID:901'))).toHaveLength(3)
+    expect(JSON.stringify(values)).not.toContain('PMID:111')
+    expect(values[0]).toEqual([
+      { key: 'source', value: 'PMID:900' },
+      { key: 'with', value: 'UniProtKB:Q00001' },
+    ])
+    const ecoClasses = addedIndividuals(ops)
+      .map(i => i.expression as { id?: string })
+      .filter(e => e.id?.startsWith('ECO:'))
+    expect(new Set(ecoClasses.map(e => e.id))).toEqual(new Set(['ECO:0000314']))
+    expect(ofKind(ops, OperationEntity.MODEL, OperationType.ADD_ANNOTATION)).toHaveLength(0)
+  })
+
+  it('writes nothing for no references', () => {
+    expect(buildCopyAnnotationToReferencesOperations(byGp('ALPHA1 Hsap'), [], MODEL)).toEqual([])
   })
 })
 

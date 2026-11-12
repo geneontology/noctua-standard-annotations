@@ -411,13 +411,21 @@ export const routeGolr = async (page: Page, catalog: CatalogClass[]): Promise<vo
 /** PubMed summaries for the reference picker's preview (never the real eutils). */
 export const routePubmed = async (page: Page): Promise<void> => {
   await page.route('**/esummary.fcgi**', route => {
-    const id = new URL(route.request().url()).searchParams.get('id') ?? ''
+    // One id or several (`id=1,2`). Ids from 9000000 up are "not on PubMed", as
+    // esummary answers them with an `error` entry.
+    const ids = (new URL(route.request().url()).searchParams.get('id') ?? '').split(',')
+    const result = Object.fromEntries(
+      ids.map(id => [
+        id,
+        Number(id) >= 9000000
+          ? { uid: id, error: 'cannot get document summary' }
+          : { title: `Paper ${id}`, authors: [{ name: 'Curie M' }], pubdate: '2020' },
+      ])
+    )
     return route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify({
-        result: { [id]: { title: `Paper ${id}`, authors: [{ name: 'Curie M' }], pubdate: '2020' } },
-      }),
+      body: JSON.stringify({ result }),
     })
   })
 }

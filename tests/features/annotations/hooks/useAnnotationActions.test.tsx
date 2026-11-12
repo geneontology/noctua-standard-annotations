@@ -70,6 +70,27 @@ describe('useAnnotationActions.copyToGenes', () => {
   })
 })
 
+describe('useAnnotationActions.copyToReferences', () => {
+  it('copies the annotation once per reference and reports how many were created', async () => {
+    const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
+    const store = makeStore(stateWith())
+    const annotation = selectAnnotations(store.getState()).find(a => a.gp.label === 'BETA2 Hsap')!
+
+    const { result } = renderHook(() => useAnnotationActions(), { wrapper: wrapperFor(store) })
+    await act(async () => {
+      await result.current.copyToReferences(annotation, ['PMID:900', 'PMID:901'])
+    })
+
+    await waitFor(() => expect(requests).toHaveLength(1))
+    const sources = requests[0].operations
+      .flatMap(op => (op.arguments.values as { key: string; value: string }[] | undefined) ?? [])
+      .filter(v => v.key === 'source')
+      .map(v => v.value)
+    expect(new Set(sources)).toEqual(new Set(['PMID:900', 'PMID:901']))
+    expect(store.getState().toast.message).toBe('2 Annotation(s) successfully created.')
+  })
+})
+
 describe('useUserContext', () => {
   it('credits a user without a group by ORCID alone', () => {
     const store = makeStore({

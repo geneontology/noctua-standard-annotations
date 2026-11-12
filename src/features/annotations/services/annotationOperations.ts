@@ -252,32 +252,57 @@ export const buildCreateAnnotationsOperations = (
 }
 
 /**
- * Add More Gene(s): copy an existing annotation — relation, GO term (with its
- * NOT), evidence, extensions and comments — onto each gene product id.
+ * An existing annotation as create input — relation, GO term (with its NOT),
+ * evidence, extensions and comments — for the Add More copies.
  */
+const copyInputOf = (annotation: StandardAnnotation): CreateAnnotationInput => ({
+  gpId: annotation.gp.id,
+  goTermId: annotation.goTerm.id,
+  isComplement: annotation.isComplement,
+  relationId: annotation.relation.id,
+  evidence: annotation.evidence
+    ? evidenceInputOf(annotation.evidence)
+    : { evidenceCodeId: '', sources: [], withFrom: '' },
+  extensions: annotation.extensions.map(ext => ({
+    relationId: ext.relation.id,
+    termId: ext.term.id,
+    isComplement: ext.term.isComplement,
+  })),
+  comments: annotation.comments,
+})
+
+/** Add More Gene(s): copy an existing annotation onto each gene product id. */
 export const buildCopyAnnotationToGenesOperations = (
   annotation: StandardAnnotation,
   gpIds: string[],
   modelId: string
-): Operation[] =>
-  buildCreateAnnotationsOperations(
-    gpIds.map(gpId => ({
-      gpId,
-      goTermId: annotation.goTerm.id,
-      isComplement: annotation.isComplement,
-      relationId: annotation.relation.id,
-      evidence: annotation.evidence
-        ? evidenceInputOf(annotation.evidence)
-        : { evidenceCodeId: '', sources: [], withFrom: '' },
-      extensions: annotation.extensions.map(ext => ({
-        relationId: ext.relation.id,
-        termId: ext.term.id,
-        isComplement: ext.term.isComplement,
-      })),
-      comments: annotation.comments,
+): Operation[] => {
+  const input = copyInputOf(annotation)
+  return buildCreateAnnotationsOperations(
+    gpIds.map(gpId => ({ ...input, gpId })),
+    modelId
+  )
+}
+
+/**
+ * Add More Reference(s) (#93): copy an existing annotation once per reference,
+ * the same gene product with that reference alone as the evidence's source.
+ * Evidence code and with/from are kept.
+ */
+export const buildCopyAnnotationToReferencesOperations = (
+  annotation: StandardAnnotation,
+  references: string[],
+  modelId: string
+): Operation[] => {
+  const input = copyInputOf(annotation)
+  return buildCreateAnnotationsOperations(
+    references.map(reference => ({
+      ...input,
+      evidence: { ...input.evidence, sources: [reference] },
     })),
     modelId
   )
+}
 
 /** Swap an individual's class, keeping its NOT (Angular `editNode`). */
 export const buildEditNodeTypeOperations = (

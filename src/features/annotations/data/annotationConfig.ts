@@ -160,3 +160,6 @@ export const BP_ONLY_CAUSAL_EDGES = new Set<string>([
 
 /** Most gene ids accepted by Add More Gene(s). */
 export const MAX_GENES = 150
+
+/** Most PMIDs accepted by Add More Reference(s): one PubMed request, one batch. */
+export const MAX_REFERENCES = 50

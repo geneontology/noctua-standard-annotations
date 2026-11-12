@@ -1,6 +1,7 @@
 import { ENVIRONMENT } from '@/@noctua.core/data/constants'
 import type { GOlrResponse, TermSearchFilter } from '../models/search'
 import apiService from '@/app/store/apiService'
+import type { PubmedSummaries } from '@/features/annotations/services/referenceList'
 import { buildCategoryFilter, formatSolrQueryString, mapGOlrResponse } from '../services/lookupServices'
 
 let jsonpCounter = 0
@@ -172,8 +173,46 @@ const lookupApi = apiService
           }
         },
       }),
+      /**
+       * Several PMIDs (bare numbers) in one esummary request. Each maps to its
+       * paper, or `null` when PubMed has none (esummary returns an `error` entry).
+       */
+      getPubmedSummaries: builder.query<PubmedSummaries, string[]>({
+        queryFn: async pmids => {
+          try {
+            const url = `${ENVIRONMENT.pubmedApiUrl}${pmids.map(encodeURIComponent).join(',')}`
+            const res = await fetch(url)
+            if (!res.ok) return { error: { status: res.status, data: 'PubMed lookup failed' } }
+            const data = await res.json()
+            const summaries: PubmedSummaries = {}
+            for (const pmid of pmids) {
+              const entry = data?.result?.[pmid]
+              summaries[pmid] =
+                entry && !entry.error && entry.title
+                  ? {
+                      title: entry.title,
+                      authors: Array.isArray(entry.authors)
+                        ? entry.authors
+                            .map((a: { name?: string }) => a.name)
+                            .filter(Boolean)
+                            .join(', ')
+                        : '',
+                      date: entry.pubdate || '',
+                    }
+                  : null
+            }
+            return { data: summaries }
+          } catch (error) {
+            return { error: { status: 'CUSTOM_ERROR', error: (error as Error)?.message } }
+          }
+        },
+      }),
     }),
   })
 
-export const { useSearchTermsQuery, useLazyGetGenesDetailsQuery, useLazyGetPubmedInfoQuery } =
-  lookupApi
+export const {
+  useSearchTermsQuery,
+  useLazyGetGenesDetailsQuery,
+  useLazyGetPubmedInfoQuery,
+  useLazyGetPubmedSummariesQuery,
+} = lookupApi

@@ -21,6 +21,7 @@ import {
 import { useAnnotationActions } from '../hooks/useAnnotationActions'
 import AnnotationEditorDropdown, { EditorCategory } from './AnnotationEditorDropdown'
 import AddGenesDialog from './dialogs/AddGenesDialog'
+import AddReferencesDialog from './dialogs/AddReferencesDialog'
 import { ANNOTATION_COLUMNS } from './annotationColumns'
 
 /**
@@ -129,6 +130,7 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
   const [actionAnchor, setActionAnchor] = useState<HTMLElement | null>(null)
   const [pending, setPending] = useState<PendingConfirm>(null)
   const [addGenesOpen, setAddGenesOpen] = useState(false)
+  const [addReferencesOpen, setAddReferencesOpen] = useState(false)
 
   const { gp, goTerm, evidence, relation } = annotation
   const columns = ANNOTATION_COLUMNS
@@ -325,6 +327,9 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
                 Add Comment
               </Menu.Item>
               <Menu.Item onClick={() => setAddGenesOpen(true)}>Add More Gene(s)</Menu.Item>
+              <Menu.Item onClick={() => setAddReferencesOpen(true)}>
+                Add More Reference(s)
+              </Menu.Item>
               <Menu.Item
                 color="red"
                 leftSection={<FaRegTrashAlt size={12} />}
@@ -372,6 +377,18 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
               genes.map(gene => gene.id)
             )
             if (saved) setAddGenesOpen(false)
+          }}
+        />
+      )}
+
+      {addReferencesOpen && (
+        <AddReferencesDialog
+          open={addReferencesOpen}
+          onClose={() => setAddReferencesOpen(false)}
+          citedSources={annotation.evidence?.sources ?? []}
+          onSave={async references => {
+            const saved = await actions.copyToReferences(annotation, references)
+            if (saved) setAddReferencesOpen(false)
           }}
         />
       )}

@@ -23,6 +23,7 @@ import { defaultModelTitle, toCreateAnnotationInputs } from '../services/annotat
 import {
   buildAddExtensionOperations,
   buildCopyAnnotationToGenesOperations,
+  buildCopyAnnotationToReferencesOperations,
   buildCreateAnnotationsOperations,
   buildDeleteAnnotationOperations,
   buildDeleteExtensionOperations,
@@ -91,6 +92,24 @@ export function useAnnotationActions() {
         return false
       }
       return run(operations, `${gpIds.length} Annotation(s) successfully created.`)
+    },
+    [run, modelId, dispatch]
+  )
+
+  const copyToReferences = useCallback(
+    async (annotation: StandardAnnotation, references: string[]) => {
+      const operations = buildCopyAnnotationToReferencesOperations(annotation, references, modelId)
+      if (operations.length === 0) {
+        const relation = annotation.relation.label || annotation.termEdge.label
+        dispatch(
+          showToast({
+            message: `"${relation}" annotations can't be copied to other references.`,
+            severity: 'warning',
+          })
+        )
+        return false
+      }
+      return run(operations, `${references.length} Annotation(s) successfully created.`)
     },
     [run, modelId, dispatch]
   )
@@ -260,6 +279,7 @@ export function useAnnotationActions() {
     isSaving: isUpdating || isResetting,
     createAnnotations,
     copyToGenes,
+    copyToReferences,
     editNodeType,
     editEvidenceCode,
     editReference,
