@@ -1,6 +1,6 @@
 import type React from 'react'
 import { useMemo } from 'react'
-import { Select } from '@mantine/core'
+import FloatingSelect from '@/@noctua.core/components/textarea/FloatingSelect'
 import type { Entity } from '@/features/gocam/models/cam'
 
 interface RelationSelectProps {
@@ -34,7 +34,7 @@ const RelationSelect: React.FC<RelationSelectProps> = ({
   const byId = useMemo(() => new Map(options.map(option => [option.id, option])), [options])
 
   return (
-    <Select
+    <FloatingSelect
       label={label}
       size="xs"
       value={value?.id ?? null}

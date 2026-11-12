@@ -123,6 +123,7 @@ const DatabaseField: React.FC<DatabaseFieldProps> = ({ value, onChange, type }) 
           rightSection={
             <button
               type="button"
+              tabIndex={-1}
               aria-label={type === 'reference' ? 'Pick a reference' : 'Pick with/from'}
               title={type === 'reference' ? 'Pick a reference' : 'Pick with/from'}
               onMouseDown={e => e.preventDefault()}

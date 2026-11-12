@@ -146,4 +146,30 @@ describe('AnnotationForm', () => {
     await user.click(screen.getByRole('button', { name: 'Delete comment' }))
     expect(screen.queryByLabelText('Comment')).not.toBeInTheDocument()
   })
+
+  it('outlines the GO term in red when NOT is ticked', async () => {
+    const { user } = renderForm()
+    const goTerm = () => screen.getByTestId('autocomplete-goterm').parentElement!
+    expect(goTerm()).not.toHaveAttribute('data-mark')
+    await user.click(screen.getByRole('checkbox', { name: 'NOT' }))
+    expect(goTerm()).toHaveAttribute('data-mark', 'not')
+  })
+
+  it('outlines the missing fields once the curator asks why Save is disabled', async () => {
+    const { user } = renderForm()
+    await user.click(screen.getByTestId('pick-gp-UniProtKB:P12345'))
+    const gp = screen.getByTestId('autocomplete-gp').parentElement!
+    const goTerm = screen.getByTestId('autocomplete-goterm').parentElement!
+    expect(goTerm).not.toHaveAttribute('data-mark')
+
+    await user.click(screen.getByRole('button', { name: /Why is the "Save" button disabled/ }))
+    expect(goTerm).toHaveAttribute('data-mark', 'error')
+    expect(goTerm).toHaveAttribute('title', 'GO Term is required')
+    expect(gp).not.toHaveAttribute('data-mark')
+  })
+
+  it('leaves NOT out of the Tab order', () => {
+    renderForm()
+    expect(screen.getByRole('checkbox', { name: 'NOT' })).toHaveAttribute('tabindex', '-1')
+  })
 })

@@ -1,9 +1,9 @@
 import type React from 'react'
 import { useCallback, useMemo, useState } from 'react'
-import { ActionIcon, Button, Checkbox, Menu, Textarea } from '@mantine/core'
-import { FaEllipsisV, FaRegTrashAlt } from 'react-icons/fa'
+import { ActionIcon, Button, Checkbox, Menu } from '@mantine/core'
+import FloatingTextarea from '@/@noctua.core/components/textarea/FloatingTextarea'
+import { FaEllipsisV, FaPlus, FaRegTrashAlt } from 'react-icons/fa'
 import { useAppSelector } from '@/app/hooks'
-import SectionHeading from '@/@noctua.core/components/form/SectionHeading'
 import { selectAuthUser } from '@/features/auth/slices/authSlice'
 import { makeSelectModelTerms, selectModelEvidence } from '@/features/gocam/slices/camSlice'
 import TermAutocomplete from '@/features/search/components/Autocomplete'
@@ -43,20 +43,61 @@ const useModelTermOptions = (closureIds: string[], excludeIdspaces?: string[]) =
   return useAppSelector((state: RootState) => selectTerms(state, closureIds, excludeIdspaces))
 }
 
+/**
+ * One part of the form: a muted name in the left gutter, in place of a heading.
+ * Parts share one grey and are split by a divider.
+ */
+const FormCard: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
+  <section aria-label={label} className="flex border-b-[3px] border-slate-300">
+    <div className="flex w-24 shrink-0 items-center justify-end border-r border-slate-300 bg-primary-50 px-3 text-right text-2xs font-semibold tracking-wide text-primary-600 uppercase">
+      {label}
+    </div>
+    <div className="flex min-w-0 flex-1 flex-col gap-3 px-4 py-4">{children}</div>
+  </section>
+)
+
+/** Field outlines: red for a missing or invalid field, orange for a NOT term. */
+const MARKS = {
+  error:
+    '[--color-gray-400:var(--color-red-500)] [--color-gray-500:var(--color-red-600)] [--color-primary-500:var(--color-red-600)]',
+  not: '[--color-gray-400:var(--color-orange-500)] [--color-gray-500:var(--color-orange-600)] [--color-primary-500:var(--color-orange-600)]',
+} as const
+
+/** A field's box, outlined by `mark` when it has one. */
+const Field: React.FC<{
+  className?: string
+  mark?: keyof typeof MARKS | false
+  title?: string
+  children: React.ReactNode
+}> = ({ className = '', mark, title, children }) => (
+  <div
+    className={`${className} ${mark ? MARKS[mark] : ''}`}
+    data-mark={mark || undefined}
+    title={title}
+  >
+    {children}
+  </div>
+)
+
 const ExtensionRowFields: React.FC<{
   form: AnnotationFormState
   row: ExtensionRow
   index: number
   onChange: (patch: Partial<ExtensionRow>) => void
   onDelete: () => void
-}> = ({ form, row, index, onChange, onDelete }) => {
+  error?: string
+}> = ({ form, row, index, onChange, onDelete, error }) => {
   const relationChoices = getExtensionRelationChoices(form, row)
   const termRange = getExtensionTermRange(form, row)
   const initialOptions = useModelTermOptions(termRange)
 
   return (
-    <div className="flex w-full items-end gap-2 px-3 pt-2" data-testid="extension-row">
-      <div className="w-[35%] shrink-0">
+    <div className="flex w-full items-end gap-2" data-testid="extension-row">
+      <Field
+        className="w-[35%] shrink-0"
+        mark={!!error && !row.relation?.id && 'error'}
+        title={error}
+      >
         <RelationSelect
           label="Extension Relation"
           value={row.relation}
@@ -65,8 +106,8 @@ const ExtensionRowFields: React.FC<{
           clearable
           name={`extension-relation-${index}`}
         />
-      </div>
-      <div className="min-w-0 flex-1">
+      </Field>
+      <Field className="min-w-0 flex-1" mark={!!error && !row.term?.id && 'error'} title={error}>
         <TermAutocomplete
           label="Extension Term"
           name={`extension-term-${index}`}
@@ -75,8 +116,9 @@ const ExtensionRowFields: React.FC<{
           onChange={value => onChange({ term: asTerm(value) })}
           initialOptions={initialOptions}
         />
-      </div>
+      </Field>
       <ActionIcon
+        tabIndex={-1}
         variant="subtle"
         color="red"
         className="mb-2"
@@ -104,6 +146,8 @@ const AnnotationForm: React.FC = () => {
   // Like Angular, errors are explained only once the curator has started.
   const [touched, setTouched] = useState(false)
   const [errorsOpen, setErrorsOpen] = useState(false)
+  // Missing fields are outlined once the curator asks why Save is disabled.
+  const [showErrors, setShowErrors] = useState(false)
 
   /** Every change goes through the form rules, like the Angular valueChanges hook. */
   const setForm = useCallback((update: (current: AnnotationFormState) => AnnotationFormState) => {
@@ -114,6 +158,17 @@ const AnnotationForm: React.FC = () => {
   const relationChoices = useMemo(() => getRelationChoices(form), [form])
   const goTermRange = useMemo(() => getGoTermRange(form), [form])
   const errors = useMemo(() => validateAnnotationForm(form), [form])
+  /** The first error for each field, when they are being shown. */
+  const fieldErrors = useMemo(() => {
+    const byField = new Map<string, string>()
+    if (showErrors) {
+      for (const error of errors) {
+        if (error.field && !byField.has(error.field)) byField.set(error.field, error.message)
+      }
+    }
+    return byField
+  }, [errors, showErrors])
+  const errorMark = (field: string) => fieldErrors.has(field) && ('error' as const)
 
   const gpOptions = useModelTermOptions(
     GENE_PRODUCT_FILTER.closureIds,
@@ -161,6 +216,7 @@ const AnnotationForm: React.FC = () => {
     setFormState(createInitialForm())
     setResetKey(key => key + 1)
     setTouched(false)
+    setShowErrors(false)
   }
 
   const save = async () => {
@@ -187,178 +243,241 @@ const AnnotationForm: React.FC = () => {
           </div>
         )}
 
-        <div className="flex items-end gap-2 px-3 pt-3">
-          <div className="w-[35%] shrink-0">
-            <TermAutocomplete
-              label="Gene Product"
-              name="gp"
-              rootTypeIds={GENE_PRODUCT_FILTER.closureIds}
-              excludeIdspaces={GENE_PRODUCT_FILTER.excludeIdspaces}
-              value={form.gp}
-              onChange={value => setForm(f => ({ ...f, gp: asTerm(value) }))}
-              initialOptions={gpOptions}
-            />
-          </div>
-          <div className="flex w-[30%] shrink-0 flex-col gap-1">
-            <Checkbox
-              label="NOT"
-              size="xs"
-              checked={form.isComplement}
-              onChange={e => {
-                const checked = e.currentTarget.checked
-                setForm(f => ({ ...f, isComplement: checked }))
-              }}
-              data-pw="form-input-isComplement"
-            />
-            <RelationSelect
-              label="GP to Term Relation"
-              value={form.relation}
-              choices={relationChoices}
-              onChange={relation => setForm(f => ({ ...f, relation }))}
-              clearable
-              name="gpterm-relation"
-            />
-          </div>
-          <div className="min-w-0 flex-1">
-            <TermAutocomplete
-              label="GO Term"
-              name="goterm"
-              rootTypeIds={goTermRange}
-              value={form.goTerm}
-              onChange={value => setForm(f => ({ ...f, goTerm: asTerm(value) }))}
-              initialOptions={goTermOptions}
-            />
-          </div>
-          <Menu position="bottom-end" withinPortal>
-            <Menu.Target>
-              <ActionIcon variant="subtle" color="gray" className="mb-2" aria-label="Term options">
-                <FaEllipsisV size={12} />
-              </ActionIcon>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item onClick={() => addRootTerm('mf')}>Add MF Root</Menu.Item>
-              <Menu.Item onClick={() => addRootTerm('bp')}>Add BP Root</Menu.Item>
-              <Menu.Item onClick={() => addRootTerm('cc')}>Add CC Root</Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        </div>
+        <div className="flex flex-col rounded-t-md bg-slate-50 [--floating-label-bg:var(--color-slate-50)]">
+          <FormCard label="Annotation">
+            <div className="flex items-end gap-2">
+              <Field
+                className="w-[35%] shrink-0"
+                mark={errorMark('gp')}
+                title={fieldErrors.get('gp')}
+              >
+                <TermAutocomplete
+                  label="Gene Product"
+                  name="gp"
+                  rootTypeIds={GENE_PRODUCT_FILTER.closureIds}
+                  excludeIdspaces={GENE_PRODUCT_FILTER.excludeIdspaces}
+                  value={form.gp}
+                  onChange={value => setForm(f => ({ ...f, gp: asTerm(value) }))}
+                  initialOptions={gpOptions}
+                />
+              </Field>
+              <div className="flex w-[30%] shrink-0 flex-col gap-2.5">
+                <div>
+                  <Checkbox
+                    label="NOT"
+                    tabIndex={-1}
+                    size="xs"
+                    color="orange"
+                    classNames={{
+                      label: form.isComplement ? '!font-bold text-orange-600' : undefined,
+                    }}
+                    checked={form.isComplement}
+                    onChange={e => {
+                      const checked = e.currentTarget.checked
+                      setForm(f => ({ ...f, isComplement: checked }))
+                    }}
+                    data-pw="form-input-isComplement"
+                  />
+                </div>
+                <Field mark={errorMark('relation')} title={fieldErrors.get('relation')}>
+                  <RelationSelect
+                    label="GP to Term Relation"
+                    value={form.relation}
+                    choices={relationChoices}
+                    onChange={relation => setForm(f => ({ ...f, relation }))}
+                    clearable
+                    name="gpterm-relation"
+                  />
+                </Field>
+              </div>
+              <Field
+                className="min-w-0 flex-1"
+                mark={errorMark('goTerm') || (form.isComplement && 'not')}
+                title={fieldErrors.get('goTerm') ?? (form.isComplement ? 'NOT' : undefined)}
+              >
+                <TermAutocomplete
+                  label="GO Term"
+                  name="goterm"
+                  rootTypeIds={goTermRange}
+                  value={form.goTerm}
+                  onChange={value => setForm(f => ({ ...f, goTerm: asTerm(value) }))}
+                  initialOptions={goTermOptions}
+                />
+              </Field>
+              <Menu position="bottom-end" withinPortal>
+                <Menu.Target>
+                  <ActionIcon
+                    tabIndex={-1}
+                    variant="subtle"
+                    color="gray"
+                    className="mb-2"
+                    aria-label="Term options"
+                  >
+                    <FaEllipsisV size={12} />
+                  </ActionIcon>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item onClick={() => addRootTerm('mf')}>Add MF Root</Menu.Item>
+                  <Menu.Item onClick={() => addRootTerm('bp')}>Add BP Root</Menu.Item>
+                  <Menu.Item onClick={() => addRootTerm('cc')}>Add CC Root</Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </div>
+          </FormCard>
 
-        <SectionHeading className="mt-4">Evidence</SectionHeading>
-        {form.evidences.map((row, index) => (
-          <div
-            key={row.uid}
-            className="flex w-full items-end gap-2 px-3 pt-2"
-            data-testid="evidence-row"
-          >
-            <div className="w-[35%] shrink-0">
-              <TermAutocomplete
-                label="Evidence"
-                name={`evidenceCode-${index}`}
-                autocompleteType={AutocompleteType.EVIDENCE_CODE}
-                rootTypeIds={EVIDENCE_FILTER.closureIds}
-                value={row.evidenceCode}
-                onChange={value => patchEvidence(row.uid, { evidenceCode: asTerm(value) })}
-                initialOptions={evidenceOptions}
-              />
-            </div>
-            <div className="w-[30%] shrink-0">
-              <DatabaseField
-                type="reference"
-                value={row.reference}
-                onChange={reference => patchEvidence(row.uid, { reference })}
-              />
-            </div>
-            <div className="min-w-0 flex-1">
-              <DatabaseField
-                type="with"
-                value={row.withFrom}
-                onChange={withFrom => patchEvidence(row.uid, { withFrom })}
-              />
-            </div>
-            <Menu position="bottom-end" withinPortal>
-              <Menu.Target>
-                <ActionIcon
-                  variant="subtle"
-                  color="gray"
-                  className="mb-2"
-                  aria-label="Evidence options"
+          <FormCard label="Evidence">
+            {form.evidences.map((row, index) => (
+              <div key={row.uid} className="flex w-full items-end gap-2" data-testid="evidence-row">
+                <Field
+                  className="w-[35%] shrink-0"
+                  mark={errorMark(`evidenceCode-${row.uid}`)}
+                  title={fieldErrors.get(`evidenceCode-${row.uid}`)}
                 >
-                  <FaEllipsisV size={12} />
-                </ActionIcon>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item onClick={() => fillEvidence(row.uid, 'iss')}>Add ISS Evidence</Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          </div>
-        ))}
+                  <TermAutocomplete
+                    label="Evidence"
+                    name={`evidenceCode-${index}`}
+                    autocompleteType={AutocompleteType.EVIDENCE_CODE}
+                    rootTypeIds={EVIDENCE_FILTER.closureIds}
+                    value={row.evidenceCode}
+                    onChange={value => patchEvidence(row.uid, { evidenceCode: asTerm(value) })}
+                    initialOptions={evidenceOptions}
+                  />
+                </Field>
+                <Field
+                  className="w-[30%] shrink-0"
+                  mark={errorMark(`reference-${row.uid}`)}
+                  title={fieldErrors.get(`reference-${row.uid}`)}
+                >
+                  <DatabaseField
+                    type="reference"
+                    value={row.reference}
+                    onChange={reference => patchEvidence(row.uid, { reference })}
+                  />
+                </Field>
+                <Field
+                  className="min-w-0 flex-1"
+                  mark={errorMark(`withFrom-${row.uid}`)}
+                  title={fieldErrors.get(`withFrom-${row.uid}`)}
+                >
+                  <DatabaseField
+                    type="with"
+                    value={row.withFrom}
+                    onChange={withFrom => patchEvidence(row.uid, { withFrom })}
+                  />
+                </Field>
+                <Menu position="bottom-end" withinPortal>
+                  <Menu.Target>
+                    <ActionIcon
+                      tabIndex={-1}
+                      variant="subtle"
+                      color="gray"
+                      className="mb-2"
+                      aria-label="Evidence options"
+                    >
+                      <FaEllipsisV size={12} />
+                    </ActionIcon>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Item onClick={() => fillEvidence(row.uid, 'iss')}>
+                      Add ISS Evidence
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+              </div>
+            ))}
+          </FormCard>
 
-        <SectionHeading className="mt-4">Extensions</SectionHeading>
-        {form.extensions.map((row, index) => (
-          <ExtensionRowFields
-            key={row.uid}
-            form={form}
-            row={row}
-            index={index}
-            onChange={patch => patchExtension(row.uid, patch)}
-            onDelete={() =>
-              setForm(f => ({ ...f, extensions: f.extensions.filter(r => r.uid !== row.uid) }))
-            }
-          />
-        ))}
-        <div className="px-4 py-3">
-          <Button
-            variant="subtle"
-            onClick={() =>
-              setForm(f => ({ ...f, extensions: [...f.extensions, createExtensionRow()] }))
-            }
-          >
-            Add {form.extensions.length > 0 ? 'Another ' : ''}Extension
-          </Button>
-        </div>
+          {form.extensions.length > 0 && (
+            <FormCard label="Extensions">
+              {form.extensions.map((row, index) => (
+                <ExtensionRowFields
+                  key={row.uid}
+                  form={form}
+                  row={row}
+                  index={index}
+                  error={fieldErrors.get(`extension-${row.uid}`)}
+                  onChange={patch => patchExtension(row.uid, patch)}
+                  onDelete={() =>
+                    setForm(f => ({
+                      ...f,
+                      extensions: f.extensions.filter(r => r.uid !== row.uid),
+                    }))
+                  }
+                />
+              ))}
+            </FormCard>
+          )}
 
-        <SectionHeading>Comments</SectionHeading>
-        {form.comments.map(row => (
-          <div key={row.uid} className="flex w-full items-start gap-2 px-3 pt-2">
-            <Textarea
-              className="w-[60%]"
-              label="Comment"
-              value={row.text}
-              autosize
-              minRows={2}
-              onChange={e => {
-                const text = e.target.value
-                setForm(f => ({
-                  ...f,
-                  comments: f.comments.map(c => (c.uid === row.uid ? { ...c, text } : c)),
-                }))
-              }}
-            />
-            <ActionIcon
-              variant="subtle"
-              color="red"
-              className="mt-6"
-              aria-label="Delete comment"
+          {form.comments.length > 0 && (
+            <FormCard label="Comments">
+              {form.comments.map(row => (
+                <div key={row.uid} className="flex w-full items-start gap-2">
+                  <div className="min-w-0 flex-1">
+                    <FloatingTextarea
+                      label="Comment"
+                      value={row.text}
+                      autosize
+                      minRows={2}
+                      onChange={e => {
+                        const text = e.target.value
+                        setForm(f => ({
+                          ...f,
+                          comments: f.comments.map(c => (c.uid === row.uid ? { ...c, text } : c)),
+                        }))
+                      }}
+                    />
+                  </div>
+                  <ActionIcon
+                    tabIndex={-1}
+                    variant="subtle"
+                    color="red"
+                    className="mt-4"
+                    aria-label="Delete comment"
+                    onClick={() =>
+                      setForm(f => ({ ...f, comments: f.comments.filter(c => c.uid !== row.uid) }))
+                    }
+                  >
+                    <FaRegTrashAlt size={14} />
+                  </ActionIcon>
+                </div>
+              ))}
+            </FormCard>
+          )}
+
+          <div className="flex gap-2 px-4 py-3">
+            <Button
+              variant="default"
+              size="xs"
+              leftSection={<FaPlus size={10} />}
               onClick={() =>
-                setForm(f => ({ ...f, comments: f.comments.filter(c => c.uid !== row.uid) }))
+                setForm(f => ({ ...f, extensions: [...f.extensions, createExtensionRow()] }))
               }
             >
-              <FaRegTrashAlt size={14} />
-            </ActionIcon>
+              Add {form.extensions.length > 0 ? 'Another ' : ''}Extension
+            </Button>
+            <Button
+              variant="default"
+              size="xs"
+              leftSection={<FaPlus size={10} />}
+              onClick={() =>
+                setForm(f => ({ ...f, comments: [...f.comments, createCommentRow()] }))
+              }
+            >
+              Add {form.comments.length > 0 ? 'Another ' : ''}Comment
+            </Button>
           </div>
-        ))}
-        <div className="px-4 py-3">
-          <Button
-            variant="subtle"
-            onClick={() => setForm(f => ({ ...f, comments: [...f.comments, createCommentRow()] }))}
-          >
-            Add {form.comments.length > 0 ? 'Another ' : ''}Comment
-          </Button>
         </div>
 
-        <div className="flex items-center gap-2 border-t border-gray-200 bg-gray-50 px-4 py-4">
+        <div className="flex items-center gap-2 rounded-b-md px-4 py-3">
           {touched && errors.length > 0 && (
-            <Button variant="subtle" color="red" onClick={() => setErrorsOpen(true)}>
+            <Button
+              variant="subtle"
+              color="red"
+              onClick={() => {
+                setShowErrors(true)
+                setErrorsOpen(true)
+              }}
+            >
               Why is the &quot;Save&quot; button disabled?
             </Button>
           )}

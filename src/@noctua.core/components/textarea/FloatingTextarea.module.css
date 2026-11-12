@@ -18,7 +18,8 @@
   font-weight: 400 !important;
   line-height: 1 !important;
   color: var(--color-gray-500) !important;
-  background-color: #ffffff;
+  /* Matches what's behind the field, so the floated label notches the border. */
+  background-color: var(--floating-label-bg, #ffffff);
   transform-origin: left top;
   transition:
     transform 150ms ease,
@@ -45,7 +46,42 @@
 }
 
 .input:hover,
-.input:focus {
+.input:focus,
+.selectInput:hover,
+.selectInput:focus {
   outline: none !important;
   border-color: var(--color-primary-500) !important;
+}
+
+/* A Select dressed like the text fields; it keeps Mantine's chevron padding. */
+.selectInput {
+  /* The height of a two-row FloatingTextarea, so a row of fields lines up. */
+  height: 57px !important;
+  background-color: #ffffff !important;
+  border: 1px solid var(--color-gray-400) !important;
+  border-radius: 6px !important;
+  /* Text on the first line, as in the textarea. */
+  padding-top: 8px !important;
+  padding-bottom: 27px !important;
+  padding-left: 6px !important;
+  line-height: 20px !important;
+  font-size: 14px !important;
+  transition: border-color 150ms ease;
+}
+
+/* The selected option over the select's input, wrapped to two lines. */
+.selectValue {
+  position: absolute;
+  top: 9px;
+  left: 7px;
+  right: 52px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--color-gray-900);
+  pointer-events: none;
+  word-break: break-word;
 }
