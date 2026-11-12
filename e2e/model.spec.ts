@@ -118,12 +118,10 @@ test('sorts by a column and remembers it after a reload', async ({ page }) => {
 
 test('links the model to the other Noctua tools', async ({ page }) => {
   await openModel(page)
-  await page.getByRole('button', { name: 'VIEW IN' }).click()
-  const link = page.getByRole('link', { name: 'Pathway Viewer' })
-  await expect(link).toHaveAttribute(
-    'href',
-    /noctua-alliance-pathway-preview\?model_id=gomodel%3Ae2e000000001/
-  )
+  await page.getByRole('button', { name: 'VIEW', exact: true }).click()
+  await expect(page.getByRole('link', { name: 'Pathway Viewer' })).toHaveCount(0)
+  const link = page.getByRole('link', { name: 'Annotation Preview' })
+  await expect(link).toHaveAttribute('href', /annpreview\?model_id=gomodel%3Ae2e000000001/)
   await expect(link).toHaveAttribute('target', '_blank')
 })
 

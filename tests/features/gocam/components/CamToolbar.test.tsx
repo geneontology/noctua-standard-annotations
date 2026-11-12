@@ -27,9 +27,9 @@ describe('CamToolbar', () => {
     expect(screen.getByRole('button', { name: 'Model comments' })).toHaveTextContent('1')
   })
 
-  it('offers the VIEW IN and EXPORT AS menus', () => {
+  it('offers the VIEW and EXPORT AS menus', () => {
     renderWithProviders(toolbar, { preloadedState: stateWith() })
-    expect(screen.getByRole('button', { name: 'VIEW IN' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'VIEW' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'EXPORT AS' })).toBeInTheDocument()
   })
 
@@ -91,6 +91,6 @@ describe('CamToolbar', () => {
   it('renders nothing without a model', () => {
     renderWithProviders(toolbar, { preloadedState: stateWith({ model: null }) })
     expect(screen.queryByTestId('model-title')).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'VIEW IN' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'VIEW' })).not.toBeInTheDocument()
   })
 })

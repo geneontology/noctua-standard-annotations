@@ -15,7 +15,7 @@ import ToolbarLinkMenu from './ToolbarLinkMenu'
 
 /**
  * Model header: title, model comments, state, date, contributors, and the
- * VIEW IN / EXPORT AS link menus. As in the VPE (#94), each control opens its
+ * VIEW / EXPORT AS link menus. As in the VPE (#94), each control opens its
  * own form: Edit Title, Model Comments, Change State; the date and contributor
  * chips open Model Details (group and summary). Edits go through the group guard.
  * Logged out, the title and state can't be edited and the comments open read-only.
@@ -43,10 +43,9 @@ const CamToolbar: React.FC = () => {
     checkGroup(() => open(DialogComponent.CAM_COMMENTS_FORM, 'Model Comments', 'sm', 'none'))
   const openDetails = () => open(DialogComponent.CAM_DETAILS_FORM, 'Model Details', 'sm', 'none')
 
-  const viewInItems = useMemo(
+  const viewItems = useMemo(
     () => [
       { label: 'Annotation Preview', href: urls?.annotationPreview },
-      { label: 'Pathway Viewer', href: urls?.pathwayViewer },
       { label: 'Graph Editor', href: urls?.graphEditor },
     ],
     [urls]
@@ -139,7 +138,7 @@ const CamToolbar: React.FC = () => {
       <ContributorChips contributors={cam.contributors || []} onClick={openDetails} />
 
       <div className="ml-auto flex shrink-0 items-center justify-end gap-2">
-        <ToolbarLinkMenu label="VIEW IN" items={viewInItems} />
+        <ToolbarLinkMenu label="VIEW" items={viewItems} />
         <ToolbarLinkMenu label="EXPORT AS" items={exportItems} />
       </div>
     </div>
