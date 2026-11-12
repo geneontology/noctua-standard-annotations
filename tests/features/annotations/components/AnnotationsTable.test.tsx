@@ -59,6 +59,15 @@ describe('AnnotationsTable', () => {
     expect(within(row).getByTestId('cell-date')).toHaveTextContent('Jan 10, 2024')
   })
 
+  it('shows each contributor as a link to their ORCID', () => {
+    renderTable()
+    const cell = within(rowFor('ALPHA1 Hsap')).getByTestId('cell-contributor')
+    // No Barista name in the fixture: the bare ORCID id stands in.
+    const link = within(cell).getByRole('link', { name: '0000-0000-0000-0001' })
+    expect(link).toHaveAttribute('href', 'https://orcid.org/0000-0000-0000-0001')
+    expect(screen.getByRole('columnheader', { name: /Contributor/ })).toBeInTheDocument()
+  })
+
   it('links each reference of a multi-reference evidence', () => {
     renderTable()
     const cell = within(rowFor('DELTA4 Hsap')).getByTestId('cell-reference')

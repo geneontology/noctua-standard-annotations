@@ -1,4 +1,5 @@
 import type { Edge, Entity, Evidence, GraphModel, GraphNode } from '@/features/gocam/models/cam'
+import type { Contributor } from '@/features/users/models/contributor'
 import { RootTypes } from '@/features/gocam/models/cam'
 import { Relations } from '@/@noctua.core/models/relations'
 import type { AnnotationEdgeDefinition } from '../data/annotationConfig'
@@ -48,6 +49,15 @@ const latestDate = (dates: (string | undefined)[]): string | null => {
     if (date && (!latest || date > latest)) latest = date
   }
   return latest
+}
+
+/** Contributors in the order first seen, once per ORCID. */
+const uniqueContributors = (contributors: Contributor[]): Contributor[] => {
+  const byUri = new Map<string, Contributor>()
+  for (const contributor of contributors) {
+    if (contributor.uri && !byUri.has(contributor.uri)) byUri.set(contributor.uri, contributor)
+  }
+  return [...byUri.values()]
 }
 
 interface GraphIndex {
@@ -320,6 +330,13 @@ export const extractAnnotations = (model: GraphModel | null): StandardAnnotation
       date: latestDate([
         ...nodes.map(node => node.date),
         ...edges.flatMap(edge => edge.evidence.map(ev => ev.date)),
+      ]),
+      contributors: uniqueContributors([
+        ...nodes.flatMap(node => node.contributors),
+        ...edges.flatMap(edge => [
+          ...edge.contributors,
+          ...edge.evidence.flatMap(ev => ev.contributors),
+        ]),
       ]),
       nodes,
       edges,

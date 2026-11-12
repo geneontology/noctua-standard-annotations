@@ -1,3 +1,4 @@
+import { contributorName } from '@/features/users/services/contributorName'
 import type { StandardAnnotation } from '../models/annotation'
 
 export enum AnnotationSortField {
@@ -8,6 +9,7 @@ export enum AnnotationSortField {
   REFERENCE = 'reference',
   WITH = 'with',
   DATE = 'date',
+  CONTRIBUTOR = 'contributor',
 }
 
 export interface AnnotationSort {
@@ -32,6 +34,8 @@ const sortKey = (annotation: StandardAnnotation, field: AnnotationSortField | nu
       return annotation.evidence?.with ?? ''
     case AnnotationSortField.DATE:
       return annotation.date ?? ''
+    case AnnotationSortField.CONTRIBUTOR:
+      return annotation.contributors.map(contributorName).join(', ')
     case AnnotationSortField.GP:
     default:
       return annotation.gp.label ?? ''

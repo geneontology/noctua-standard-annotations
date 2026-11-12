@@ -1,7 +1,14 @@
 import type React from 'react'
 import { Fragment, useCallback, useState } from 'react'
 import { ActionIcon, Menu, Tooltip } from '@mantine/core'
-import { FaCalendarDay, FaComment, FaEllipsisV, FaPencilAlt, FaRegTrashAlt } from 'react-icons/fa'
+import {
+  FaCalendarDay,
+  FaComment,
+  FaEllipsisV,
+  FaPencilAlt,
+  FaRegTrashAlt,
+  FaUser,
+} from 'react-icons/fa'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { usePopover } from '@/@noctua.core/hooks/usePopover'
 import ConfirmDialog from '@/@noctua.core/components/dialog/ConfirmDialog'
@@ -13,6 +20,7 @@ import {
 import { getSourceDbUrl } from '@/@noctua.core/services/goLinker/goLinker'
 import { formatDate } from '@/@noctua.core/services/dateUtils'
 import { selectAuthUser } from '@/features/auth/slices/authSlice'
+import { contributorName } from '@/features/users/services/contributorName'
 import type { AnnotationExtension, StandardAnnotation } from '../models/annotation'
 import {
   selectCommentAnnotation,
@@ -258,6 +266,27 @@ const AnnotationRow: React.FC<AnnotationRowProps> = ({ annotation }) => {
               </button>
             )}
           </div>
+        ))}
+      </Cell>
+
+      <Cell
+        className={`${columns.contributor.className} flex-col items-start gap-1`}
+        testId="cell-contributor"
+      >
+        {annotation.contributors.map(contributor => (
+          <a
+            key={contributor.uri}
+            href={contributor.uri}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={contributor.name ? `${contributor.name} (${contributor.uri})` : contributor.uri}
+            className="flex h-5 max-w-full items-center gap-1 rounded-full border border-slate-300 bg-slate-50 pr-2 text-[10px] !text-gray-800 hover:bg-slate-100"
+          >
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-600">
+              <FaUser size={9} />
+            </span>
+            <span className="truncate">{contributorName(contributor)}</span>
+          </a>
         ))}
       </Cell>
 

@@ -379,3 +379,31 @@ describe('isGeneProductLike', () => {
     expect(isGeneProductLike(node('GO:0005667', ['GO:0032991', 'GO:0005575']))).toBe(false)
   })
 })
+
+describe('extractAnnotations — contributors', () => {
+  const OTHER = 'https://orcid.org/0000-0000-0000-0002'
+
+  it('credits everyone on the individuals, facts and evidence, once each', () => {
+    const raw = {
+      'modified-p': false,
+      id: 'gomodel:contributors',
+      individuals: [
+        rawIndividual('mf', 'GO:0004672', 'protein kinase activity', ['GO:0003674']),
+        rawIndividual('gp', 'UniProtKB:P1', 'ONE Hsap', ['CHEBI:33695', 'CHEBI:24431']),
+        rawIndividual('ev', 'ECO:0000314', 'IDA', ['ECO:0000000'], {
+          annotations: [
+            { key: 'source', value: 'PMID:1' },
+            { key: 'contributor', value: OTHER },
+          ],
+        }),
+      ],
+      facts: [rawFact('mf', 'RO:0002333', 'enabled by', 'gp', { evidence: ['ev'] })],
+      annotations: [],
+    }
+    const [annotation] = extractAnnotations(transformGraphData(raw))
+    expect(annotation.contributors.map(c => c.uri)).toEqual([
+      'https://orcid.org/0000-0000-0000-0001',
+      OTHER,
+    ])
+  })
+})

@@ -1,4 +1,5 @@
 import type { Edge, Entity, Evidence, GraphNode } from '@/features/gocam/models/cam'
+import type { Contributor } from '@/features/users/models/contributor'
 
 /** How the annotation is stored — the Angular `ActivityType` it was read as. */
 export enum AnnotationUnitType {
@@ -51,6 +52,8 @@ export interface StandardAnnotation {
   comments: string[]
   /** Latest `YYYY-MM-DD` among the subgraph's individuals and evidence. */
   date: string | null
+  /** Everyone credited on the subgraph's individuals, facts and evidence, once each. */
+  contributors: Contributor[]
   /** Every individual of the annotation — what Delete Annotation removes. */
   nodes: GraphNode[]
   /** Every fact of the annotation — what evidence and comment edits update. */

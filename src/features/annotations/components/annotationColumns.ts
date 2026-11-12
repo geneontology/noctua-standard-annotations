@@ -11,12 +11,12 @@ export interface AnnotationColumn {
 export const ANNOTATION_COLUMNS = {
   gp: {
     label: 'Gene Product',
-    className: 'min-w-[100px] max-w-[200px] flex-1',
+    className: 'w-[150px] shrink-0',
     sort: AnnotationSortField.GP,
   },
   relation: {
     label: 'Relationship',
-    className: 'w-[150px] shrink-0',
+    className: 'w-[130px] shrink-0',
     sort: AnnotationSortField.RELATION,
   },
   term: {
@@ -26,7 +26,8 @@ export const ANNOTATION_COLUMNS = {
   },
   evidence: {
     label: 'Evidence',
-    className: 'min-w-[100px] flex-1',
+    // Up to 230px; it gives way with the extension column on narrow screens.
+    className: 'min-w-[100px] max-w-[230px] flex-1',
     sort: AnnotationSortField.EVIDENCE_CODE,
   },
   reference: {
@@ -39,7 +40,13 @@ export const ANNOTATION_COLUMNS = {
     className: 'w-[110px] shrink-0',
     sort: AnnotationSortField.WITH,
   },
-  extensions: { label: 'Extension', className: 'min-w-[100px] max-w-[300px] flex-1' },
+  // Takes the room left over, and shrinks first along with Evidence.
+  extensions: { label: 'Extension', className: 'min-w-[100px] flex-1' },
+  contributor: {
+    label: 'Contributor',
+    className: 'w-[130px] shrink-0',
+    sort: AnnotationSortField.CONTRIBUTOR,
+  },
   date: {
     label: 'Date Modified',
     className: 'w-[110px] shrink-0',
