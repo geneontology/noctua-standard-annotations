@@ -11,11 +11,15 @@ import { selectSelectedCommentAnnotationId } from '@/features/annotations/slices
 import { selectRightDrawerOpen } from '@/@noctua.core/components/drawer/drawerSlice'
 import { makeStore } from '@/app/store/store'
 import type { AppStore } from '@/app/store/store'
+import type { GraphModel } from '@/features/gocam/models/cam'
+import { MAX_BULK_DELETE } from '@/features/annotations/data/selectionLimits'
 
 vi.mock('@/features/search/components/Autocomplete', () => import('@tests/mocks/autocompleteMock'))
 
-const renderTable = (options: { loggedIn?: boolean } = {}) => {
-  const store: AppStore = makeStore(stateWith({ loggedIn: options.loggedIn ?? true }))
+const renderTable = (options: { loggedIn?: boolean; model?: GraphModel } = {}) => {
+  const store: AppStore = makeStore(
+    stateWith({ loggedIn: options.loggedIn ?? true, model: options.model })
+  )
   const view = renderWithProviders(<TableFromStore store={store} />, { store })
   return { ...view, store }
 }
@@ -247,5 +251,104 @@ describe('AnnotationsTable — rows read from other editors', () => {
         .getAllByRole('link')
         .map(link => link.textContent)
     ).toEqual(['PomBase:SPAC1F5.04c', 'PANTHER:PTN005332947'])
+  })
+})
+
+describe('AnnotationsTable — delete selected (#96)', () => {
+  type User = ReturnType<typeof renderTable>['user']
+
+  const tick = (user: User, gpLabel: string) =>
+    user.click(within(rowFor(gpLabel)).getByRole('checkbox'))
+  const selectionBar = () => screen.getByRole('toolbar', { name: 'Selected annotations' })
+  const deleteSelected = (user: User) =>
+    user.click(within(selectionBar()).getByRole('button', { name: /Delete/ }))
+
+  /** `n` "located in" annotations, one gene product each. */
+  const manyAnnotations = (n: number) =>
+    transformGraphData({
+      'modified-p': false,
+      id: 'gomodel:many',
+      individuals: Array.from({ length: n }).flatMap((_, i) => [
+        rawIndividual(`gp${i}`, `UniProtKB:Q${i}`, `GENE${i} Hsap`, ['CHEBI:33695', 'CHEBI:24431']),
+        rawIndividual(`cc${i}`, 'GO:0005737', 'cytoplasm', ['UBERON:0001062', 'GO:0005575']),
+      ]),
+      facts: Array.from({ length: n }).map((_, i) =>
+        rawFact(`gp${i}`, 'RO:0001025', 'located in', `cc${i}`)
+      ),
+      annotations: [],
+    })
+
+  it('has no checkboxes when logged out', () => {
+    renderTable({ loggedIn: false })
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
+  })
+
+  it('deletes the ticked rows in one batch after confirming', async () => {
+    const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
+    const { user, store } = renderTable()
+
+    await tick(user, 'BETA2 Hsap')
+    await tick(user, 'DELTA4 Hsap')
+    expect(selectionBar()).toHaveTextContent('2 selected')
+    await deleteSelected(user)
+
+    const list = await screen.findByRole('list', { name: 'Annotations to delete' })
+    expect(
+      within(list)
+        .getAllByRole('listitem')
+        .map(item => item.textContent)
+    ).toEqual([expect.stringContaining('BETA2 Hsap'), expect.stringContaining('DELTA4 Hsap')])
+    await user.click(screen.getByRole('button', { name: 'Delete 2' }))
+
+    await waitFor(() => expect(requests).toHaveLength(1))
+    const kinds = requests[0].operations.map(op => `${op.entity} ${op.operation}`)
+    expect(kinds.slice(0, 2)).toEqual(['edge remove', 'edge remove'])
+    expect(kinds.filter(kind => kind.endsWith('store'))).toEqual(['model store'])
+    await waitFor(() => expect(store.getState().toast.message).toBe('Deleted 2 annotations.'))
+  })
+
+  // (The SAE fixture keeps an unconnected chemical, so deleting its rows is allowed.)
+  it('selects every row from the header, and will not empty the model', async () => {
+    const { requests } = mockBarista()
+    const { user, store } = renderTable({ model: manyAnnotations(3) })
+
+    await user.click(screen.getByRole('checkbox', { name: 'Select all annotations' }))
+    expect(selectionBar()).toHaveTextContent('3 selected')
+    await deleteSelected(user)
+    await user.click(await screen.findByRole('button', { name: 'Delete 3' }))
+
+    expect(store.getState().toast.message).toMatch(/all of the model's annotations/)
+    expect(requests).toHaveLength(0)
+
+    await user.click(screen.getByRole('checkbox', { name: 'Clear selection' }))
+    expect(screen.queryByRole('toolbar', { name: 'Selected annotations' })).toBeNull()
+  })
+
+  it(`allows at most ${MAX_BULK_DELETE} at a time`, async () => {
+    const { user } = renderTable({ model: manyAnnotations(MAX_BULK_DELETE + 1) })
+
+    await user.click(screen.getByRole('checkbox', { name: 'Select all annotations' }))
+    expect(selectionBar()).toHaveTextContent(
+      `${MAX_BULK_DELETE + 1} selected — max ${MAX_BULK_DELETE}`
+    )
+    expect(within(selectionBar()).getByRole('button', { name: /Delete/ })).toBeDisabled()
+
+    await tick(user, 'GENE0 Hsap')
+    expect(selectionBar()).toHaveTextContent(`${MAX_BULK_DELETE} selected`)
+    expect(within(selectionBar()).getByRole('button', { name: /Delete/ })).toBeEnabled()
+  })
+
+  it("warns before deleting from another group's model", async () => {
+    const model = transformGraphData(JSON.parse(JSON.stringify(saeModelRaw)))
+    model.groups = [{ id: 'http://example.org/other', label: 'Other Group' }]
+    const { user } = renderTable({ model })
+
+    await tick(user, 'BETA2 Hsap')
+    await deleteSelected(user)
+    expect(await screen.findByText("Warning: Editing another group's model")).toBeInTheDocument()
+    expect(screen.queryByRole('list', { name: 'Annotations to delete' })).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: 'Continue and edit anyway' }))
+    expect(await screen.findByRole('button', { name: 'Delete 1' })).toBeInTheDocument()
   })
 })

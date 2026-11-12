@@ -584,23 +584,30 @@ export const buildDeleteExtensionOperations = (
 }
 
 /**
- * Delete an annotation (Angular `deleteActivity`): its start fact, then its
- * individuals — removing an individual takes its facts with it.
+ * Delete annotations (Angular `deleteActivity`), one or a selection in one batch:
+ * every start fact first, then the individuals `nodeUids` — removing an individual
+ * takes its facts with it, so no start fact may come after one. Each fact and
+ * individual is removed once: Minerva fails the batch on a second removal, before
+ * its store, and has no rollback.
  */
 export const buildDeleteAnnotationOperations = (
-  annotation: StandardAnnotation,
+  selection: StandardAnnotation | StandardAnnotation[],
   nodeUids: string[],
   modelId: string
 ): Operation[] => {
-  const { startEdge } = annotation
-  const operations: Operation[] = [
-    {
+  const annotations = Array.isArray(selection) ? selection : [selection]
+  const operations: Operation[] = []
+  const removedFacts = new Set<string>()
+  for (const { startEdge } of annotations) {
+    if (removedFacts.has(startEdge.uid)) continue
+    removedFacts.add(startEdge.uid)
+    operations.push({
       entity: OperationEntity.EDGE,
       operation: OperationType.REMOVE,
       arguments: edgeArgs(startEdge.sourceId, startEdge.targetId, startEdge.id, modelId),
-    },
-  ]
-  for (const uid of nodeUids) removeIndividual(operations, modelId, uid)
+    })
+  }
+  for (const uid of new Set(nodeUids)) removeIndividual(operations, modelId, uid)
   operations.push(store(modelId))
   return operations
 }

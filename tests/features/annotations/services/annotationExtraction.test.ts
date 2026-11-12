@@ -248,6 +248,23 @@ describe('extractAnnotations — shared individuals', () => {
     const annotations = extractAnnotations(transformGraphData(raw))
     expect(getDeletableNodeUids(annotations[0], annotations)).toEqual([saeUid('a')])
   })
+
+  // #96: delete selected
+  it('deletes the shared gene product, once, when both annotations are selected', () => {
+    const annotations = extractAnnotations(transformGraphData(raw))
+    const uids = getDeletableNodeUids(annotations, annotations)
+    expect([...uids].sort()).toEqual(['gp', 'a', 'b'].map(saeUid).sort())
+    expect(new Set(uids).size).toBe(uids.length)
+  })
+
+  it('knows a selection of every annotation would empty the model', () => {
+    const model = transformGraphData(raw)
+    const annotations = extractAnnotations(model)
+    const all = getDeletableNodeUids(annotations, annotations)
+    expect(leavesModelEmpty(model, annotations, all)).toBe(true)
+    const one = getDeletableNodeUids([annotations[0]], annotations)
+    expect(leavesModelEmpty(model, [annotations[0]], one)).toBe(false)
+  })
 })
 
 describe('extractAnnotations — terms Minerva cannot classify', () => {

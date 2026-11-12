@@ -7,6 +7,7 @@ import { MantineProvider } from '@mantine/core'
 import type { AppStore, RootState } from '@/app/store/store'
 import { makeStore } from '@/app/store/store'
 import { mantineTheme } from '@/@noctua.core/theme/mantineTheme'
+import GroupGuardProvider from '@/features/gocam/components/GroupGuardProvider'
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   preloadedState?: Partial<RootState>
@@ -28,7 +29,8 @@ export const renderWithProviders = (
     <Provider store={store}>
       {/* env="test" turns off Mantine transitions and portals. */}
       <MantineProvider theme={mantineTheme} env="test">
-        {children}
+        {/* As in Layout: edits may ask before touching another group's model. */}
+        <GroupGuardProvider>{children}</GroupGuardProvider>
       </MantineProvider>
     </Provider>
   )

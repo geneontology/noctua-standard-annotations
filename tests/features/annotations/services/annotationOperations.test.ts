@@ -468,6 +468,51 @@ describe('extension, comment and delete builders', () => {
         .sort()
     ).toEqual(['mf2', 'gp2', 'bp2', 'ph2'].map(saeUid).sort())
   })
+
+  // #96: delete selected, in one batch.
+  it('deletes a selection: every start fact first, then each individual once, one store', () => {
+    const selection = [byGp('BETA2 Hsap'), byGp('ALPHA1 Hsap'), byGp('DELTA4 Hsap')]
+    const ops = buildDeleteAnnotationOperations(
+      selection,
+      getDeletableNodeUids(selection, annotations),
+      MODEL
+    )
+    const kinds = ops.map(op => `${op.entity} ${op.operation}`)
+    expect(kinds.slice(0, 3)).toEqual(Array(3).fill('edge remove'))
+    expect(kinds.slice(3, -1).every(kind => kind === 'individual remove')).toBe(true)
+    expect(kinds.filter(kind => kind.endsWith('store'))).toEqual(['model store'])
+    expect(ops.at(-1)?.operation).toBe('store')
+
+    const removed = ofKind(ops, OperationEntity.INDIVIDUAL, OperationType.REMOVE).map(
+      op => op.arguments.individual
+    )
+    expect(new Set(removed).size).toBe(removed.length)
+    expect(removed).toEqual(expect.arrayContaining(['mf2', 'mf1', 'gp4', 'cc4'].map(saeUid)))
+  })
+
+  it('removes an individual shared by the selected annotations only once', () => {
+    const shared = transformGraphData({
+      'modified-p': false,
+      id: 'gomodel:shared',
+      individuals: [
+        rawIndividual('gp', 'UniProtKB:P1', 'SHARED Hsap', ['CHEBI:33695', 'CHEBI:24431']),
+        rawIndividual('a', 'GO:0005634', 'nucleus', ['UBERON:0001062', 'GO:0005575']),
+        rawIndividual('b', 'GO:0005737', 'cytoplasm', ['UBERON:0001062', 'GO:0005575']),
+      ],
+      facts: [
+        rawFact('gp', 'RO:0001025', 'located in', 'a'),
+        rawFact('gp', 'RO:0001025', 'located in', 'b'),
+      ],
+      annotations: [],
+    })
+    const both = extractAnnotations(shared)
+    const ops = buildDeleteAnnotationOperations(both, getDeletableNodeUids(both, both), MODEL)
+    const removed = ofKind(ops, OperationEntity.INDIVIDUAL, OperationType.REMOVE).map(
+      op => op.arguments.individual
+    )
+    expect(removed.filter(uid => uid === saeUid('gp'))).toHaveLength(1)
+    expect(ofKind(ops, OperationEntity.EDGE, OperationType.REMOVE)).toHaveLength(2)
+  })
 })
 
 describe('canRemoveExtensionTerm', () => {

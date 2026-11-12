@@ -381,41 +381,54 @@ export const canRemoveExtensionTerm = (
   return !otherFact && !inAnnotation
 }
 
+/** One annotation or a selection of them (Delete Annotation / delete selected). */
+type AnnotationSelection = StandardAnnotation | StandardAnnotation[]
+
+const asList = (selection: AnnotationSelection): StandardAnnotation[] =>
+  Array.isArray(selection) ? selection : [selection]
+
 /**
- * Whether deleting the annotation (its individuals `nodeUids`, and with its facts
- * their evidence) would leave the model with no individuals at all.
+ * Whether deleting the annotations (their start facts and individuals `nodeUids`,
+ * and with the facts their evidence) would leave the model with no individuals.
  */
 export const leavesModelEmpty = (
   model: GraphModel,
-  annotation: StandardAnnotation,
+  selection: AnnotationSelection,
   nodeUids: string[]
 ): boolean => {
+  const startEdges = new Set(asList(selection).map(annotation => annotation.startEdge.uid))
   const removed = new Set(nodeUids)
   const removedFacts = model.edges.filter(
-    edge =>
-      edge.uid === annotation.startEdge.uid ||
-      removed.has(edge.sourceId) ||
-      removed.has(edge.targetId)
+    edge => startEdges.has(edge.uid) || removed.has(edge.sourceId) || removed.has(edge.targetId)
   )
   for (const edge of removedFacts) edge.evidence.forEach(ev => removed.add(ev.uid))
   return model.nodes.every(node => removed.has(node.uid))
 }
 
 /**
- * Individuals Delete Annotation may remove: the annotation's subgraph minus any
- * individual another annotation also uses. SAE gives every annotation its own
- * individuals, so this is normally the whole subgraph; it only matters for models
- * edited elsewhere (e.g. one gene product with two CC annotations, or one MF
- * enabled by two gene products sharing its extensions).
+ * Individuals a delete may remove: the selected annotations' subgraphs minus any
+ * individual an annotation left in the model also uses, each once. SAE gives every
+ * annotation its own individuals, so this is normally the whole subgraph; it only
+ * matters for models edited elsewhere (e.g. one gene product with two CC
+ * annotations, or one MF enabled by two gene products sharing its extensions). An
+ * individual shared only among the selected annotations goes with them.
  */
 export const getDeletableNodeUids = (
-  annotation: StandardAnnotation,
+  selection: AnnotationSelection,
   annotations: StandardAnnotation[]
 ): string[] => {
+  const selected = asList(selection)
+  const selectedIds = new Set(selected.map(annotation => annotation.uid))
   const used = new Set<string>()
   for (const other of annotations) {
-    if (other.uid === annotation.uid) continue
+    if (selectedIds.has(other.uid)) continue
     for (const node of other.nodes) used.add(node.uid)
   }
-  return annotation.nodes.filter(node => node.id && !used.has(node.uid)).map(node => node.uid)
+  const deletable = new Set<string>()
+  for (const annotation of selected) {
+    for (const node of annotation.nodes) {
+      if (node.id && !used.has(node.uid)) deletable.add(node.uid)
+    }
+  }
+  return [...deletable]
 }

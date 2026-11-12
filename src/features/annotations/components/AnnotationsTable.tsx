@@ -1,13 +1,26 @@
 import type React from 'react'
+import { useState } from 'react'
+import { Checkbox } from '@mantine/core'
 import { FaComment, FaSortDown, FaSortUp } from 'react-icons/fa'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { selectAuthUser } from '@/features/auth/slices/authSlice'
+import { useGroupGuard } from '@/features/gocam/components/GroupGuardProvider'
 import type { StandardAnnotation } from '../models/annotation'
 import { nextSort } from '../services/annotationSort'
 import type { AnnotationSortField } from '../services/annotationSort'
-import { selectAnnotationSort, setSort } from '../slices/annotationsSlice'
+import {
+  clearSelectedAnnotations,
+  selectAnnotationSort,
+  selectSelectedAnnotations,
+  setSelectedAnnotations,
+  setSort,
+} from '../slices/annotationsSlice'
+import { useAnnotationActions } from '../hooks/useAnnotationActions'
 import { ANNOTATION_COLUMNS } from './annotationColumns'
 import type { AnnotationColumn } from './annotationColumns'
 import AnnotationRow from './AnnotationRow'
+import SelectionBar from './SelectionBar'
+import DeleteAnnotationsDialog from './dialogs/DeleteAnnotationsDialog'
 
 interface AnnotationsTableProps {
   annotations: StandardAnnotation[]
@@ -17,10 +30,43 @@ interface AnnotationsTableProps {
 const AnnotationsTable: React.FC<AnnotationsTableProps> = ({ annotations }) => {
   const dispatch = useAppDispatch()
   const sort = useAppSelector(selectAnnotationSort)
+  const isLoggedIn = !!useAppSelector(selectAuthUser)
+  const selected = useAppSelector(selectSelectedAnnotations)
+  const actions = useAnnotationActions()
+  const checkGroup = useGroupGuard()
+  const [confirmDelete, setConfirmDelete] = useState(false)
 
   const onSort = (field: AnnotationSortField) => dispatch(setSort(nextSort(sort, field)))
 
+  const allSelected = annotations.length > 0 && selected.length === annotations.length
+  const toggleAll = () =>
+    dispatch(
+      allSelected ? clearSelectedAnnotations() : setSelectedAnnotations(annotations.map(a => a.uid))
+    )
+
+  const deleteSelected = async () => {
+    setConfirmDelete(false)
+    await actions.deleteAnnotations(selected)
+  }
+
+  const selectHeader = (column: AnnotationColumn) => (
+    <div
+      key="select"
+      role="columnheader"
+      className={`flex h-10 items-center justify-center border-r border-gray-300 ${column.className}`}
+    >
+      <Checkbox
+        size="xs"
+        aria-label={allSelected ? 'Clear selection' : 'Select all annotations'}
+        checked={allSelected}
+        indeterminate={selected.length > 0 && !allSelected}
+        onChange={toggleAll}
+      />
+    </div>
+  )
+
   const header = (key: string, column: AnnotationColumn) => {
+    if (key === 'select') return isLoggedIn ? selectHeader(column) : null
     const sortable = !!column.sort
     const active = sortable && sort.field === column.sort
     const content = (
@@ -59,6 +105,13 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({ annotations }) => {
           Standard Annotations{' '}
           <small className="text-base text-gray-600">( {annotations.length} )</small>
         </span>
+        {isLoggedIn && selected.length > 0 && (
+          <SelectionBar
+            count={selected.length}
+            onDelete={() => checkGroup(() => setConfirmDelete(true))}
+            onClear={() => dispatch(clearSelectedAnnotations())}
+          />
+        )}
       </div>
 
       {annotations.length > 0 ? (
@@ -80,6 +133,14 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({ annotations }) => {
           No annotations available to display
         </div>
       )}
+
+      <DeleteAnnotationsDialog
+        open={confirmDelete}
+        annotations={selected}
+        busy={actions.isSaving}
+        onClose={() => setConfirmDelete(false)}
+        onConfirm={deleteSelected}
+      />
     </div>
   )
 }
