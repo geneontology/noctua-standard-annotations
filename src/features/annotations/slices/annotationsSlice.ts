@@ -2,6 +2,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice, createSelector } from '@reduxjs/toolkit'
 import { selectCamModel, setModel } from '@/features/gocam/slices/camSlice'
 import { extractAnnotations } from '../services/annotationExtraction'
+import { findModelErrors } from '../services/modelErrors'
 import type { AnnotationSort } from '../services/annotationSort'
 import { AnnotationSortField, DEFAULT_SORT, sortAnnotations } from '../services/annotationSort'
 
@@ -97,6 +98,12 @@ export const selectSelectedCommentAnnotationId = (state: State) =>
 /** The model's standard annotations, in model order. */
 export const selectAnnotations = createSelector([selectCamModel], model =>
   extractAnnotations(model)
+)
+
+/** What the model holds that the table doesn't show (the toolbar's error count). */
+export const selectModelErrors = createSelector(
+  [selectCamModel, selectAnnotations],
+  (model, annotations) => findModelErrors(model, annotations)
 )
 
 /** The annotations in the table's current sort order. */
