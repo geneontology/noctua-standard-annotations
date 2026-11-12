@@ -7,6 +7,8 @@ import type { Entity } from '@/features/gocam/models/cam'
 /** One ShEx-derived domain/range rule: `subject --predicate--> object[]`. */
 export interface ShapeAssociation {
   subject: string
+  /** The subject's root (e.g. `GO:0008150` for `GO:0048856`); empty when it is one. */
+  root_subject?: string
   object: string[]
   predicate: string
   exclude_from_extensions?: boolean
@@ -108,6 +110,24 @@ export const getTermRelations = (
   getPredicates(gpToTerm ? GP_TO_TERM_SHAPES : SHAPES, subjectRootTypes, objectRootTypes).map(
     findRelation
   )
+
+/**
+ * Extension relations a term of these root types may carry, including the rules
+ * kept for its subclasses — `results in development of` is a rule of
+ * `GO:0048856` anatomical structure development, but a BP only has the root type
+ * `GO:0008150` in Minerva. For reading an existing extension back, where the
+ * term's ancestry isn't known (issue #85); objects aren't checked for the same
+ * reason (a CL cell only has the root type `UBERON:0001062`).
+ */
+export const getExtensionPredicatesForRoots = (rootTypes: string[]): Set<string> => {
+  const predicates = new Set<string>()
+  for (const shape of SHAPES) {
+    if (shape.exclude_from_extensions) continue
+    const root = shape.root_subject || shape.subject
+    if (rootTypes.includes(root)) predicates.add(shape.predicate)
+  }
+  return predicates
+}
 
 /**
  * The categories (closure ids) a term may come from, given the subject's root types

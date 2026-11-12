@@ -14,6 +14,21 @@ import { termOption } from '@/features/annotations/models/annotationForm'
 
 vi.mock('@/features/search/components/Autocomplete', () => import('@tests/mocks/autocompleteMock'))
 
+// GOlr is JSONP; stand in for the GO term ancestry lookup of Add Extension.
+const closure = vi.hoisted(() => ({
+  data: undefined as string[] | undefined,
+  calls: [] as { id: string; skip?: boolean }[],
+}))
+vi.mock('@/features/search/slices/lookupApiSlice', async importOriginal => ({
+  ...(await importOriginal<object>()),
+  useGetTermClosureQuery: (id: string, options?: { skip?: boolean }) => {
+    closure.calls.push({ id, skip: options?.skip })
+    return { data: options?.skip ? undefined : closure.data }
+  },
+}))
+
+const DEVELOPMENT_CLOSURE = ['GO:0048856', 'GO:0032502', 'GO:0008150']
+
 const model = loadModel(saeModelRaw)
 const annotations = extractAnnotations(model)
 const byGp = (label: string) => annotations.find(a => a.gp.label === label)!
@@ -39,6 +54,8 @@ const renderEditor = (category: EditorCategory, gpLabel = 'ALPHA1 Hsap') => {
 
 afterEach(() => {
   resetAutocompleteOptions()
+  closure.data = undefined
+  closure.calls = []
   vi.unstubAllGlobals()
   document.body.innerHTML = ''
 })
@@ -52,11 +69,15 @@ describe('AnnotationEditorDropdown', () => {
   it('searches gene products without GO complexes for a GP edit', () => {
     renderEditor(EditorCategory.GP)
     expect(screen.getByTestId('autocomplete-idspaces-editor-term')).toHaveTextContent('["GO"]')
-    expect(screen.getByTestId('autocomplete-value-editor-term')).toHaveTextContent('UniProtKB:P00001')
+    expect(screen.getByTestId('autocomplete-value-editor-term')).toHaveTextContent(
+      'UniProtKB:P00001'
+    )
   })
 
   it('swaps the GO term class, keeping NOT', async () => {
-    autocompleteOptions['editor-term'] = [termOption('GO:0004674', 'protein serine/threonine kinase activity')]
+    autocompleteOptions['editor-term'] = [
+      termOption('GO:0004674', 'protein serine/threonine kinase activity'),
+    ]
     const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
     const { user, onClose } = renderEditor(EditorCategory.TERM)
 
@@ -103,7 +124,8 @@ describe('AnnotationEditorDropdown', () => {
 
     await waitFor(() => expect(onClose).toHaveBeenCalled())
     const added = requests[0].operations.filter(
-      op => op.operation === 'add-annotation' && JSON.stringify(op.arguments.values).includes('source')
+      op =>
+        op.operation === 'add-annotation' && JSON.stringify(op.arguments.values).includes('source')
     )
     expect(added).toHaveLength(3)
   })
@@ -151,5 +173,64 @@ describe('AnnotationEditorDropdown', () => {
       'Please select both an extension relation and an extension term.'
     )
     expect(requests).toHaveLength(0)
+  })
+
+  // Issue #85: `results in development of` is a rule of GO:0048856, but Minerva
+  // gives the BP only its root type GO:0008150.
+  describe('extension relations of a BP subclass', () => {
+    const openRelations = async (user: ReturnType<typeof renderEditor>['user']) => {
+      await user.click(screen.getByRole('combobox', { name: 'New Extension Relation' }))
+      return screen.findByRole('option', { name: /^has input/ })
+    }
+
+    it("looks up the GO term's ancestry for Add Extension only", () => {
+      renderEditor(EditorCategory.ADD_EXTENSION, 'gamma3 Drer').unmount()
+      expect(closure.calls.at(-1)).toEqual({ id: 'GO:0048856', skip: false })
+      closure.calls = []
+      renderEditor(EditorCategory.TERM, 'gamma3 Drer')
+      expect(closure.calls.every(call => call.skip)).toBe(true)
+    })
+
+    it('offers them once the ancestry is known', async () => {
+      closure.data = DEVELOPMENT_CLOSURE
+      const { user } = renderEditor(EditorCategory.ADD_EXTENSION, 'gamma3 Drer')
+      await openRelations(user)
+      expect(screen.getByRole('option', { name: /^results in development of/ })).toBeInTheDocument()
+      // Another subclass's rule stays out.
+      expect(screen.queryByRole('option', { name: /^results in movement of/ })).toBeNull()
+    })
+
+    it('keeps to the root rules while the ancestry is unknown', async () => {
+      const { user } = renderEditor(EditorCategory.ADD_EXTENSION, 'gamma3 Drer')
+      await openRelations(user)
+      expect(screen.queryByRole('option', { name: /^results in development of/ })).toBeNull()
+    })
+
+    it('limits the term to the relation range and saves the extension', async () => {
+      closure.data = DEVELOPMENT_CLOSURE
+      autocompleteOptions['editor-term'] = [termOption('UBERON:0002370', 'thymus')]
+      const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
+      const { user, onClose } = renderEditor(EditorCategory.ADD_EXTENSION, 'gamma3 Drer')
+
+      await openRelations(user)
+      await user.click(screen.getByRole('option', { name: /^results in development of/ }))
+      expect(screen.getByTestId('autocomplete-range-editor-term')).toHaveTextContent(
+        '["UBERON:0001062"]'
+      )
+      await user.click(screen.getByTestId('pick-editor-term-UBERON:0002370'))
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => expect(onClose).toHaveBeenCalled())
+      expect(requests[0].operations).toContainEqual(
+        expect.objectContaining({
+          entity: 'edge',
+          operation: 'add',
+          arguments: expect.objectContaining({
+            subject: saeUid('bp3'),
+            predicate: 'RO:0002296',
+          }),
+        })
+      )
+    })
   })
 })

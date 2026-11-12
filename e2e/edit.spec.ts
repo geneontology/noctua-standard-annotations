@@ -9,6 +9,7 @@ import {
   rowMenu,
   rows,
 } from './helpers'
+import { subclassExtensionModel } from './fixtures/world'
 
 /**
  * Inline edits against a fake Minerva that behaves like the real one: a removed
@@ -136,6 +137,38 @@ test('adds and deletes an extension', async ({ page }) => {
   await expect(target().getByTestId('cell-extensions')).toHaveText('')
   expect(minerva.factSummaries()).not.toContain('GO:0006915 BFO:0000066 GO:0005737')
   expect(minerva.model.individuals.some(i => minerva.classOf(i.id) === 'GO:0005737')).toBe(false)
+})
+
+// Issue #85: the shapes give `results in development of` to GO:0048856 anatomical
+// structure development, but Minerva gives thymus development only GO:0008150.
+test("shows and adds a BP extension the shapes allow for the BP's ancestor", async ({ page }) => {
+  const minerva = await openModel(page, { model: subclassExtensionModel() })
+  const target = () => row(page, 'HCK Hsap', 'thymus development')
+  const extensions = () => target().getByTestId('cell-extensions')
+
+  await expect(extensions()).toContainText('results in development of')
+  await expect(extensions()).toContainText('thymus primordium')
+
+  await rowMenu(page, target(), 'Add Extension')
+  const editor = page.getByTestId('annotation-editor')
+  await pickRelation(page, editor, 'New Extension Relation', 'results in development of')
+  await pickTerm(page, editor, 'New Extension Term', 'thymus', 'UBERON:0002370')
+  await editor.getByRole('button', { name: 'Save' }).click()
+
+  await expect(
+    extensions().getByRole('button', {
+      name: 'Delete extension results in development of thymus',
+      exact: true,
+    })
+  ).toHaveCount(1)
+  await expect(extensions()).toContainText('UBERON:0002370')
+  expect(minerva.factSummaries()).toEqual(
+    expect.arrayContaining([
+      'GO:0048538 RO:0002296 EMAPA:17523',
+      'GO:0048538 RO:0002296 UBERON:0002370',
+    ])
+  )
+  expect(minerva.batches.at(-1)?.error).toBeUndefined()
 })
 
 test('toggles NOT after confirming', async ({ page }) => {

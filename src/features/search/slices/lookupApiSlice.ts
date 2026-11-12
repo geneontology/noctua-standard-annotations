@@ -147,6 +147,43 @@ const lookupApi = apiService
         },
       }),
 
+      /**
+       * A class's `isa_closure` (its ancestors and itself). Minerva's root types are
+       * only the top categories, but some shape rules belong to a subclass, e.g.
+       * `results in development of` to `GO:0048856` (issue #85). Empty when GOlr
+       * doesn't know the id.
+       */
+      getTermClosure: builder.query<string[], string>({
+        queryFn: async id => {
+          try {
+            const requestParams = {
+              q: `annotation_class:"${id}"`,
+              defType: 'edismax',
+              indent: 'on',
+              qt: 'standard',
+              wt: 'json',
+              rows: '1',
+              start: '0',
+              fl: 'annotation_class,isa_closure',
+              packet: '1',
+              callback_type: 'search',
+              fq: ['document_category:"ontology_class"'],
+            }
+
+            const url = `${ENVIRONMENT.globalGolrNeoServer}select?${toSearchParams(requestParams)}`
+            const response = await createJsonpScript(url)
+            const doc = response?.response?.docs?.find(
+              (item: { annotation_class?: string }) => item.annotation_class === id
+            )
+            return { data: (doc?.isa_closure as string[] | undefined) ?? [] }
+          } catch (error) {
+            return {
+              error: { status: 'CUSTOM_ERROR', error: (error as Error)?.message },
+            }
+          }
+        },
+      }),
+
       getPubmedInfo: builder.query<
         { title: string; authors: string; date: string } | null,
         string
@@ -213,6 +250,7 @@ const lookupApi = apiService
 export const {
   useSearchTermsQuery,
   useLazyGetGenesDetailsQuery,
+  useGetTermClosureQuery,
   useLazyGetPubmedInfoQuery,
   useLazyGetPubmedSummariesQuery,
 } = lookupApi

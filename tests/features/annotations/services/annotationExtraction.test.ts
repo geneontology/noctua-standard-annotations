@@ -9,6 +9,7 @@ import { AnnotationUnitType } from '@/features/annotations/models/annotation'
 import { transformGraphData } from '@/features/gocam/services/graphServices'
 import {
   actsUpstreamPairRaw,
+  bpOneHopExtensionsRaw,
   gocamMixedRaw,
   loadModel,
   mfWithBpExtensionRaw,
@@ -157,6 +158,32 @@ describe('extractAnnotations — real barista-dev models', () => {
         term: 'phosphatidylinositol-3,4,5-trisphosphate binding',
       },
     ])
+  })
+
+  // Issue #85: the shapes key these relations on a BP subclass (e.g. GO:0048856),
+  // but Minerva gives the BP only the root type GO:0008150.
+  it("shows a BP's extensions that the shapes allow only for a subclass", () => {
+    const annotations = extractAnnotations(loadModel(bpOneHopExtensionsRaw))
+    expect(
+      annotations.map(a => [
+        a.relation.label,
+        a.goTerm.label,
+        a.extensions.map(e => `${e.relation.label} ${e.term.label}`),
+      ])
+    ).toEqual([
+      [
+        'acts upstream of or within',
+        'thymus development',
+        ['results in development of thymus primordium'],
+      ],
+      [
+        'acts upstream of or within',
+        'epithelial cell differentiation',
+        ['results in acquisition of features of epithelial cell'],
+      ],
+      ['acts upstream of or within', 'myoblast migration', ['results in movement of myoblast']],
+    ])
+    expect(annotations.every(a => a.goTerm.rootTypes.join() === 'GO:0008150')).toBe(true)
   })
 
   it('keeps GO-CAM activities apart', () => {
