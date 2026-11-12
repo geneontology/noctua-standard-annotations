@@ -36,6 +36,9 @@ export interface AnnotationFormState {
 
 export interface FormError {
   message: string
+  /** The field to mark: `gp`, `goTerm`, `relation`, `evidenceCode-<uid>`, `reference-<uid>`,
+   * `withFrom-<uid>`, `extension-<uid>`. */
+  field?: string
 }
 
 export const createEvidenceRow = (): EvidenceRow => ({

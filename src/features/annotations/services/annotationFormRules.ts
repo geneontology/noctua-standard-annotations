@@ -2,11 +2,7 @@ import type { Entity } from '@/features/gocam/models/cam'
 import { RootTypes } from '@/features/gocam/models/cam'
 import { Relations } from '@/@noctua.core/models/relations'
 import type { GOlrResponse } from '@/features/search/models/search'
-import type {
-  AnnotationFormState,
-  ExtensionRow,
-  FormError,
-} from '../models/annotationForm'
+import type { AnnotationFormState, ExtensionRow, FormError } from '../models/annotationForm'
 import type { CreateAnnotationInput } from './annotationOperations'
 import { getObjectRange, getTermRelations } from './shapeRules'
 import { isValidReferenceList, validateWithFrom } from './databaseIdentifiers'
@@ -58,25 +54,39 @@ export const applyFormRules = (form: AnnotationFormState): AnnotationFormState =
 export const validateAnnotationForm = (form: AnnotationFormState): FormError[] => {
   const errors: FormError[] = []
 
-  if (!form.gp?.id) errors.push({ message: 'GP is required' })
-  if (!form.goTerm?.id) errors.push({ message: 'GO Term is required' })
+  if (!form.gp?.id) errors.push({ message: 'GP is required', field: 'gp' })
+  if (!form.goTerm?.id) errors.push({ message: 'GO Term is required', field: 'goTerm' })
   if (form.gp?.id && form.goTerm?.id && !form.relation?.id) {
-    errors.push({ message: 'GP to Term Relation is required' })
+    errors.push({ message: 'GP to Term Relation is required', field: 'relation' })
   }
 
   form.evidences.forEach((evidence, index) => {
     const position = index + 1
     if (!evidence.evidenceCode?.id) {
-      errors.push({ message: `Evidence is required @ ${position}` })
+      errors.push({
+        message: `Evidence is required @ ${position}`,
+        field: `evidenceCode-${evidence.uid}`,
+      })
     }
     if (!evidence.reference.trim()) {
-      errors.push({ message: `Reference is required @ ${position}` })
+      errors.push({
+        message: `Reference is required @ ${position}`,
+        field: `reference-${evidence.uid}`,
+      })
     } else if (!isValidReferenceList(evidence.reference)) {
-      errors.push({ message: `Use DB:accession format for reference @ ${position}` })
+      errors.push({
+        message: `Use DB:accession format for reference @ ${position}`,
+        field: `reference-${evidence.uid}`,
+      })
     }
     if (evidence.withFrom.trim()) {
       const withError = validateWithFrom(evidence.withFrom)
-      if (withError) errors.push({ message: `With/From @ ${position} - ${withError}` })
+      if (withError) {
+        errors.push({
+          message: `With/From @ ${position} - ${withError}`,
+          field: `withFrom-${evidence.uid}`,
+        })
+      }
     }
   })
 
@@ -84,6 +94,7 @@ export const validateAnnotationForm = (form: AnnotationFormState): FormError[] =
     if (!!extension.relation?.id !== !!extension.term?.id) {
       errors.push({
         message: `Both Extension relation and Extension Term must be filled (${index + 1})`,
+        field: `extension-${extension.uid}`,
       })
     }
   })

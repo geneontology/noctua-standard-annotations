@@ -14,7 +14,6 @@ export function useModelUrls(modelId: string | undefined, baristaToken: string |
       : ''
     return {
       annotationPreview: `${ENVIRONMENT.workbenchUrl}annpreview?${qs}`,
-      pathwayViewer: `${ENVIRONMENT.workbenchUrl}noctua-alliance-pathway-preview?${qs}`,
       pathwayEditor: `${ENVIRONMENT.workbenchUrl}noctua-visual-pathway-editor?${qs}`,
       formEditor: `${ENVIRONMENT.workbenchUrl}noctua-form?${qs}`,
       graphEditor: `${ENVIRONMENT.noctuaUrl}/editor/graph/${modelId}?${tokenQs}`,

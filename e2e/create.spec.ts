@@ -186,3 +186,25 @@ test('shows the model read-only when logged out', async ({ page }) => {
   await expect(rows(page)).toHaveCount(4)
   await expect(page.getByRole('button', { name: 'Annotation actions' })).toHaveCount(0)
 })
+
+test('tabs through the fields in reading order, skipping NOT and the icon buttons', async ({
+  page,
+}) => {
+  await openModel(page, { model: emptyModel() })
+  const form = createForm(page)
+  await form.getByRole('textbox', { name: 'Gene Product' }).focus()
+
+  const order = [
+    form.getByRole('combobox', { name: 'GP to Term Relation' }),
+    form.getByRole('textbox', { name: 'GO Term' }),
+    form.getByRole('textbox', { name: 'Evidence', exact: true }),
+    form.getByRole('textbox', { name: 'Reference', exact: true }),
+    form.getByRole('textbox', { name: 'With/From', exact: true }),
+    form.getByRole('button', { name: 'Add Extension' }),
+    form.getByRole('button', { name: 'Add Comment' }),
+  ]
+  for (const field of order) {
+    await page.keyboard.press('Tab')
+    await expect(field).toBeFocused()
+  }
+})
