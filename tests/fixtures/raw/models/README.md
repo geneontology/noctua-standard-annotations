@@ -10,6 +10,7 @@ imported by `tests/fixtures/models.ts` and fed through `transformGraphData`.
 | `mf-with-bp-extension.json` | `gomodel:6ab067da00005997` | One MF annotation whose MF is `part of` a BP that is itself `part of` another BP. The first BP is an extension and the nested one is not. Also has an individual comment. |
 | `single-mf.json` | `gomodel:6ab067da00002477` | Smallest case: one `MF enabled_by GP` with one evidence. |
 | `gocam-mixed.json` | `gomodel:69b432fc00000161` | A GO-CAM edited in VPE: causal edges, chemicals, edges without evidence, multi-evidence facts. Robustness: the reader must not absorb neighbouring activities. |
+| `bp-one-hop-extensions.json` | `gomodel:MGI_MGI_102780` | From **production** (`minerva_public`), trimmed to three MGI "acts upstream of or within" annotations whose BP carries an extension that `shapes.json` keys on a BP subclass: `results in development of` (EMAPA), `results in acquisition of features of` (CL) and `results in movement of` (CL). Minerva gives these BPs only the root type `GO:0008150` (issue #85). |
 
 `tests/fixtures/saeModel.ts` is a synthetic SAE-shaped model with one
 annotation per relation kind (NOT enables, involved in, acts upstream of or

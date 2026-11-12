@@ -20,8 +20,13 @@ import type { Page } from '@playwright/test'
 export interface CatalogClass {
   id: string
   label: string
-  /** `isa_closure` in GOlr and `root-type` in Minerva. */
+  /** `isa_closure` in GOlr, and `root-type` in Minerva unless `rootTypes` is set. */
   closure: string[]
+  /**
+   * Minerva's `root-type` when it isn't the closure: Minerva gives only the top
+   * categories, e.g. `GO:0008150` for a BP whose GOlr closure has `GO:0048856`.
+   */
+  rootTypes?: string[]
   /** GOlr `database_xref`, e.g. `GO:IDA` for an evidence code. */
   xref?: string
   subset?: string[]
@@ -185,8 +190,9 @@ export class FakeMinerva {
   }
 
   private rootTypes(id: string) {
-    const closure = this.catalog.find(c => c.id === id)?.closure ?? []
-    return closure.map(rt => ({ type: 'class' as const, id: rt, label: rt }))
+    const cls = this.catalog.find(c => c.id === id)
+    const rootTypes = cls?.rootTypes ?? cls?.closure ?? []
+    return rootTypes.map(rt => ({ type: 'class' as const, id: rt, label: rt }))
   }
 
   private sameType(a: RawType, b: RawType) {

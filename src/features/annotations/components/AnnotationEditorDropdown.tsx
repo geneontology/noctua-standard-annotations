@@ -9,6 +9,7 @@ import type { Entity } from '@/features/gocam/models/cam'
 import { makeSelectModelTerms, selectModelEvidence } from '@/features/gocam/slices/camSlice'
 import TermAutocomplete from '@/features/search/components/Autocomplete'
 import { AutocompleteType } from '@/features/search/models/search'
+import { useGetTermClosureQuery } from '@/features/search/slices/lookupApiSlice'
 import type { GOlrResponse, TermSearchFilter } from '@/features/search/models/search'
 import type { StandardAnnotation } from '../models/annotation'
 import { termOption } from '../models/annotationForm'
@@ -112,13 +113,23 @@ const AnnotationEditorDropdown: React.FC<AnnotationEditorDropdownProps> = ({
     }
   }, [annotation])
 
+  // Extensions follow the GO term's ancestry, as in the create form: Minerva's root
+  // types alone miss the rules of a subclass, e.g. `results in development of`
+  // for `GO:0048856` anatomical structure development (issue #85).
+  const { data: goTermClosure } = useGetTermClosureQuery(annotation.goTerm.id, {
+    skip: !open || category !== EditorCategory.ADD_EXTENSION || !annotation.goTerm.id,
+  })
+  const goTermTypes = useMemo(
+    () => [...new Set([...annotation.goTerm.rootTypes, ...(goTermClosure ?? [])])],
+    [annotation.goTerm.rootTypes, goTermClosure]
+  )
   const extensionRelations = useMemo(
-    () => getTermRelations(annotation.goTerm.rootTypes, rootTypeIds(term)),
-    [annotation.goTerm.rootTypes, term]
+    () => getTermRelations(goTermTypes, rootTypeIds(term)),
+    [goTermTypes, term]
   )
   const extensionFilter = useMemo<TermSearchFilter>(
-    () => ({ closureIds: getObjectRange(annotation.goTerm.rootTypes, relation?.id) }),
-    [annotation.goTerm.rootTypes, relation?.id]
+    () => ({ closureIds: getObjectRange(goTermTypes, relation?.id) }),
+    [goTermTypes, relation?.id]
   )
 
   const termFilter: TermSearchFilter | null =

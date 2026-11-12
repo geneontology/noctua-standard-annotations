@@ -12,7 +12,13 @@ import {
 } from '../data/annotationConfig'
 import type { AnnotationExtension, StandardAnnotation } from '../models/annotation'
 import { AnnotationUnitType } from '../models/annotation'
-import { SHAPE_PREDICATES, findRelation, getTermRelations, isShapeTerm } from './shapeRules'
+import {
+  SHAPE_PREDICATES,
+  findRelation,
+  getExtensionPredicatesForRoots,
+  getTermRelations,
+  isShapeTerm,
+} from './shapeRules'
 
 /**
  * A gene product as standard annotations use it: a gene product, or a protein
@@ -176,18 +182,27 @@ const collectCausalExtensions = (
 const orderEdges = (edges: Edge[], factOrder: Map<string, number>): Edge[] =>
   [...edges].sort((a, b) => (factOrder.get(a.uid) ?? 0) - (factOrder.get(b.uid) ?? 0))
 
+/**
+ * The GO term's outgoing facts that are extensions: a relation the shapes allow
+ * between the two terms, or one they allow for a subclass of the GO term's root
+ * (Minerva gives root types only, so `thymus development` never matches the
+ * `GO:0048856` rule for `results in development of`; issue #85).
+ */
 const getExtensions = (
   goTerm: GraphNode,
   edges: Edge[],
   index: GraphIndex
 ): AnnotationExtension[] => {
   const extensions: AnnotationExtension[] = []
+  const rootPredicates = getExtensionPredicatesForRoots(goTerm.rootTypes)
   for (const edge of edges) {
     if (edge.sourceId !== goTerm.uid) continue
     const term = index.nodesById.get(edge.targetId)
     if (!term) continue
     const allowed = getTermRelations(goTerm.rootTypes, term.rootTypes)
-    if (!allowed.some(relation => relation.id === edge.id)) continue
+    if (!rootPredicates.has(edge.id) && !allowed.some(relation => relation.id === edge.id)) {
+      continue
+    }
     const known = findRelation(edge.id)
     extensions.push({
       edge,

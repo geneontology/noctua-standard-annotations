@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   findRelation,
+  getExtensionPredicatesForRoots,
   getObjectRange,
   getPredicates,
   getTermRelations,
@@ -75,6 +76,42 @@ describe('extension relations', () => {
 
   it('narrows to the extension term type', () => {
     expect(labels(getTermRelations(['GO:0003674'], ['GO:0044848']))).toEqual(['happens during'])
+  })
+
+  // Issue #85: these rules belong to a BP subclass, which root types alone never match.
+  it('offers a subclass rule only with the GO term ancestry', () => {
+    const development = ['GO:0048538', 'GO:0048856', 'GO:0032502', 'GO:0008150']
+    expect(labels(getTermRelations(['GO:0008150'], []))).not.toContain('results in development of')
+    expect(labels(getTermRelations(development, []))).toContain('results in development of')
+    expect(labels(getTermRelations(development, []))).not.toContain('results in movement of')
+  })
+})
+
+describe('getExtensionPredicatesForRoots', () => {
+  it("includes the extension rules of a BP's subclasses", () => {
+    const predicates = getExtensionPredicatesForRoots(['GO:0008150'])
+    for (const id of [
+      'RO:0002296', // results in development of (GO:0048856)
+      'RO:0002315', // results in acquisition of features of (GO:0030154)
+      'RO:0002565', // results in movement of (GO:0040011)
+      'RO:0002588', // results in assembly of (GO:0022607)
+      'BFO:0000050', // part of (the root itself)
+    ]) {
+      expect(predicates.has(id), id).toBe(true)
+    }
+  })
+
+  it("includes an MF subclass's rules but never the excluded ones", () => {
+    const predicates = getExtensionPredicatesForRoots(['GO:0003674'])
+    expect(predicates.has('RO:0002313')).toBe(true) // transports or maintains localization of
+    expect(predicates.has('RO:0002333')).toBe(false) // enabled by
+    expect(predicates.has('BFO:0000051')).toBe(false) // has part
+    expect(predicates.has('RO:0002411')).toBe(false) // causally upstream of
+  })
+
+  it("keeps to the term's own roots", () => {
+    expect(getExtensionPredicatesForRoots(['GO:0003674']).has('RO:0002296')).toBe(false)
+    expect(getExtensionPredicatesForRoots([]).size).toBe(0)
   })
 })
 
