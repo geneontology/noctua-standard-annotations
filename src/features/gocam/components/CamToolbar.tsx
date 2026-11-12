@@ -1,11 +1,24 @@
 import type React from 'react'
 import { useMemo } from 'react'
 import { ActionIcon, Tooltip } from '@mantine/core'
-import { FaCalendarDay, FaComment, FaPen, FaTasks } from 'react-icons/fa'
+import {
+  FaCalendarDay,
+  FaCheck,
+  FaComment,
+  FaExclamationTriangle,
+  FaPen,
+  FaTasks,
+} from 'react-icons/fa'
 import { useAppSelector, useAppDispatch } from '@/app/hooks'
 import { selectCamModel } from '@/features/gocam/slices/camSlice'
 import { selectBaristaToken, selectAuthUser } from '@/features/auth/slices/authSlice'
 import { openDialog, DialogComponent } from '@/@noctua.core/components/dialog/dialogSlice'
+import {
+  RightPanelTab,
+  setRightDrawerOpen,
+  setRightPanelTab,
+} from '@/@noctua.core/components/drawer/drawerSlice'
+import { selectModelErrors } from '@/features/annotations/slices/annotationsSlice'
 import Chip from '@/@noctua.core/components/chip/Chip'
 import { useModelUrls } from '../hooks/useModelUrls'
 import { getStateColor } from '../data/stateColors'
@@ -14,7 +27,8 @@ import { useGroupGuard } from './GroupGuardProvider'
 import ToolbarLinkMenu from './ToolbarLinkMenu'
 
 /**
- * Model header: title, model comments, state, date, contributors, and the
+ * Model header: title, the error count (anything in the model the annotations
+ * table doesn't show), model comments, state, date, contributors, and the
  * VIEW / EXPORT AS link menus. As in the VPE (#94), each control opens its
  * own form: Edit Title, Model Comments, Change State; the date and contributor
  * chips open Model Details (group and summary). Edits go through the group guard.
@@ -27,6 +41,7 @@ const CamToolbar: React.FC = () => {
   const isLoggedIn = !!useAppSelector(selectAuthUser)
   const urls = useModelUrls(cam?.id, baristaToken)
   const checkGroup = useGroupGuard()
+  const totalErrors = useAppSelector(selectModelErrors).total
 
   const open = (
     component: DialogComponent,
@@ -42,6 +57,10 @@ const CamToolbar: React.FC = () => {
   const openCommentsForm = () =>
     checkGroup(() => open(DialogComponent.CAM_COMMENTS_FORM, 'Model Comments', 'sm', 'none'))
   const openDetails = () => open(DialogComponent.CAM_DETAILS_FORM, 'Model Details', 'sm', 'none')
+  const openErrors = () => {
+    dispatch(setRightPanelTab(RightPanelTab.MODEL_ERRORS))
+    dispatch(setRightDrawerOpen(true))
+  }
 
   const viewItems = useMemo(
     () => [
@@ -84,6 +103,23 @@ const CamToolbar: React.FC = () => {
           )}
         </div>
       </Tooltip>
+
+      <Chip
+        icon={totalErrors > 0 ? <FaExclamationTriangle size={12} /> : <FaCheck size={12} />}
+        chipClass={
+          totalErrors > 0
+            ? 'border-red-300 bg-red-100 text-red-900'
+            : 'border-green-300 bg-green-100 text-green-900'
+        }
+        circleClass={
+          totalErrors > 0
+            ? 'border-red-300 bg-red-200 text-red-700'
+            : 'border-green-300 bg-green-200 text-green-700'
+        }
+        onClick={openErrors}
+      >
+        {totalErrors} {totalErrors === 1 ? 'Error' : 'Errors'} Found
+      </Chip>
 
       <div className="flex h-full items-center border-r border-gray-200 pr-1">
         <Tooltip

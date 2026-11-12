@@ -4,6 +4,7 @@ import type { RootState } from '@/app/store/store'
 
 export enum RightPanelTab {
   COMMENTS = 'comments',
+  MODEL_ERRORS = 'modelErrors',
 }
 
 interface DrawerState {

@@ -2,10 +2,11 @@ import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithProviders } from '@tests/test-utils'
 import { stateWith } from '@tests/fixtures/state'
-import { loadModel, saeModelRaw } from '@tests/fixtures/models'
+import { loadModel, saeModelRaw, singleMfRaw } from '@tests/fixtures/models'
 import CamToolbar from '@/features/gocam/components/CamToolbar'
 import GroupGuardProvider from '@/features/gocam/components/GroupGuardProvider'
 import { DialogComponent } from '@/@noctua.core/components/dialog/dialogSlice'
+import { RightPanelTab } from '@/@noctua.core/components/drawer/drawerSlice'
 
 const toolbar = (
   <GroupGuardProvider>
@@ -86,6 +87,18 @@ describe('CamToolbar', () => {
     })
     await user.click(screen.getByRole('button', { name: /2024-05-02/ }))
     expect(store.getState().dialog.component).toBe(DialogComponent.CAM_DETAILS_FORM)
+  })
+
+  it('counts what the table does not show, and opens the errors panel', async () => {
+    const { user, store } = renderWithProviders(toolbar, { preloadedState: stateWith() })
+    await user.click(screen.getByRole('button', { name: /1 Error Found/ }))
+    expect(store.getState().drawer.rightPanelTab).toBe(RightPanelTab.MODEL_ERRORS)
+    expect(store.getState().drawer.rightDrawerOpen).toBe(true)
+  })
+
+  it('shows 0 errors when the table shows the whole model', () => {
+    renderWithProviders(toolbar, { preloadedState: stateWith({ model: loadModel(singleMfRaw) }) })
+    expect(screen.getByRole('button', { name: /0 Errors Found/ })).toBeInTheDocument()
   })
 
   it('renders nothing without a model', () => {
