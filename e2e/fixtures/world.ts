@@ -1,4 +1,8 @@
 import type { CatalogClass, RawModel } from '../mocks/minerva'
+import { Relations } from '../../src/@noctua.core/models/relations'
+import { RootTypes } from '../../src/features/gocam/models/cam'
+import type { TermFixture } from '../../tests/fixtures/terms'
+import { THYMUS, THYMUS_DEVELOPMENT, THYMUS_PRIMORDIUM } from '../../tests/fixtures/terms'
 
 /**
  * The classes the browser tests search for (GOlr) and write (Minerva root types),
@@ -10,7 +14,14 @@ const MF = ['GO:0003674']
 const BP = ['GO:0008150']
 const CC = ['UBERON:0001062', 'GO:0110165', 'GO:0005575']
 const ECO = ['ECO:0000352', 'ECO:0000000']
-const ANATOMY = ['UBERON:0001062']
+
+/** A shared test term (`tests/fixtures/terms.ts`) as a catalog class. */
+const catalogClass = (term: TermFixture): CatalogClass => ({
+  id: term.id,
+  label: term.label,
+  closure: term.ancestors,
+  rootTypes: term.rootTypes,
+})
 
 export const CATALOG: CatalogClass[] = [
   { id: 'UniProtKB:P07948', label: 'LYN Hsap', closure: GP },
@@ -29,16 +40,11 @@ export const CATALOG: CatalogClass[] = [
   { id: 'GO:0006915', label: 'apoptotic process', closure: BP },
   { id: 'GO:0016477', label: 'cell migration', closure: BP },
   { id: 'GO:0007165', label: 'signal transduction', closure: BP },
-  // A BP under GO:0048856 anatomical structure development, which the shapes give
-  // `results in development of` — but Minerva's root type is only GO:0008150 (#85).
-  {
-    id: 'GO:0048538',
-    label: 'thymus development',
-    closure: ['GO:0048856', 'GO:0032502', ...BP],
-    rootTypes: BP,
-  },
-  { id: 'UBERON:0002370', label: 'thymus', closure: ANATOMY },
-  { id: 'EMAPA:17523', label: 'thymus primordium', closure: ANATOMY },
+  // A BP whose `results in development of` comes from an ancestor's shape rule, while
+  // Minerva gives it only the BP root type (#85).
+  catalogClass(THYMUS_DEVELOPMENT),
+  catalogClass(THYMUS),
+  catalogClass(THYMUS_PRIMORDIUM),
   { id: 'GO:0005575', label: 'cellular_component', closure: CC },
   { id: 'GO:0005634', label: 'nucleus', closure: CC },
   { id: 'GO:0005737', label: 'cytoplasm', closure: CC },
@@ -82,7 +88,7 @@ export const RELATION_LABELS: Record<string, string> = {
   'RO:0002432': 'is active in',
   'RO:0002418': 'causally upstream of or within',
   'RO:0002233': 'has input',
-  'RO:0002296': 'results in development of',
+  [Relations.RESULTS_IN_DEVELOPMENT_OF]: 'results in development of',
 }
 
 export const MODEL_ID = 'gomodel:e2e000000001'
@@ -202,18 +208,18 @@ export const subclassExtensionModel = (): RawModel => ({
   id: MODEL_ID,
   'modified-p': false,
   individuals: [
-    individual('mf1', 'GO:0003674'),
+    individual('mf1', RootTypes.MOLECULAR_FUNCTION),
     individual('gp1', 'UniProtKB:P08631'),
-    individual('bp1', 'GO:0048538'),
-    individual('ana1', 'EMAPA:17523'),
+    individual('bp1', THYMUS_DEVELOPMENT.id),
+    individual('ana1', THYMUS_PRIMORDIUM.id),
     evidence('ev1', 'ECO:0000315', ['PMID:555']),
     evidence('ev2', 'ECO:0000315', ['PMID:555']),
     evidence('ev3', 'ECO:0000315', ['PMID:555']),
   ],
   facts: [
-    fact('mf1', 'RO:0002333', 'gp1', 'ev1'),
-    fact('mf1', 'RO:0002418', 'bp1', 'ev2'),
-    fact('bp1', 'RO:0002296', 'ana1', 'ev3'),
+    fact('mf1', Relations.ENABLED_BY, 'gp1', 'ev1'),
+    fact('mf1', Relations.CAUSALLY_UPSTREAM_OF_OR_WITHIN, 'bp1', 'ev2'),
+    fact('bp1', Relations.RESULTS_IN_DEVELOPMENT_OF, 'ana1', 'ev3'),
   ],
   annotations: [
     { key: 'title', value: 'e2e subclass extension model' },

@@ -184,9 +184,9 @@ const orderEdges = (edges: Edge[], factOrder: Map<string, number>): Edge[] =>
 
 /**
  * The GO term's outgoing facts that are extensions: a relation the shapes allow
- * between the two terms, or one they allow for a subclass of the GO term's root
- * (Minerva gives root types only, so `thymus development` never matches the
- * `GO:0048856` rule for `results in development of`; issue #85).
+ * between the two terms, or one they allow for a subclass of the GO term's root.
+ * Minerva gives root types only, so a subclass's rule never matches the term
+ * directly (issue #85).
  */
 const getExtensions = (
   goTerm: GraphNode,
