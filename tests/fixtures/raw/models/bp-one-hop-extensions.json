@@ -1,0 +1,1357 @@
+{
+  "modified-p": false,
+  "id": "gomodel:MGI_MGI_102780",
+  "individuals": [
+    {
+      "id": "gomodel:MGI_MGI_102780/b2881a0f-6933-48d8-b971-5ae45e4b68b9",
+      "type": [
+        {
+          "type": "class",
+          "id": "ECO:0000316",
+          "label": "genetic interaction evidence used in manual assertion"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "ECO:0000000",
+          "label": "evidence"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "with",
+          "value": "MGI:MGI:106034"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS20  thymus primordium ; EMAP:4142"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "source",
+          "value": "PMID:16530750"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/cb9861f1-af72-430d-9a81-69d3c7ffed0f",
+      "type": [
+        {
+          "type": "class",
+          "id": "GO:0003674",
+          "label": "molecular_function"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "GO:0003674",
+          "label": "molecular_function"
+        },
+        {
+          "type": "class",
+          "id": "obo:go/extensions/reacto.owl#molecular_event",
+          "label": "Molecular Event"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/ce6607ff-443d-4aa8-8c37-23eb0f08a5a8",
+      "type": [
+        {
+          "type": "class",
+          "id": "ECO:0000315",
+          "label": "mutant phenotype evidence used in manual assertion"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "ECO:0000000",
+          "label": "evidence"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS20  thymus primordium ; EMAP:4142"
+        },
+        {
+          "key": "with",
+          "value": "MGI:MGI:2655195"
+        },
+        {
+          "key": "source",
+          "value": "PMID:16530750"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "comment",
+          "value": "cell type epithelial cell ; CL:0000066"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/ce6e1069-f48f-49c5-a447-601685ea1124-2",
+      "type": [
+        {
+          "type": "class",
+          "id": "GO:0003674",
+          "label": "molecular_function"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "GO:0003674",
+          "label": "molecular_function"
+        },
+        {
+          "type": "class",
+          "id": "obo:go/extensions/reacto.owl#molecular_event",
+          "label": "Molecular Event"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/d49389d2-710d-4b41-a7d5-b2f34b9cc21b",
+      "type": [
+        {
+          "type": "class",
+          "id": "ECO:0000316",
+          "label": "genetic interaction evidence used in manual assertion"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "ECO:0000000",
+          "label": "evidence"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "with",
+          "value": "MGI:MGI:106034"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS20  thymus primordium ; EMAP:4142"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "source",
+          "value": "PMID:16530750"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/e22f207e-9828-4e84-b09e-7c6400bfe9ba-2",
+      "type": [
+        {
+          "type": "class",
+          "id": "EMAPA:17523",
+          "label": "thymus primordium"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "UBERON:0001062",
+          "label": "anatomical entity"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/edac4b49-1835-433d-ac8f-98d3aa23c975",
+      "type": [
+        {
+          "type": "class",
+          "id": "ECO:0000316",
+          "label": "genetic interaction evidence used in manual assertion"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "ECO:0000000",
+          "label": "evidence"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "comment",
+          "value": "cell type myoblast ; CL:0000056"
+        },
+        {
+          "key": "source",
+          "value": "PMID:15788460"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS20\\ forelimb; EMAP:4012"
+        },
+        {
+          "key": "with",
+          "value": "MGI:MGI:106034"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS17\\ somite\\ paraxial mesenchyme\\ trunk mesenchyme; EMAP:2112"
+        },
+        {
+          "key": "date",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/f04df1e6-a0c7-4b8f-b12f-213867cd8505",
+      "type": [
+        {
+          "type": "class",
+          "id": "ECO:0000316",
+          "label": "genetic interaction evidence used in manual assertion"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "ECO:0000000",
+          "label": "evidence"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "with",
+          "value": "MGI:MGI:106034"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS20  thymus primordium ; EMAP:4142"
+        },
+        {
+          "key": "source",
+          "value": "PMID:16530750"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/fe22750d-154f-4f27-8474-21e380e4ef4a",
+      "type": [
+        {
+          "type": "class",
+          "id": "GO:0051451",
+          "label": "myoblast migration"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "GO:0008150",
+          "label": "biological_process"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "date",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/0d9c9efb-02c4-4442-9426-eb31cfdbf785",
+      "type": [
+        {
+          "type": "class",
+          "id": "ECO:0000316",
+          "label": "genetic interaction evidence used in manual assertion"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "ECO:0000000",
+          "label": "evidence"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "dc:created",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS17\\ somite\\ paraxial mesenchyme\\ trunk mesenchyme; EMAP:2112"
+        },
+        {
+          "key": "with",
+          "value": "MGI:MGI:106034"
+        },
+        {
+          "key": "date",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "source",
+          "value": "PMID:15788460"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS20\\ forelimb; EMAP:4012"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "comment",
+          "value": "cell type myoblast ; CL:0000056"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/1062e0c7-6b0c-4516-a73e-6ab526d9a3ec",
+      "type": [
+        {
+          "type": "class",
+          "id": "GO:0003674",
+          "label": "molecular_function"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "GO:0003674",
+          "label": "molecular_function"
+        },
+        {
+          "type": "class",
+          "id": "obo:go/extensions/reacto.owl#molecular_event",
+          "label": "Molecular Event"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "date",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/2cb542a9-3823-404b-a0d1-707828943229",
+      "type": [
+        {
+          "type": "class",
+          "id": "ECO:0000315",
+          "label": "mutant phenotype evidence used in manual assertion"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "ECO:0000000",
+          "label": "evidence"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "with",
+          "value": "MGI:MGI:2655195"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "comment",
+          "value": "cell type epithelial cell ; CL:0000066"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS20  thymus primordium ; EMAP:4142"
+        },
+        {
+          "key": "source",
+          "value": "PMID:16530750"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/231f2334-70f9-40be-82c2-f778c938398f",
+      "type": [
+        {
+          "type": "class",
+          "id": "CL:0000056",
+          "label": "myoblast"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "UBERON:0001062",
+          "label": "anatomical entity"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "dc:created",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "date",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/3a03e051-edc9-4547-a46e-4e1af0ce1138",
+      "type": [
+        {
+          "type": "class",
+          "id": "CL:0000066",
+          "label": "epithelial cell"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "UBERON:0001062",
+          "label": "anatomical entity"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/4e0846d3-f055-4c4c-826e-6ec816bb1bf0-2",
+      "type": [
+        {
+          "type": "class",
+          "id": "GO:0048538",
+          "label": "thymus development"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "GO:0008150",
+          "label": "biological_process"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/41b2171a-d3ef-4913-a0ee-2496646a7f96-2",
+      "type": [
+        {
+          "type": "class",
+          "id": "MGI:MGI:102780",
+          "label": "Six1 Mmus"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "CHEBI:33695",
+          "label": "information biomacromolecule"
+        },
+        {
+          "type": "class",
+          "id": "CHEBI:24431",
+          "label": "chemical entity"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/42847466-fcf2-480c-ac4e-eedc4bd8067a",
+      "type": [
+        {
+          "type": "class",
+          "id": "ECO:0000316",
+          "label": "genetic interaction evidence used in manual assertion"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "ECO:0000000",
+          "label": "evidence"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "with",
+          "value": "MGI:MGI:106034"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS17\\ somite\\ paraxial mesenchyme\\ trunk mesenchyme; EMAP:2112"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "date",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS20\\ forelimb; EMAP:4012"
+        },
+        {
+          "key": "source",
+          "value": "PMID:15788460"
+        },
+        {
+          "key": "comment",
+          "value": "cell type myoblast ; CL:0000056"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/73eb06f1-27b5-454a-9f99-2aeb39a7e382",
+      "type": [
+        {
+          "type": "class",
+          "id": "MGI:MGI:102780",
+          "label": "Six1 Mmus"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "CHEBI:33695",
+          "label": "information biomacromolecule"
+        },
+        {
+          "type": "class",
+          "id": "CHEBI:24431",
+          "label": "chemical entity"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/76b178e3-fb00-43b8-b577-9378f6feee0a",
+      "type": [
+        {
+          "type": "class",
+          "id": "MGI:MGI:102780",
+          "label": "Six1 Mmus"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "CHEBI:33695",
+          "label": "information biomacromolecule"
+        },
+        {
+          "type": "class",
+          "id": "CHEBI:24431",
+          "label": "chemical entity"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "dc:created",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "date",
+          "value": "2006-02-13"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/797a59e6-994a-44fd-839e-1f7eb66fbbae",
+      "type": [
+        {
+          "type": "class",
+          "id": "GO:0030855",
+          "label": "epithelial cell differentiation"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "GO:0008150",
+          "label": "biological_process"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        }
+      ]
+    },
+    {
+      "id": "gomodel:MGI_MGI_102780/97d79621-d441-4a82-835f-21e5d03ac9ca",
+      "type": [
+        {
+          "type": "class",
+          "id": "ECO:0000315",
+          "label": "mutant phenotype evidence used in manual assertion"
+        }
+      ],
+      "root-type": [
+        {
+          "type": "class",
+          "id": "ECO:0000000",
+          "label": "evidence"
+        }
+      ],
+      "annotations": [
+        {
+          "key": "comment",
+          "value": "cell type epithelial cell ; CL:0000066"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "comment",
+          "value": "anatomy TS20  thymus primordium ; EMAP:4142"
+        },
+        {
+          "key": "with",
+          "value": "MGI:MGI:2655195"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "source",
+          "value": "PMID:16530750"
+        }
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "subject": "gomodel:MGI_MGI_102780/4e0846d3-f055-4c4c-826e-6ec816bb1bf0-2",
+      "property": "RO:0002296",
+      "property-label": "results in development of",
+      "object": "gomodel:MGI_MGI_102780/e22f207e-9828-4e84-b09e-7c6400bfe9ba-2",
+      "annotations": [
+        {
+          "key": "evidence",
+          "value": "gomodel:MGI_MGI_102780/f04df1e6-a0c7-4b8f-b12f-213867cd8505",
+          "value-type": "IRI"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0048538 MGI:MGI:3624596|PMID:16530750 ECO:0000315 MGI:MGI:2655195  2006-11-17 MGI RO:0002296(EMAPA:17523) creation-date=2006-11-17|modification-date=2006-11-17|comment=anatomy TS20  thymus primordium ; EMAP:4142|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0048538 MGI:MGI:3624596|PMID:16530750 ECO:0000316 MGI:MGI:106034  2006-11-17 MGI RO:0002296(EMAPA:17523) creation-date=2006-11-17|modification-date=2006-11-17|comment=anatomy TS20  thymus primordium ; EMAP:4142|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "subject": "gomodel:MGI_MGI_102780/ce6e1069-f48f-49c5-a447-601685ea1124-2",
+      "property": "RO:0002333",
+      "property-label": "enabled by",
+      "object": "gomodel:MGI_MGI_102780/41b2171a-d3ef-4913-a0ee-2496646a7f96-2",
+      "annotations": [
+        {
+          "key": "evidence",
+          "value": "gomodel:MGI_MGI_102780/d49389d2-710d-4b41-a7d5-b2f34b9cc21b",
+          "value-type": "IRI"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0048538 MGI:MGI:3624596|PMID:16530750 ECO:0000315 MGI:MGI:2655195  2006-11-17 MGI RO:0002296(EMAPA:17523) creation-date=2006-11-17|modification-date=2006-11-17|comment=anatomy TS20  thymus primordium ; EMAP:4142|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0048538 MGI:MGI:3624596|PMID:16530750 ECO:0000316 MGI:MGI:106034  2006-11-17 MGI RO:0002296(EMAPA:17523) creation-date=2006-11-17|modification-date=2006-11-17|comment=anatomy TS20  thymus primordium ; EMAP:4142|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "subject": "gomodel:MGI_MGI_102780/cb9861f1-af72-430d-9a81-69d3c7ffed0f",
+      "property": "RO:0002418",
+      "property-label": "causally upstream of or within",
+      "object": "gomodel:MGI_MGI_102780/797a59e6-994a-44fd-839e-1f7eb66fbbae",
+      "annotations": [
+        {
+          "key": "evidence",
+          "value": "gomodel:MGI_MGI_102780/2cb542a9-3823-404b-a0d1-707828943229",
+          "value-type": "IRI"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0030855 MGI:MGI:3624596|PMID:16530750 ECO:0000315 MGI:MGI:2655195  2006-11-17 MGI BFO:0000066(EMAPA:17523),RO:0002315(CL:0000066) creation-date=2006-11-17|modification-date=2006-11-17|comment=anatomy TS20  thymus primordium ; EMAP:4142|comment=cell type epithelial cell ; CL:0000066|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "subject": "gomodel:MGI_MGI_102780/1062e0c7-6b0c-4516-a73e-6ab526d9a3ec",
+      "property": "RO:0002418",
+      "property-label": "causally upstream of or within",
+      "object": "gomodel:MGI_MGI_102780/fe22750d-154f-4f27-8474-21e380e4ef4a",
+      "annotations": [
+        {
+          "key": "evidence",
+          "value": "gomodel:MGI_MGI_102780/42847466-fcf2-480c-ac4e-eedc4bd8067a",
+          "value-type": "IRI"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "date",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0051451 MGI:MGI:3578604|PMID:15788460 ECO:0000316 MGI:MGI:106034  2006-02-13 MGI BFO:0000066(EMAPA:16184),RO:0002565(CL:0000056)|BFO:0000066(EMAPA:17412),RO:0002565(CL:0000056) creation-date=2006-02-13|modification-date=2006-02-13|comment=anatomy TS17\\ somite\\ paraxial mesenchyme\\ trunk mesenchyme; EMAP:2112|comment=anatomy TS20\\ forelimb; EMAP:4012|comment=cell type myoblast ; CL:0000056|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "subject": "gomodel:MGI_MGI_102780/797a59e6-994a-44fd-839e-1f7eb66fbbae",
+      "property": "RO:0002315",
+      "property-label": "results in acquisition of features of",
+      "object": "gomodel:MGI_MGI_102780/3a03e051-edc9-4547-a46e-4e1af0ce1138",
+      "annotations": [
+        {
+          "key": "evidence",
+          "value": "gomodel:MGI_MGI_102780/ce6607ff-443d-4aa8-8c37-23eb0f08a5a8",
+          "value-type": "IRI"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0030855 MGI:MGI:3624596|PMID:16530750 ECO:0000315 MGI:MGI:2655195  2006-11-17 MGI BFO:0000066(EMAPA:17523),RO:0002315(CL:0000066) creation-date=2006-11-17|modification-date=2006-11-17|comment=anatomy TS20  thymus primordium ; EMAP:4142|comment=cell type epithelial cell ; CL:0000066|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "subject": "gomodel:MGI_MGI_102780/cb9861f1-af72-430d-9a81-69d3c7ffed0f",
+      "property": "RO:0002333",
+      "property-label": "enabled by",
+      "object": "gomodel:MGI_MGI_102780/73eb06f1-27b5-454a-9f99-2aeb39a7e382",
+      "annotations": [
+        {
+          "key": "evidence",
+          "value": "gomodel:MGI_MGI_102780/97d79621-d441-4a82-835f-21e5d03ac9ca",
+          "value-type": "IRI"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0030855 MGI:MGI:3624596|PMID:16530750 ECO:0000315 MGI:MGI:2655195  2006-11-17 MGI BFO:0000066(EMAPA:17523),RO:0002315(CL:0000066) creation-date=2006-11-17|modification-date=2006-11-17|comment=anatomy TS20  thymus primordium ; EMAP:4142|comment=cell type epithelial cell ; CL:0000066|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "subject": "gomodel:MGI_MGI_102780/ce6e1069-f48f-49c5-a447-601685ea1124-2",
+      "property": "RO:0002418",
+      "property-label": "causally upstream of or within",
+      "object": "gomodel:MGI_MGI_102780/4e0846d3-f055-4c4c-826e-6ec816bb1bf0-2",
+      "annotations": [
+        {
+          "key": "evidence",
+          "value": "gomodel:MGI_MGI_102780/b2881a0f-6933-48d8-b971-5ae45e4b68b9",
+          "value-type": "IRI"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "date",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-11-17"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0048538 MGI:MGI:3624596|PMID:16530750 ECO:0000315 MGI:MGI:2655195  2006-11-17 MGI RO:0002296(EMAPA:17523) creation-date=2006-11-17|modification-date=2006-11-17|comment=anatomy TS20  thymus primordium ; EMAP:4142|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0048538 MGI:MGI:3624596|PMID:16530750 ECO:0000316 MGI:MGI:106034  2006-11-17 MGI RO:0002296(EMAPA:17523) creation-date=2006-11-17|modification-date=2006-11-17|comment=anatomy TS20  thymus primordium ; EMAP:4142|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "subject": "gomodel:MGI_MGI_102780/fe22750d-154f-4f27-8474-21e380e4ef4a",
+      "property": "RO:0002565",
+      "property-label": "results in movement of",
+      "object": "gomodel:MGI_MGI_102780/231f2334-70f9-40be-82c2-f778c938398f",
+      "annotations": [
+        {
+          "key": "evidence",
+          "value": "gomodel:MGI_MGI_102780/0d9c9efb-02c4-4442-9426-eb31cfdbf785",
+          "value-type": "IRI"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "date",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0051451 MGI:MGI:3578604|PMID:15788460 ECO:0000316 MGI:MGI:106034  2006-02-13 MGI BFO:0000066(EMAPA:16184),RO:0002565(CL:0000056)|BFO:0000066(EMAPA:17412),RO:0002565(CL:0000056) creation-date=2006-02-13|modification-date=2006-02-13|comment=anatomy TS17\\ somite\\ paraxial mesenchyme\\ trunk mesenchyme; EMAP:2112|comment=anatomy TS20\\ forelimb; EMAP:4012|comment=cell type myoblast ; CL:0000056|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    },
+    {
+      "subject": "gomodel:MGI_MGI_102780/1062e0c7-6b0c-4516-a73e-6ab526d9a3ec",
+      "property": "RO:0002333",
+      "property-label": "enabled by",
+      "object": "gomodel:MGI_MGI_102780/76b178e3-fb00-43b8-b577-9378f6feee0a",
+      "annotations": [
+        {
+          "key": "evidence",
+          "value": "gomodel:MGI_MGI_102780/edac4b49-1835-433d-ac8f-98d3aa23c975",
+          "value-type": "IRI"
+        },
+        {
+          "key": "contributor",
+          "value": "https://orcid.org/0000-0001-7476-6306"
+        },
+        {
+          "key": "date",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "dc:created",
+          "value": "2006-02-13"
+        },
+        {
+          "key": "dc:dateAccepted",
+          "value": "2022-03-28"
+        },
+        {
+          "key": "providedBy",
+          "value": "http://informatics.jax.org"
+        },
+        {
+          "key": "comment",
+          "value": "MGI:MGI:102780  RO:0002264 GO:0051451 MGI:MGI:3578604|PMID:15788460 ECO:0000316 MGI:MGI:106034  2006-02-13 MGI BFO:0000066(EMAPA:16184),RO:0002565(CL:0000056)|BFO:0000066(EMAPA:17412),RO:0002565(CL:0000056) creation-date=2006-02-13|modification-date=2006-02-13|comment=anatomy TS17\\ somite\\ paraxial mesenchyme\\ trunk mesenchyme; EMAP:2112|comment=anatomy TS20\\ forelimb; EMAP:4012|comment=cell type myoblast ; CL:0000056|contributor-id=https://orcid.org/0000-0001-7476-6306"
+        }
+      ]
+    }
+  ],
+  "annotations": [
+    {
+      "key": "state",
+      "value": "production"
+    },
+    {
+      "key": "contributor",
+      "value": "https://orcid.org/0000-0001-7476-6306"
+    },
+    {
+      "key": "contributor",
+      "value": "https://orcid.org/0000-0003-3394-9805"
+    },
+    {
+      "key": "date",
+      "value": "2022-04-14"
+    },
+    {
+      "key": "title",
+      "value": "Six1 (MGI:MGI:102780)"
+    },
+    {
+      "key": "dc:created",
+      "value": "2004-01-07"
+    },
+    {
+      "key": "dc:dateAccepted",
+      "value": "2022-03-28"
+    },
+    {
+      "key": "providedBy",
+      "value": "http://informatics.jax.org"
+    },
+    {
+      "key": "comment",
+      "value": "Automated change 2022-04-14: <http://purl.obolibrary.org/obo/EMAPA_16983> replaced_by <http://purl.obolibrary.org/obo/EMAPA_17569>"
+    },
+    {
+      "key": "comment",
+      "value": "Automated change 2022-04-14: <http://purl.obolibrary.org/obo/EMAPA_17376> replaced_by <http://purl.obolibrary.org/obo/EMAPA_17209>"
+    },
+    {
+      "key": "https://w3id.org/biolink/vocab/in_taxon",
+      "value": "NCBITaxon:10090",
+      "value-type": "IRI"
+    }
+  ]
+}

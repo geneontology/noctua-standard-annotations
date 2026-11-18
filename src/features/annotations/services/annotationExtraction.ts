@@ -1,0 +1,434 @@
+import type { Edge, Entity, Evidence, GraphModel, GraphNode } from '@/features/gocam/models/cam'
+import type { Contributor } from '@/features/users/models/contributor'
+import { RootTypes } from '@/features/gocam/models/cam'
+import { Relations } from '@/@noctua.core/models/relations'
+import type { AnnotationEdgeDefinition } from '../data/annotationConfig'
+import {
+  ANNOTATION_EDGE_CONFIG,
+  BP_ONLY_CAUSAL_EDGES,
+  CAUSAL_EDGES,
+  GP_SUBJECT_EDGES,
+  MF_TO_TERM_EDGES,
+} from '../data/annotationConfig'
+import type { AnnotationExtension, StandardAnnotation } from '../models/annotation'
+import { AnnotationUnitType } from '../models/annotation'
+import {
+  SHAPE_PREDICATES,
+  findRelation,
+  getExtensionPredicatesForRoots,
+  getTermRelations,
+  isShapeTerm,
+} from './shapeRules'
+
+/**
+ * A gene product as standard annotations use it: a gene product, or a protein
+ * complex that isn't a GO class (ComplexPortal) — the same set the gene product
+ * field searches (`NOT idspace:"GO"`).
+ */
+export const isGeneProductLike = (node: GraphNode): boolean =>
+  node.rootTypes.includes(RootTypes.MOLECULAR_ENTITY) ||
+  (node.rootTypes.includes(RootTypes.PROTEIN_CONTAINING_COMPLEX) && !node.id.startsWith('GO:'))
+
+/** Edges that start a standard annotation (Angular `isStartEdge`). */
+export const isStartEdge = (edge: Edge, subject: GraphNode): boolean =>
+  edge.id === Relations.ENABLED_BY || (GP_SUBJECT_EDGES.has(edge.id) && isGeneProductLike(subject))
+
+/**
+ * The displayed relation for the stored edges: the first config entry whose
+ * fields all equal `criteria` (Angular `findEdgeByCriteria`).
+ */
+export const findRelationByCriteria = (
+  criteria: Partial<AnnotationEdgeDefinition>
+): Entity | null => {
+  for (const [relationId, definition] of Object.entries(ANNOTATION_EDGE_CONFIG)) {
+    const matches = (Object.keys(criteria) as (keyof AnnotationEdgeDefinition)[]).every(
+      key => definition[key] === criteria[key]
+    )
+    if (matches) return findRelation(relationId)
+  }
+  return null
+}
+
+const latestDate = (dates: (string | undefined)[]): string | null => {
+  let latest: string | null = null
+  for (const date of dates) {
+    if (date && (!latest || date > latest)) latest = date
+  }
+  return latest
+}
+
+/** Contributors in the order first seen, once per ORCID. */
+const uniqueContributors = (contributors: Contributor[]): Contributor[] => {
+  const byUri = new Map<string, Contributor>()
+  for (const contributor of contributors) {
+    if (contributor.uri && !byUri.has(contributor.uri)) byUri.set(contributor.uri, contributor)
+  }
+  return [...byUri.values()]
+}
+
+interface GraphIndex {
+  nodesById: Map<string, GraphNode>
+  outgoing: Map<string, Edge[]>
+}
+
+const indexGraph = (model: GraphModel): GraphIndex => {
+  const nodesById = new Map(model.nodes.map(node => [node.uid, node]))
+  const outgoing = new Map<string, Edge[]>()
+  for (const edge of model.edges) {
+    const list = outgoing.get(edge.sourceId)
+    if (list) list.push(edge)
+    else outgoing.set(edge.sourceId, [edge])
+  }
+  return { nodesById, outgoing }
+}
+
+/**
+ * Whether the subgraph walk may follow `edge` out of `node`: any GO-CAM shape
+ * predicate except the causal ones, which would wander into neighbouring
+ * activities — but a root MF of an "acts upstream of" annotation follows its
+ * causal edge to the BP. A target with no root types at all (an obsolete or not
+ * yet loaded term, which Minerva can't classify) is followed too, as in Angular.
+ */
+const canFollow = (
+  edge: Edge,
+  node: GraphNode,
+  target: GraphNode,
+  unitType: AnnotationUnitType
+): boolean => {
+  if (!SHAPE_PREDICATES.has(edge.id) || !isShapeTerm(edge.id)) return false
+  if (!CAUSAL_EDGES.has(edge.id)) return true
+  return (
+    unitType === AnnotationUnitType.BP_ONLY &&
+    node.id === RootTypes.MOLECULAR_FUNCTION &&
+    BP_ONLY_CAUSAL_EDGES.has(edge.id) &&
+    (target.rootTypes.length === 0 || target.rootTypes.includes(RootTypes.BIOLOGICAL_PROCESS))
+  )
+}
+
+/** What the subgraph walk must leave to the other annotations of the model. */
+interface WalkBoundary {
+  /** Individuals other annotations are rooted at. */
+  otherRoots: Set<string>
+  /** Start edges of other annotations. */
+  otherStartEdges: Set<string>
+}
+
+/**
+ * Collect the annotation's subgraph from `start` (Angular `_graphToActivityDFS`).
+ * SAE gives every annotation its own individuals, so normally this is just the
+ * annotation. For models edited elsewhere the walk never takes another
+ * annotation's start edge, and stops at another annotation's root (which it may
+ * still include, e.g. as an extension term) instead of absorbing that annotation.
+ */
+const collectSubgraph = (
+  start: GraphNode,
+  index: GraphIndex,
+  unitType: AnnotationUnitType,
+  boundary: WalkBoundary,
+  nodes: GraphNode[],
+  edges: Edge[],
+  visited: Set<string>
+) => {
+  const stack = [start]
+  while (stack.length > 0) {
+    const node = stack.pop()!
+    if (visited.has(node.uid)) continue
+    visited.add(node.uid)
+    nodes.push(node)
+    if (node !== start && boundary.otherRoots.has(node.uid)) continue
+
+    const outgoing = index.outgoing.get(node.uid) ?? []
+    // Push in reverse so edges are walked in fact order.
+    for (let i = outgoing.length - 1; i >= 0; i--) {
+      const edge = outgoing[i]
+      if (boundary.otherStartEdges.has(edge.uid)) continue
+      const target = index.nodesById.get(edge.targetId)
+      if (!target || !canFollow(edge, node, target, unitType)) continue
+      edges.push(edge)
+      stack.push(target)
+    }
+  }
+}
+
+/**
+ * Causal extensions of the GO term (e.g. BP `regulates` BP), which the walk leaves
+ * out so it doesn't wander into neighbouring activities. SAE's Add Extension
+ * offers them, so they are read back — unless they lead to another annotation's
+ * activity (a GO-CAM's MF → MF edge). The target is taken as a leaf.
+ */
+const collectCausalExtensions = (
+  goTerm: GraphNode,
+  index: GraphIndex,
+  boundary: WalkBoundary,
+  nodes: GraphNode[],
+  edges: Edge[],
+  visited: Set<string>
+) => {
+  for (const edge of index.outgoing.get(goTerm.uid) ?? []) {
+    if (!CAUSAL_EDGES.has(edge.id) || edges.includes(edge)) continue
+    if (boundary.otherStartEdges.has(edge.uid)) continue
+    const target = index.nodesById.get(edge.targetId)
+    if (!target || boundary.otherRoots.has(target.uid)) continue
+    const allowed = getTermRelations(goTerm.rootTypes, target.rootTypes)
+    if (!allowed.some(relation => relation.id === edge.id)) continue
+    edges.push(edge)
+    if (!visited.has(target.uid)) {
+      visited.add(target.uid)
+      nodes.push(target)
+    }
+  }
+}
+
+const orderEdges = (edges: Edge[], factOrder: Map<string, number>): Edge[] =>
+  [...edges].sort((a, b) => (factOrder.get(a.uid) ?? 0) - (factOrder.get(b.uid) ?? 0))
+
+/**
+ * The GO term's outgoing facts that are extensions: a relation the shapes allow
+ * between the two terms, or one they allow for a subclass of the GO term's root.
+ * Minerva gives root types only, so a subclass's rule never matches the term
+ * directly (issue #85).
+ */
+const getExtensions = (
+  goTerm: GraphNode,
+  edges: Edge[],
+  index: GraphIndex
+): AnnotationExtension[] => {
+  const extensions: AnnotationExtension[] = []
+  const rootPredicates = getExtensionPredicatesForRoots(goTerm.rootTypes)
+  for (const edge of edges) {
+    if (edge.sourceId !== goTerm.uid) continue
+    const term = index.nodesById.get(edge.targetId)
+    if (!term) continue
+    const allowed = getTermRelations(goTerm.rootTypes, term.rootTypes)
+    if (!rootPredicates.has(edge.id) && !allowed.some(relation => relation.id === edge.id)) {
+      continue
+    }
+    const known = findRelation(edge.id)
+    extensions.push({
+      edge,
+      relation: { id: edge.id, label: known.label === edge.id ? edge.label : known.label },
+      term,
+    })
+  }
+  return extensions
+}
+
+const uniqueComments = (edges: Edge[]): string[] => {
+  const comments = new Set<string>()
+  for (const edge of edges) edge.comments.forEach(comment => comments.add(comment))
+  return Array.from(comments)
+}
+
+/**
+ * Read the model's standard annotations (Angular `graphToActivities` +
+ * `activityToAnnotation`). Each start edge yields one row:
+ *
+ * - `MF enabled_by GP`: the GO term is the MF, or — for a root
+ *   `molecular_function` — the object of its last part_of / occurs_in /
+ *   causally-upstream edge ("involved in", "acts upstream of").
+ * - `GP located_in | is_active_in | part_of | contributes_to X`: the GO term is X.
+ */
+export const extractAnnotations = (model: GraphModel | null): StandardAnnotation[] => {
+  if (!model) return []
+
+  const index = indexGraph(model)
+  const factOrder = new Map(model.edges.map((edge, i) => [edge.uid, i]))
+
+  const startEdges = model.edges.filter(edge => {
+    const subject = index.nodesById.get(edge.sourceId)
+    return !!subject && isStartEdge(edge, subject)
+  })
+  const roots = new Set(startEdges.map(edge => edge.sourceId))
+  const startEdgeKeys = new Set(startEdges.map(edge => edge.uid))
+
+  const annotations: StandardAnnotation[] = []
+
+  for (const startEdge of startEdges) {
+    const subject = index.nodesById.get(startEdge.sourceId)!
+    const object = index.nodesById.get(startEdge.targetId)
+    if (!object) continue
+
+    const otherRoots = new Set(roots)
+    otherRoots.delete(subject.uid)
+    const otherStartEdges = new Set(startEdgeKeys)
+    otherStartEdges.delete(startEdge.uid)
+    const boundary: WalkBoundary = { otherRoots, otherStartEdges }
+
+    const nodes: GraphNode[] = []
+    const collected: Edge[] = []
+    const visited = new Set<string>()
+
+    let unitType: AnnotationUnitType
+    let gp: GraphNode
+    let goTerm: GraphNode
+    let termEdge = startEdge
+    let criteria: Partial<AnnotationEdgeDefinition>
+
+    if (startEdge.id !== Relations.ENABLED_BY) {
+      unitType = AnnotationUnitType.CC_ONLY
+      gp = subject
+      goTerm = object
+      criteria = { gpToTermPredicate: startEdge.id }
+
+      // Only this start edge: the gene product's other edges are other annotations.
+      nodes.push(subject)
+      visited.add(subject.uid)
+      collected.push(startEdge)
+      collectSubgraph(object, index, unitType, boundary, nodes, collected, visited)
+    } else {
+      const mfOutgoing = index.outgoing.get(subject.uid) ?? []
+      const isRootMF = subject.id === RootTypes.MOLECULAR_FUNCTION
+
+      if (isRootMF && mfOutgoing.some(edge => BP_ONLY_CAUSAL_EDGES.has(edge.id))) {
+        unitType = AnnotationUnitType.BP_ONLY
+      } else if (object.rootTypes.includes(RootTypes.PROTEIN_CONTAINING_COMPLEX)) {
+        unitType = AnnotationUnitType.PROTEIN_COMPLEX
+      } else {
+        unitType = AnnotationUnitType.DEFAULT
+      }
+
+      gp = object
+      goTerm = subject
+      criteria = { gpToTermPredicate: Relations.ENABLED_BY }
+
+      collectSubgraph(subject, index, unitType, boundary, nodes, collected, visited)
+
+      if (isRootMF) {
+        // The last mf-to-term edge names the GO term, as in Angular — but one SAE
+        // can name ("involved in", "acts upstream of"…) wins over one it can't (a
+        // GO-CAM's `occurs_in`), since Minerva returns facts in no fixed order.
+        const termEdges = orderEdges(collected, factOrder).filter(
+          edge =>
+            edge.sourceId === subject.uid &&
+            MF_TO_TERM_EDGES.has(edge.id) &&
+            index.nodesById.has(edge.targetId)
+        )
+        const named = termEdges.filter(edge =>
+          findRelationByCriteria({
+            gpToTermPredicate: Relations.ENABLED_BY,
+            mfNodeRequired: true,
+            mfToTermPredicate: edge.id,
+          })
+        )
+        const edge = (named.length > 0 ? named : termEdges).at(-1)
+        if (edge) {
+          termEdge = edge
+          goTerm = index.nodesById.get(edge.targetId)!
+          criteria = {
+            gpToTermPredicate: Relations.ENABLED_BY,
+            mfNodeRequired: true,
+            mfToTermPredicate: edge.id,
+          }
+        }
+      }
+    }
+
+    collectCausalExtensions(goTerm, index, boundary, nodes, collected, visited)
+
+    const edges = orderEdges(collected, factOrder)
+    const evidence: Evidence | null = startEdge.evidence[0] ?? null
+
+    annotations.push({
+      uid: startEdge.uid,
+      unitType,
+      rootNode: subject,
+      gp,
+      goTerm,
+      startEdge,
+      termEdge,
+      relation: findRelationByCriteria(criteria) ?? { id: '', label: termEdge.label },
+      relationChoices: getTermRelations(gp.rootTypes, goTerm.rootTypes, true),
+      isComplement: goTerm.isComplement,
+      evidence,
+      extensions: getExtensions(goTerm, edges, index),
+      comments: uniqueComments(edges),
+      date: latestDate([
+        ...nodes.map(node => node.date),
+        ...edges.flatMap(edge => edge.evidence.map(ev => ev.date)),
+      ]),
+      contributors: uniqueContributors([
+        ...nodes.flatMap(node => node.contributors),
+        ...edges.flatMap(edge => [
+          ...edge.contributors,
+          ...edge.evidence.flatMap(ev => ev.contributors),
+        ]),
+      ]),
+      nodes,
+      edges,
+    })
+  }
+
+  return annotations
+}
+
+/**
+ * Whether Delete Extension may remove the extension's term individual with its
+ * fact. It stays when another fact points at it, or when it is part of another
+ * annotation (e.g. a gene product with its own `located_in` annotation).
+ */
+export const canRemoveExtensionTerm = (
+  extension: AnnotationExtension,
+  annotations: StandardAnnotation[],
+  model: GraphModel | null
+): boolean => {
+  const { uid } = extension.term
+  const otherFact = model?.edges.some(
+    edge => edge.targetId === uid && edge.uid !== extension.edge.uid
+  )
+  const inAnnotation = annotations.some(annotation =>
+    [annotation.rootNode.uid, annotation.gp.uid, annotation.goTerm.uid].includes(uid)
+  )
+  return !otherFact && !inAnnotation
+}
+
+/** One annotation or a selection of them (Delete Annotation / delete selected). */
+type AnnotationSelection = StandardAnnotation | StandardAnnotation[]
+
+const asList = (selection: AnnotationSelection): StandardAnnotation[] =>
+  Array.isArray(selection) ? selection : [selection]
+
+/**
+ * Whether deleting the annotations (their start facts and individuals `nodeUids`,
+ * and with the facts their evidence) would leave the model with no individuals.
+ */
+export const leavesModelEmpty = (
+  model: GraphModel,
+  selection: AnnotationSelection,
+  nodeUids: string[]
+): boolean => {
+  const startEdges = new Set(asList(selection).map(annotation => annotation.startEdge.uid))
+  const removed = new Set(nodeUids)
+  const removedFacts = model.edges.filter(
+    edge => startEdges.has(edge.uid) || removed.has(edge.sourceId) || removed.has(edge.targetId)
+  )
+  for (const edge of removedFacts) edge.evidence.forEach(ev => removed.add(ev.uid))
+  return model.nodes.every(node => removed.has(node.uid))
+}
+
+/**
+ * Individuals a delete may remove: the selected annotations' subgraphs minus any
+ * individual an annotation left in the model also uses, each once. SAE gives every
+ * annotation its own individuals, so this is normally the whole subgraph; it only
+ * matters for models edited elsewhere (e.g. one gene product with two CC
+ * annotations, or one MF enabled by two gene products sharing its extensions). An
+ * individual shared only among the selected annotations goes with them.
+ */
+export const getDeletableNodeUids = (
+  selection: AnnotationSelection,
+  annotations: StandardAnnotation[]
+): string[] => {
+  const selected = asList(selection)
+  const selectedIds = new Set(selected.map(annotation => annotation.uid))
+  const used = new Set<string>()
+  for (const other of annotations) {
+    if (selectedIds.has(other.uid)) continue
+    for (const node of other.nodes) used.add(node.uid)
+  }
+  const deletable = new Set<string>()
+  for (const annotation of selected) {
+    for (const node of annotation.nodes) {
+      if (node.id && !used.has(node.uid)) deletable.add(node.uid)
+    }
+  }
+  return [...deletable]
+}

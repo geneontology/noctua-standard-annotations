@@ -1,0 +1,177 @@
+{
+ "modified-p": false,
+ "id": "gomodel:6ab067da00002477",
+ "individuals": [
+  {
+   "id": "gomodel:6ab067da00002477/6ab067da00002478",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0005547",
+     "label": "phosphatidylinositol-3,4,5-trisphosphate binding"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "date",
+     "value": "2026-10-02"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6ab067da00002477/6ab067da00002479",
+   "type": [
+    {
+     "type": "class",
+     "id": "UniProtKB:Q06187",
+     "label": "BTK Hsap"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:36080",
+     "label": "protein"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "date",
+     "value": "2026-10-02"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6ab067da00002477/6ab067da00002480",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000314",
+     "label": "direct assay evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-10-02"
+    },
+    {
+     "key": "source",
+     "value": "PMID:17823121"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    }
+   ]
+  }
+ ],
+ "facts": [
+  {
+   "subject": "gomodel:6ab067da00002477/6ab067da00002478",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:6ab067da00002477/6ab067da00002479",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:6ab067da00002477/6ab067da00002480",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "date",
+     "value": "2026-10-02"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "key": "conforms-to-gpad",
+   "value": "true",
+   "value-type": "xsd:boolean"
+  },
+  {
+   "key": "state",
+   "value": "development"
+  },
+  {
+   "key": "contributor",
+   "value": "https://orcid.org/0000-0003-1813-6857"
+  },
+  {
+   "key": "date",
+   "value": "2026-10-02"
+  },
+  {
+   "key": "title",
+   "value": "enabled by BTK Hsap"
+  },
+  {
+   "key": "providedBy",
+   "value": "http://geneontology.org"
+  },
+  {
+   "key": "https://w3id.org/biolink/vocab/in_taxon",
+   "value": "NCBITaxon:9606",
+   "value-type": "IRI"
+  }
+ ]
+}

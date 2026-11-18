@@ -1,0 +1,28 @@
+export const noctuaColors = {
+  /** Dropdown panels (term search, inline editors), the Angular app's #fbf9de. */
+  cream: '#fbf9de',
+  noctuadark: {
+    50: '#e4e7ec',
+    100: '#bbc3d0',
+    200: '#8e9bb0',
+    300: '#627491',
+    400: '#3f567b',
+    500: '#173672',
+    600: '#132f64',
+    700: '#102653',
+    800: '#0c1d42',
+    900: '#08142f',
+  },
+  noctuaAccent: {
+    50: '#fef9f0',
+    100: '#fef2dd',
+    200: '#fde9c4',
+    300: '#fce0ac',
+    400: '#fbd898',
+    500: '#fad38a',
+    600: '#f8be54',
+    700: '#f6ac23',
+    800: '#dc9209',
+    900: '#ab7207',
+  },
+}

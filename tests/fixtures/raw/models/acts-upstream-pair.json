@@ -1,0 +1,497 @@
+{
+ "modified-p": false,
+ "id": "gomodel:6a2b236300000482",
+ "individuals": [
+  {
+   "id": "gomodel:6a2b236300000482/6a2b236300000483",
+   "type": [
+    {
+     "type": "class",
+     "id": "ZFIN:ZDB-GENE-030131-5718",
+     "label": "tgds Drer"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6a2b236300000482/6a2b236300000484",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0019300",
+     "label": "rhamnose biosynthetic process"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0008150",
+     "label": "biological_process"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6a2b236300000482/6a2b236300000485",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6a2b236300000482/6a2b236300000486",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000315",
+     "label": "mutant phenotype evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "source",
+     "value": "PMID:41159851"
+    },
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    },
+    {
+     "key": "with",
+     "value": "ZFIN:ZDB-CRISPR-260615-3,ZFIN:ZDB-CRISPR-260615-4,ZFIN:ZDB-CRISPR-260615-5"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6a2b236300000482/6a2b236300000487",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000315",
+     "label": "mutant phenotype evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "source",
+     "value": "PMID:41159851"
+    },
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    },
+    {
+     "key": "with",
+     "value": "ZFIN:ZDB-CRISPR-260615-3,ZFIN:ZDB-CRISPR-260615-4,ZFIN:ZDB-CRISPR-260615-5"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6a2b236300000482/6a2b236300000488",
+   "type": [
+    {
+     "type": "class",
+     "id": "ZFIN:ZDB-GENE-030131-5718",
+     "label": "tgds Drer"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6a2b236300000482/6a2b236300000489",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0061035",
+     "label": "regulation of cartilage development"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0008150",
+     "label": "biological_process"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6a2b236300000482/6a2b236300000490",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6a2b236300000482/6a2b236300000491",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000315",
+     "label": "mutant phenotype evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "source",
+     "value": "PMID:41159851"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "with",
+     "value": "ZFIN:ZDB-CRISPR-260615-3,ZFIN:ZDB-CRISPR-260615-4,ZFIN:ZDB-CRISPR-260615-5"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6a2b236300000482/6a2b236300000492",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000315",
+     "label": "mutant phenotype evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "source",
+     "value": "PMID:41159851"
+    },
+    {
+     "key": "with",
+     "value": "ZFIN:ZDB-CRISPR-260615-3,ZFIN:ZDB-CRISPR-260615-4,ZFIN:ZDB-CRISPR-260615-5"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    },
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    }
+   ]
+  }
+ ],
+ "facts": [
+  {
+   "subject": "gomodel:6a2b236300000482/6a2b236300000490",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:6a2b236300000482/6a2b236300000488",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:6a2b236300000482/6a2b236300000491",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:6a2b236300000482/6a2b236300000490",
+   "property": "RO:0002418",
+   "property-label": "causally upstream of or within",
+   "object": "gomodel:6a2b236300000482/6a2b236300000489",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:6a2b236300000482/6a2b236300000492",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:6a2b236300000482/6a2b236300000485",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:6a2b236300000482/6a2b236300000483",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:6a2b236300000482/6a2b236300000486",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:6a2b236300000482/6a2b236300000485",
+   "property": "RO:0002418",
+   "property-label": "causally upstream of or within",
+   "object": "gomodel:6a2b236300000482/6a2b236300000484",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:6a2b236300000482/6a2b236300000487",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0002-3665-4482"
+    },
+    {
+     "key": "date",
+     "value": "2026-06-16"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://zfin.org"
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "key": "state",
+   "value": "production"
+  },
+  {
+   "key": "contributor",
+   "value": "https://orcid.org/0000-0002-3665-4482"
+  },
+  {
+   "key": "date",
+   "value": "2026-06-16"
+  },
+  {
+   "key": "title",
+   "value": "Rhamnose biosynthetic process enabled by tgds Drer"
+  },
+  {
+   "key": "providedBy",
+   "value": "http://zfin.org"
+  },
+  {
+   "key": "https://w3id.org/biolink/vocab/in_taxon",
+   "value": "NCBITaxon:7955",
+   "value-type": "IRI"
+  }
+ ]
+}

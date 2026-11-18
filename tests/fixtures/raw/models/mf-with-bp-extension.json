@@ -1,0 +1,363 @@
+{
+ "modified-p": false,
+ "id": "gomodel:6ab067da00005997",
+ "individuals": [
+  {
+   "id": "gomodel:6ab067da00005997/6ab067da00005998",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0170007",
+     "label": "endoplasmic reticulum-lipid droplet tether activity"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0003674",
+     "label": "molecular_function"
+    },
+    {
+     "type": "class",
+     "id": "obo:go/extensions/reacto.owl#molecular_event",
+     "label": "Molecular Event"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "date",
+     "value": "2026-10-06"
+    },
+    {
+     "key": "comment",
+     "value": "Ontology term annotation dispute: I want to dispute"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6ab067da00005997/6ab067da00005999",
+   "type": [
+    {
+     "type": "class",
+     "id": "UniProtKB:P43246",
+     "label": "MSH2 Hsap"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "CHEBI:33695",
+     "label": "information biomacromolecule"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:24431",
+     "label": "chemical entity"
+    },
+    {
+     "type": "class",
+     "id": "CHEBI:36080",
+     "label": "protein"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-10-06"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6ab067da00005997/6ab067da00006000",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000314",
+     "label": "direct assay evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "source",
+     "value": "PMID:1"
+    },
+    {
+     "key": "date",
+     "value": "2026-10-06"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6ab067da00005997/6ab067da00006001",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0006261",
+     "label": "DNA-templated DNA replication"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0008150",
+     "label": "biological_process"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-10-06"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6ab067da00005997/6ab067da00006002",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0000312",
+     "label": "imported information used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-10-06"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "source",
+     "value": "PMID:2"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6ab067da00005997/6ab067da00006003",
+   "type": [
+    {
+     "type": "class",
+     "id": "GO:0045023",
+     "label": "G0 to G1 transition"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "GO:0008150",
+     "label": "biological_process"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-10-06"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    }
+   ]
+  },
+  {
+   "id": "gomodel:6ab067da00005997/6ab067da00006004",
+   "type": [
+    {
+     "type": "class",
+     "id": "ECO:0006088",
+     "label": "systematic evolution of ligands by exponential amplification evidence used in manual assertion"
+    }
+   ],
+   "root-type": [
+    {
+     "type": "class",
+     "id": "ECO:0000000",
+     "label": "evidence"
+    }
+   ],
+   "annotations": [
+    {
+     "key": "date",
+     "value": "2026-10-06"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    },
+    {
+     "key": "source",
+     "value": "PMID:3"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    }
+   ]
+  }
+ ],
+ "facts": [
+  {
+   "subject": "gomodel:6ab067da00005997/6ab067da00006001",
+   "property": "BFO:0000050",
+   "property-label": "part of",
+   "object": "gomodel:6ab067da00005997/6ab067da00006003",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:6ab067da00005997/6ab067da00006004",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "date",
+     "value": "2026-10-06"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:6ab067da00005997/6ab067da00005998",
+   "property": "BFO:0000050",
+   "property-label": "part of",
+   "object": "gomodel:6ab067da00005997/6ab067da00006001",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:6ab067da00005997/6ab067da00006002",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "date",
+     "value": "2026-10-06"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  },
+  {
+   "subject": "gomodel:6ab067da00005997/6ab067da00005998",
+   "property": "RO:0002333",
+   "property-label": "enabled by",
+   "object": "gomodel:6ab067da00005997/6ab067da00005999",
+   "annotations": [
+    {
+     "key": "evidence",
+     "value": "gomodel:6ab067da00005997/6ab067da00006000",
+     "value-type": "IRI"
+    },
+    {
+     "key": "contributor",
+     "value": "https://orcid.org/0000-0003-1813-6857"
+    },
+    {
+     "key": "date",
+     "value": "2026-10-06"
+    },
+    {
+     "key": "providedBy",
+     "value": "http://geneontology.org"
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "key": "conforms-to-gpad",
+   "value": "true",
+   "value-type": "xsd:boolean"
+  },
+  {
+   "key": "state",
+   "value": "development"
+  },
+  {
+   "key": "contributor",
+   "value": "https://orcid.org/0000-0003-1813-6857"
+  },
+  {
+   "key": "date",
+   "value": "2026-10-06"
+  },
+  {
+   "key": "title",
+   "value": "enabled by MSH2 Hsap"
+  },
+  {
+   "key": "providedBy",
+   "value": "http://geneontology.org"
+  },
+  {
+   "key": "https://w3id.org/biolink/vocab/in_taxon",
+   "value": "NCBITaxon:9606",
+   "value-type": "IRI"
+  }
+ ]
+}
