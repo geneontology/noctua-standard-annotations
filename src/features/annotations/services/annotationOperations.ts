@@ -7,6 +7,7 @@ import {
   classExpression,
 } from '@/features/gocam/models/operations'
 import type { Operation } from '@/features/gocam/models/operations'
+import { buildAnnotationEditorSAEOperation } from '@/features/gocam/services/modelOperations'
 import { Relations, InverseRelations } from '@/@noctua.core/models/relations'
 import { ANNOTATION_EDGE_CONFIG, ROOT_NODES } from '../data/annotationConfig'
 import type { AnnotationExtension, StandardAnnotation } from '../models/annotation'
@@ -157,12 +158,13 @@ const addFact = (
  * - "located in" etc.:   `GP located_in CC`
  *
  * plus `term <relation> extension` facts. Every fact carries the evidence and the
- * comments. A title is added only when the model has none yet.
+ * comments. A title is added only when the model has none yet, and the SAE tag
+ * (`annotation-editor-sae`, #97) only when `tagAsSAEModel` says the model needs it.
  */
 export const buildCreateAnnotationsOperations = (
   inputs: CreateAnnotationInput[],
   modelId: string,
-  options: { title?: string; currentModelTitle?: string } = {}
+  options: { title?: string; currentModelTitle?: string; tagAsSAEModel?: boolean } = {}
 ): Operation[] => {
   const operations: Operation[] = []
   let created = 0
@@ -246,6 +248,8 @@ export const buildCreateAnnotationsOperations = (
       },
     })
   }
+
+  if (options.tagAsSAEModel) operations.push(buildAnnotationEditorSAEOperation(modelId))
 
   operations.push(store(modelId))
   return operations

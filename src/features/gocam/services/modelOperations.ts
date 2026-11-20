@@ -1,5 +1,30 @@
 import { AnnotationKey, OperationEntity, OperationType } from '../models/operations'
 import type { Operation } from '../models/operations'
+import type { GraphModel } from '../models/cam'
+
+/**
+ * Tag the model as made in SAE (#97): `annotation-editor-sae = true`, an `xsd:boolean`.
+ * Written with the full IRI, which Minerva stores as the same property as the shorthand
+ * and accepts even before it knows the shorthand (minerva#613). Model annotations are a
+ * set, so a repeat add can't make a second tag.
+ */
+export const buildAnnotationEditorSAEOperation = (modelId: string): Operation => ({
+  entity: OperationEntity.MODEL,
+  operation: OperationType.ADD_ANNOTATION,
+  arguments: {
+    'model-id': modelId,
+    values: [
+      { key: AnnotationKey.ANNOTATION_EDITOR_SAE_IRI, value: 'true', 'value-type': 'xsd:boolean' },
+    ],
+  },
+})
+
+/**
+ * A model SAE is about to make: no individuals yet and not tagged. The landing page tags
+ * models it creates for SAE; this catches the rest, and never adds a second tag.
+ */
+export const needsAnnotationEditorSAETag = (model: GraphModel | undefined | null): boolean =>
+  !!model?.id && model.nodes.length === 0 && !model.annotationEditorSAE
 
 const modelAnnotation = (
   operation: OperationType.ADD_ANNOTATION | OperationType.REMOVE_ANNOTATION,

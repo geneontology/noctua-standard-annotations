@@ -27,6 +27,16 @@ export enum AnnotationKey {
   STATE = 'state',
   DATE = 'date',
   CONFORMS_TO_GPAD = 'conforms-to-gpad',
+  /**
+   * Marks a model made in SAE (#97): Minerva's shorthand (minerva#612/#613), lowercase like
+   * the other `lego:` properties and matched case-sensitively. `model get` returns this key.
+   */
+  ANNOTATION_EDITOR_SAE = 'annotation-editor-sae',
+  /**
+   * The property behind `annotation-editor-sae`. SAE writes this form: Minerva resolves it to
+   * the same shorthand, and a Minerva without the shorthand still accepts it.
+   */
+  ANNOTATION_EDITOR_SAE_IRI = 'http://geneontology.org/lego/annotation-editor-sae',
   IN_TAXON = 'https://w3id.org/biolink/vocab/in_taxon',
 }
 

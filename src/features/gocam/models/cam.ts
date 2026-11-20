@@ -91,6 +91,8 @@ export interface GraphModel {
   nodes: GraphNode[]
   edges: Edge[]
   conformsToGPAD?: boolean
+  /** `annotation-editor-sae = true`: the model was made in SAE (#97). */
+  annotationEditorSAE?: boolean
   /** The model state shown (the first `state` annotation). */
   state?: string
   /** Every `state` annotation — a save replaces them all. */

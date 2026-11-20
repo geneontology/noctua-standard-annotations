@@ -177,6 +177,13 @@ export const transformGraphData = (
       case AnnotationKey.CONFORMS_TO_GPAD:
         graphModel.conformsToGPAD = annotation.value === 'true'
         break
+      // Minerva returns the shorthand; a Minerva without it (before minerva#613) returns the IRI.
+      case AnnotationKey.ANNOTATION_EDITOR_SAE:
+      case AnnotationKey.ANNOTATION_EDITOR_SAE_IRI:
+        if (annotation.value === 'true' || annotation.value === '1') {
+          graphModel.annotationEditorSAE = true
+        }
+        break
       case AnnotationKey.STATE:
         graphModel.states.push(annotation.value)
         break
