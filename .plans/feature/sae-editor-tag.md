@@ -39,6 +39,7 @@ typed `xsd:boolean`. SAE reads it back.
   tag (SAE has no copy; the landing page's Copy Model decides). `/search/models` reports
   `"annotation-editor-sae": true` (omitted when untagged) and filters with
   `?annotation-editor-sae=true|false`.
-- Jim's fresh minerva `dev` drops `conforms-to-gpad`; SAE only parses it into an unused field.
+- Jim's fresh minerva `dev` drops `conforms-to-gpad`; SAE's unused parsing of it was removed
+  (minerva#612 comment 2026-11-20), along with the key in the raw barista-dev fixtures.
 - Backfill condition: model has no individuals and no tag → exactly one instance, and a model
   the landing page already tagged is left alone.

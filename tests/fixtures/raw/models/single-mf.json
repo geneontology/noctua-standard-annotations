@@ -144,11 +144,6 @@
  ],
  "annotations": [
   {
-   "key": "conforms-to-gpad",
-   "value": "true",
-   "value-type": "xsd:boolean"
-  },
-  {
    "key": "state",
    "value": "development"
   },

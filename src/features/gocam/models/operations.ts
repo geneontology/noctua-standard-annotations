@@ -26,7 +26,6 @@ export enum AnnotationKey {
   TITLE = 'title',
   STATE = 'state',
   DATE = 'date',
-  CONFORMS_TO_GPAD = 'conforms-to-gpad',
   /**
    * Marks a model made in SAE (#97): Minerva's shorthand (minerva#612/#613), lowercase like
    * the other `lego:` properties and matched case-sensitively. `model get` returns this key.
