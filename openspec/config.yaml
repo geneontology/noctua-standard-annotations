@@ -1,0 +1,40 @@
+schema: spec-driven
+
+context: |
+  Users are GO curators making standard GO annotations (gene product -> relation -> GO term,
+  with evidence, extensions and comments), each stored as a small GO-CAM subgraph in
+  Barista/Minerva. A row in the annotations table is the unit curators reason about.
+  Curator-facing wording (dialog text, menu labels, error messages, toasts) is part of the
+  behavior and must be specified exactly when a requirement depends on it.
+  When a feature is borrowed from the Visual Pathway Editor (VPE), take its principle and UI but
+  define the logic and wording by what SAE shows (a row), not by VPE's activity model.
+  Never reference the previous implementation in specs, designs, or code comments.
+  Do not use people's names from conversations or issues as examples in artifacts; describe
+  the role instead (e.g. "the curator", "the model owner").
+  Prefer the simplest change that satisfies the request; no unrequested robustness or dedup.
+
+rules:
+  proposal:
+    - Reference GitHub issues as (#NNN) for this repo and owner/repo#NNN for others; never write
+      Closes/Fixes unless told to
+    - State explicitly what is out of scope when the request is narrow
+  specs:
+    - Describe behavior a curator or Minerva can observe, not component or function names
+  tasks:
+    - Do not add test-writing tasks unless the change is about tests or the user asked for them;
+      verify with existing tests, type-check, lint, or a described manual check in the browser
+    - Tasks that need a manual browser check say exactly what to click and what to expect
+  design:
+    - Use the shared dialog wrappers in src/@noctua.core/components/dialog/ over raw Modal
+    - Build m3Batch operations in a pure services/*Operations.ts function and send writes
+      through useAnnotationActions
+
+operations:
+  apply:
+    guidance:
+      - Do not commit or push unless the user asks
+      - Work on the currently checked-out branch; do not create branches unless asked
+      - Group commits; fold follow-up fixes into the commit they belong to
+  archive:
+    guidance:
+      - Summarize which main specs were updated before finishing
