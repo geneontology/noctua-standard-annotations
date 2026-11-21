@@ -7,6 +7,8 @@ import { loadModel, saeModelRaw } from '@tests/fixtures/models'
 import { autocompleteOptions, resetAutocompleteOptions } from '@tests/mocks/autocompleteMock'
 import AnnotationForm from '@/features/annotations/components/AnnotationForm'
 import { termOption } from '@/features/annotations/models/annotationForm'
+import { emptyGraphModel } from '@/features/gocam/services/graphServices'
+import type { GraphModel } from '@/features/gocam/models/cam'
 
 vi.mock('@/features/search/components/Autocomplete', () => import('@tests/mocks/autocompleteMock'))
 
@@ -21,10 +23,17 @@ const IMP = termOption('ECO:0000315', 'mutant phenotype evidence used in manual 
 
 const untitledModel = () => ({ ...loadModel(saeModelRaw), title: undefined })
 
-const renderForm = (loggedIn = true) =>
+const renderForm = (loggedIn = true, model: GraphModel = untitledModel()) =>
   renderWithProviders(<AnnotationForm />, {
-    preloadedState: stateWith({ model: untitledModel(), loggedIn }),
+    preloadedState: stateWith({ model, loggedIn }),
   })
+
+const SAE_TAG_IRI = 'http://geneontology.org/lego/annotation-editor-sae'
+const tagValuesOf = (ops: { operation: string; arguments: Record<string, unknown> }[]) =>
+  ops
+    .filter(op => op.operation === 'add-annotation')
+    .flatMap(op => (op.arguments.values as { key: string }[] | undefined) ?? [])
+    .filter(value => value.key === SAE_TAG_IRI)
 
 beforeEach(() => {
   autocompleteOptions.gp = [GP]
@@ -103,12 +112,35 @@ describe('AnnotationForm', () => {
         values: [{ key: 'title', value: 'enabled by NEW1 Hsap' }],
       },
     })
+    // The model already has individuals, so it isn't one SAE is making (#97).
+    expect(tagValuesOf(ops)).toEqual([])
 
     await waitFor(() =>
       expect(store.getState().toast.message).toBe('Annotation successfully created.')
     )
     // The form is cleared after a save.
     expect(screen.getByTestId('autocomplete-value-gp')).toHaveTextContent('')
+  })
+
+  it('tags an empty model as made in SAE with its first annotation (#97)', async () => {
+    const { requests } = mockBarista(() => batchSuccess(saeModelRaw))
+    const { user } = renderForm(true, { ...emptyGraphModel(), id: 'gomodel:new' })
+
+    await user.click(screen.getByTestId('pick-gp-UniProtKB:P12345'))
+    await user.click(screen.getByTestId('pick-goterm-GO:0006915'))
+    await user.click(screen.getByTestId('pick-evidenceCode-0-ECO:0000315'))
+    await user.type(
+      within(screen.getByTestId('evidence-row')).getByLabelText('Reference'),
+      'PMID:12345'
+    )
+    const save = screen.getByRole('button', { name: 'Save' })
+    await waitFor(() => expect(save).toBeEnabled())
+    await user.click(save)
+
+    await waitFor(() => expect(requests).toHaveLength(1))
+    expect(tagValuesOf(requests[0].operations)).toEqual([
+      { key: SAE_TAG_IRI, value: 'true', 'value-type': 'xsd:boolean' },
+    ])
   })
 
   it('fills the root term with ND evidence', async () => {

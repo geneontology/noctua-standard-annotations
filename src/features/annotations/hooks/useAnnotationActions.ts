@@ -10,6 +10,7 @@ import {
 } from '@/features/gocam/slices/camApiSlice'
 import type { GraphNode } from '@/features/gocam/models/cam'
 import { AnnotationKey } from '@/features/gocam/models/operations'
+import { needsAnnotationEditorSAETag } from '@/features/gocam/services/modelOperations'
 import type { Operation } from '@/features/gocam/models/operations'
 import type { AnnotationExtension, StandardAnnotation } from '../models/annotation'
 import type { AnnotationFormState } from '../models/annotationForm'
@@ -72,10 +73,11 @@ export function useAnnotationActions() {
         buildCreateAnnotationsOperations(toCreateAnnotationInputs(form), modelId, {
           title: defaultModelTitle(form),
           currentModelTitle: model?.title,
+          tagAsSAEModel: needsAnnotationEditorSAETag(model),
         }),
         'Annotation successfully created.'
       ),
-    [run, modelId, model?.title]
+    [run, modelId, model]
   )
 
   const copyToGenes = useCallback(

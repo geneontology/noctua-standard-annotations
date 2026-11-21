@@ -74,6 +74,18 @@ describe('transformGraphData', () => {
     expect(twice.state).toBe('review')
   })
 
+  it('reads the SAE tag by its IRI or, once Minerva knows it, its shorthand (#97)', () => {
+    const tagged = (annotations: { key: string; value: string }[]) =>
+      transformGraphData({ ...saeModelRaw, annotations }).annotationEditorSAE
+    const iri = 'http://geneontology.org/lego/annotation-editor-sae'
+    expect(tagged([{ key: iri, value: 'true' }])).toBe(true)
+    expect(tagged([{ key: 'annotation-editor-sae', value: 'true' }])).toBe(true)
+    expect(tagged([{ key: iri, value: 'false' }])).toBeUndefined()
+    // The lookup is case-sensitive in Minerva; so is SAE.
+    expect(tagged([{ key: 'annotation-editor-SAE', value: 'true' }])).toBeUndefined()
+    expect(tagged([])).toBeUndefined()
+  })
+
   it('names an individual by its last type and is NOT only when every type is', () => {
     const individual = (types: unknown[]) =>
       transformGraphData({

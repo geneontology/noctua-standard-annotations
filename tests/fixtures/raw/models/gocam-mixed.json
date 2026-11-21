@@ -2010,11 +2010,6 @@
  ],
  "annotations": [
   {
-   "key": "conforms-to-gpad",
-   "value": "false",
-   "value-type": "xsd:boolean"
-  },
-  {
    "key": "state",
    "value": "review"
   },

@@ -1,10 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import {
+  buildAnnotationEditorSAEOperation,
+  needsAnnotationEditorSAETag,
   buildSaveModelCommentsOperations,
   buildSaveModelStateOperations,
   buildSaveModelTitleOperations,
 } from '@/features/gocam/services/modelOperations'
 import type { Operation } from '@/features/gocam/models/operations'
+import { emptyGraphModel } from '@/features/gocam/services/graphServices'
+import { loadModel, saeModelRaw } from '@tests/fixtures/models'
 
 const MODEL = 'gomodel:1'
 
@@ -58,5 +62,33 @@ describe('model operations', () => {
       ['remove-annotation', 'comment', 'b'],
       ['store'],
     ])
+  })
+})
+
+describe('SAE tag (#97)', () => {
+  it('adds annotation-editor-sae = true as an xsd:boolean under its IRI', () => {
+    expect(buildAnnotationEditorSAEOperation(MODEL)).toEqual({
+      entity: 'model',
+      operation: 'add-annotation',
+      arguments: {
+        'model-id': MODEL,
+        values: [
+          {
+            key: 'http://geneontology.org/lego/annotation-editor-sae',
+            value: 'true',
+            'value-type': 'xsd:boolean',
+          },
+        ],
+      },
+    })
+  })
+
+  it('tags only an empty, untagged model', () => {
+    const empty = { ...emptyGraphModel(), id: MODEL }
+    expect(needsAnnotationEditorSAETag(empty)).toBe(true)
+    expect(needsAnnotationEditorSAETag({ ...empty, annotationEditorSAE: true })).toBe(false)
+    expect(needsAnnotationEditorSAETag(loadModel(saeModelRaw))).toBe(false)
+    expect(needsAnnotationEditorSAETag(undefined)).toBe(false)
+    expect(needsAnnotationEditorSAETag(emptyGraphModel())).toBe(false)
   })
 })

@@ -169,6 +169,26 @@ describe('buildCreateAnnotationsOperations', () => {
     expect(titles[0].arguments.values).toEqual([{ key: 'title', value: 'enabled by ABC1 Hsap' }])
   })
 
+  it('tags the model as made in SAE only when asked, once, before the store (#97)', () => {
+    const tagKeys = (ops: Operation[]) =>
+      ofKind(ops, OperationEntity.MODEL, OperationType.ADD_ANNOTATION)
+        .flatMap(op => op.arguments.values as { key: string }[])
+        .map(v => v.key)
+        .filter(key => key.endsWith('annotation-editor-sae'))
+
+    const tagged = buildCreateAnnotationsOperations([input(), input()], MODEL, {
+      tagAsSAEModel: true,
+    })
+    expect(tagKeys(tagged)).toHaveLength(1)
+    expect(tagged.at(-1)?.operation).toBe(OperationType.STORE)
+
+    expect(tagKeys(buildCreateAnnotationsOperations([input()], MODEL))).toHaveLength(0)
+    // Nothing valid to create: no batch, so no tag either.
+    expect(
+      buildCreateAnnotationsOperations([input({ relationId: '' })], MODEL, { tagAsSAEModel: true })
+    ).toEqual([])
+  })
+
   it('keeps an existing title', () => {
     const ops = buildCreateAnnotationsOperations([input()], MODEL, {
       title: 'enabled by X',
