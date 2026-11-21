@@ -9,8 +9,6 @@ standard GO annotations (gene product → relation → GO term, with evidence, e
 comments) stored as small GO-CAM subgraphs in Minerva. It follows the Noctua Visual Pathway
 Editor's stack and layout: Vite, Tailwind CSS v4, Redux Toolkit + RTK Query, Mantine v9.
 
-Ported from the Angular app (`noctua-annotations`, see `.plans/refactor/angular-to-react.md`).
-
 ### Directories to Ignore
 
 - `./workbenches/*/public/` — compiled deploy output; do not analyze or hand-edit.
@@ -59,12 +57,12 @@ Every SAE annotation gets its own individuals:
 | involved in, acts upstream of (or within)[, ±] | `MF(GO:0003674) enabled_by GP` + `MF(GO:0003674) part_of / causally_upstream_of… BP` |
 | located in, is active in, part of, contributes to | `GP <edge> term` |
 
-The mapping lives in `annotations/data/annotationConfig.ts` (`ANNOTATION_EDGE_CONFIG`, ported from Angular `simpleAnnotationEdgeConfig`).
+The mapping lives in `annotations/data/annotationConfig.ts` (`ANNOTATION_EDGE_CONFIG`).
 
 - **Reading.** `extractAnnotations` starts a row at every `enabled_by` fact and every gene-product-subject `located_in` / `is_active_in` / `part_of` / `contributes_to` fact. It walks the annotation's subgraph over shape predicates, skipping causal edges except a root MF's "acts upstream" edge.
 - **Display.** The relation shown is the inverse from the config.
 - **Extensions.** These are the GO term's outgoing facts that `shapes.json` allows as extensions.
-- **Evidence and comments edits** fan out to every fact/evidence in the annotation's subgraph, as the Angular app did.
+- **Evidence and comments edits** fan out to every fact/evidence in the annotation's subgraph.
 - **NOT** is a complement class expression on the GO term individual.
 
 ### State Management
@@ -72,13 +70,13 @@ The mapping lives in `annotations/data/annotationConfig.ts` (`ANNOTATION_EDGE_CO
 Redux Toolkit with `combineSlices` (`store.ts`): `auth`, `metadata`, `cam`, `annotations`, `drawer`, `dialog`, `toast`, `loadingOverlay`, plus the RTK Query reducer.
 
 - `cam.model` holds the parsed `GraphModel`. The page copies the `getGraphModel` result into it.
-- Annotations are derived with `selectAnnotations` / `selectSortedAnnotations`. The sort is persisted in localStorage under the Angular key `annotationActivitySortBy`.
+- Annotations are derived with `selectAnnotations` / `selectSortedAnnotations`. The sort is persisted in localStorage under `annotationActivitySortBy`.
 - `loadingOverlayMiddleware` ties the m3Batch endpoints to the global overlay.
 
 ### API Layer (Minerva via Barista)
 
-- **Reads:** `intention=query` with `[model get]`, no reasoner (like the Angular manager). Logged in: a POST to `m3BatchPrivileged` (token in the body, not the URL); logged out: a GET to the public `m3Batch`.
-- **Writes:** one POST to `m3BatchPrivileged` per edit (form-urlencoded `token`, `provided-by` = the acting group, `intention=action`, `requests`). Every batch ends in a model `store`, so edits are saved as they are made; a store-only batch (the Not Saved bar's Save) is `intention=query`, as Angular's `storeCam` sent it. Successful writes invalidate the `graph` tag, which refetches the model.
+- **Reads:** `intention=query` with `[model get]`, no reasoner. Logged in: a POST to `m3BatchPrivileged` (token in the body, not the URL); logged out: a GET to the public `m3Batch`.
+- **Writes:** one POST to `m3BatchPrivileged` per edit (form-urlencoded `token`, `provided-by` = the acting group, `intention=action`, `requests`). Every batch ends in a model `store`, so edits are saved as they are made; a store-only batch (the Not Saved bar's Save) is `intention=query`. Successful writes invalidate the `graph` tag, which refetches the model.
 - **Errors:** Minerva and Barista report failures as HTTP 200 with `message-type` / `message_type: "error"`. `getBatchErrorMessage` turns them into RTK Query errors, and `useAnnotationActions` toasts them. A failed refresh keeps the last model on the page.
 - **Minerva rules the builders rely on:** removing a fact deletes its evidence individuals (never remove them again — the batch fails before its `store`); a batch has no rollback; a model with no individuals or no title can't be stored (so the last annotation can't be deleted, and the first create titles the model).
 - **GOlr:** JSONP via `<script>` (no CORS).
@@ -111,7 +109,13 @@ Vitest + React Testing Library + jsdom. `renderWithProviders` gives an isolated 
 
 ## Task Management
 
-Create and maintain plan files in `.plans/<category>/<task-name>.md` for non-trivial work; see [.plans/template.md](.plans/template.md). On context resume, check `.plans/` for ACTIVE plans first.
+Non-trivial work is tracked with [OpenSpec](openspec/) (`spec-driven` schema; project rules in `openspec/config.yaml`).
+
+- `openspec/specs/<capability>/spec.md` — current behavior of the app, one folder per capability. Run `openspec list --specs` for the inventory.
+- `openspec/changes/<name>/` — work in progress: `proposal.md`, `design.md`, `tasks.md`, and delta specs under `specs/`. Run `openspec list` for open changes.
+- Workflow: `/opsx:explore` (think) → `/opsx:propose` (create change) → `/opsx:apply` (implement, ticking `tasks.md`) → `/opsx:archive` (merge deltas into `specs/`).
+- Resuming after context loss: read the open change's `tasks.md`; unchecked boxes are the checkpoint.
+- `docs/plans-archive/` holds the task plans from before OpenSpec. It is read-only history: don't edit it or add to it.
 
 ## Git
 
